@@ -1,0 +1,50 @@
+.igatcard {
+  margin-bottom: 5px;
+  display: inline-block;
+  width: 100%;
+  border: 1px solid rgba(0,0,0,.125);
+  color: #373a3c;
+  font-weight: 400;
+}
+.igatcard:hover {
+  cursor: pointer;
+}
+
+.igateyecatcher {
+  margin: 2px 7px 0 7px;
+  width: 50px;
+  display: block;
+}
+
+.igatleftblock {
+  padding: 2px 8px;
+  border-right: 1px solid rgba(0,0,0,.125);
+  width: 80px;
+  text-align: center;
+  float: left;
+}
+
+.igatlistinfo {
+  padding: 0 10px;
+  margin-top: 40px;
+  margin-left: 80px;
+  margin-right: 15px;
+  position: absolute;
+  transform: translateY(-50%);
+}
+
+.igatyellow:hover {
+  background-color: #ffff6b;
+}
+
+.igatgreen:hover {
+  background-color: #6ee46b;
+}
+
+.igatred:hover {
+  background-color: #f26868;
+}
+
+.igatblue:hover {
+  background-color: #00c2ff;
+}
