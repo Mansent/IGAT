@@ -32,6 +32,8 @@ else if ($_GET['tab'] == 'ranks') {
   $ranksclass = "active";
 }
 
+$badges_tab = new block_igat_badgestab();
+
 // Gernerate page html
 echo $OUTPUT->header(); ?>
 
@@ -48,7 +50,7 @@ echo $OUTPUT->header(); ?>
 </ul>
 <div class="tab-content mt-3">
   <div class="tab-pane <?php echo $badgesclass; ?>" id="badges" role="tabpanel">
-    <p>Badges</p>
+    <?php block_igat_badgestab::render_tab($courseid); ?>
   </div>
   <div class="tab-pane <?php echo $levelclass; ?>" id="level" role="tabpanel">
     <p>Level</p>
