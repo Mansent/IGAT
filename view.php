@@ -1,7 +1,7 @@
 <?php
 require_once('../../config.php');
 
-global $DB, $OUTPUT, $PAGE;
+global $DB, $OUTPUT, $PAGE, $USER;
 
 // Check required parameters course id and login.
 $courseid = required_param('courseid', PARAM_INT);
@@ -33,6 +33,7 @@ else if ($_GET['tab'] == 'ranks') {
 }
 
 $badges_tab = new block_igat_badgestab();
+$levels_tab = new block_igat_levelstab();
 
 // Gernerate page html
 echo $OUTPUT->header(); ?>
@@ -53,7 +54,7 @@ echo $OUTPUT->header(); ?>
     <?php block_igat_badgestab::render_tab($courseid); ?>
   </div>
   <div class="tab-pane <?php echo $levelclass; ?>" id="level" role="tabpanel">
-    <p>Level</p>
+	<?php block_igat_levelstab::render_tab($courseid) ?>
   </div>
   <div class="tab-pane <?php echo $ranksclass; ?>" id="ranks" role="tabpanel">
     <p>Ranks</p> 
