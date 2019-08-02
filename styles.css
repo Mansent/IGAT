@@ -49,9 +49,46 @@
   background-color: #00c2ff;
 }
 
+.igatbadgescontainer {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	padding: 5px;
+}
+
 .igatbadge {
-	border: 1px solid gray;
 	border-radius: 4px;
 	padding: 6px; 
-	margin-bottom: 10px
+	margin: 10px;
+	width: 350px;
+}
+
+.igatbadgeowned {
+	border: 1px solid green;
+}
+
+.igatbadgeowned:hover {
+	background-color: lightgreen;
+}
+
+.igatbadgeavailable {
+	border: 1px solid #D3C60C;
+}
+
+.igatbadgeavailable:hover {
+	background-color: lightyellow;
+}
+
+.igatbadge  img{
+	float: left;
+}
+
+
+.igatbadge h3, p {
+	margin-left: 115px;
+}
+
+#badges a {
+	color: black;
+	text-decoration: none;
 }
