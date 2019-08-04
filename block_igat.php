@@ -89,7 +89,6 @@ class block_igat extends block_base {
      * The function is called immediatly after init().
      */
     public function specialization() {
-
         // Load user defined title and make sure it's never empty.
         $this->title = get_string('blocktitle', 'block_igat');
     }

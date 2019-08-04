@@ -1,3 +1,9 @@
+/* --------------------------
+ * 		IGAT Style Sheet
+ * -------------------------- */
+ 
+/* --- Block -- */
+
 .igatcard {
   margin-bottom: 5px;
   display: inline-block;
@@ -49,22 +55,23 @@
   background-color: #00c2ff;
 }
 
+/* --- Dashboard --- */
+
+/* - Badges Tab - */
+
 .igatbadgescontainer {
-	display: flex;
-	flex-wrap: wrap;
-	flex-direction: row;
 	padding: 5px;
 }
 
 .igatbadge {
-	border-radius: 4px;
 	padding: 6px; 
 	margin: 10px;
-	width: 350px;
+	width: 100%;
+	min-height: 120px;
+	border-bottom: 1px solid rgba(0,0,0,.125);
 }
 
 .igatbadgeowned {
-	border: 1px solid green;
 }
 
 .igatbadgeowned:hover {
@@ -72,23 +79,33 @@
 }
 
 .igatbadgeavailable {
-	border: 1px solid #D3C60C;
 }
 
 .igatbadgeavailable:hover {
 	background-color: lightyellow;
 }
 
-.igatbadge  img{
+.igatbadge img {
 	float: left;
 }
 
 
-.igatbadge h3, p {
+.igatbadgeinfo {
 	margin-left: 115px;
 }
 
-#badges a {
+#badges a p, #badges a h3{
 	color: black;
+}
+
+#badges a:hover {
 	text-decoration: none;
+}
+
+#badges .collapse .box p, #badges .collapsing .box p {
+	margin: 0;
+}
+
+.collapseContainer {
+	margin-bottom: 0;
 }
