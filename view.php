@@ -17,7 +17,7 @@ if (!$course = $DB->get_record('course', array('id' => $courseid))) {
 require_login($course);
 
 // Page initialization
-$PAGE->set_title("Gamification Dashvoard");
+$PAGE->set_title("Gamification Dashboard");
 $PAGE->set_url('/blocks/igat/index.php', array('id' => $courseid));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('blocktitle', 'block_igat'));
