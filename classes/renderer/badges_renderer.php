@@ -11,17 +11,20 @@ class badges_renderer {
 	private $lib_badges;
 	private $lib_statistics;
   
-	public function __construct() {
-		$this->lib_badges = new igat_badges();
-		$this->lib_statistics = new igat_statistics();
+/* 
+ * Creates a new badges renderer 
+ * @param courseId the id of the current course.
+ */
+	public function __construct($courseId) {
+		$this->lib_badges = new igat_badges($courseId);
+		$this->lib_statistics = new igat_statistics($courseId);
 	}
   
   /**
    * Renders the badges tab
-   * @param courseId the id of the current course.
    */
-	public function render_tab($courseId) {
-		$badges = $this->lib_badges->getCurrentUserBadges($courseId);
+	public function render_tab() {
+		$badges = $this->lib_badges->getCurrentUserBadges();
 		
 		echo '<h2>Your Badges</h2>';
 		echo '<div class="igatbadgescontainer">';
@@ -35,7 +38,7 @@ class badges_renderer {
 							<p><?php echo $badge->description; ?></p>
 							<p>Earned on <?php echo userdate($badge->dateissued, '%d %b %Y'); ?></p>
 							<p> 
-								<?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id, $courseId); ?>
+								<?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id); ?>
 								of your class earned this badge
 							</p>
 						</div>

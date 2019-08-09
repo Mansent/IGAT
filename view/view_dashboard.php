@@ -6,8 +6,8 @@
 require("classes/renderer/badges_renderer.php");
 require("classes/renderer/progress_renderer.php");
 
-$badges_renderer = new badges_renderer();
-$progress_renderer = new progress_renderer();
+$badges_renderer = new badges_renderer($courseid);
+$progress_renderer = new progress_renderer($courseid);
 
 // Determine tab classes for activating current tab
 $badgesclass = "";
@@ -44,10 +44,10 @@ else if ($_GET['tab'] == 'settings') {
 </ul>
 <div class="tab-content mt-3">
   <div class="tab-pane <?php echo $progressclass; ?>" id="progress" role="tabpanel">
-	<?php $progress_renderer->render_tab($courseid); ?>
+	<?php $progress_renderer->render_tab(); ?>
   </div>
   <div class="tab-pane <?php echo $badgesclass; ?>" id="badges" role="tabpanel">
-    <?php $badges_renderer->render_tab($courseid); ?>
+    <?php $badges_renderer->render_tab(); ?>
   </div>
   <div class="tab-pane <?php echo $ranksclass; ?>" id="ranks" role="tabpanel">
     <p>Ranks</p> 

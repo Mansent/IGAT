@@ -2,7 +2,17 @@
 /**
  * Library for calculating various statistics from the database.
  */
-class igat_statistics {
+class igat_statistics 
+{
+  private $courseId;
+  
+  /**
+   * Creates a new igat statistics object.
+   * @param int $courseId the id of the current moodle course
+   */
+  function __construct($courseId) {
+    $this->courseId = $courseId;
+  }
 	
 	/**
 	 * Calculates the percentage of students in a course who have earned a badge.
@@ -10,13 +20,13 @@ class igat_statistics {
 	 * @param int $courseId the id of the course to refer to
 	 * @return the calculated badge achievement rate
 	 */
-	public function getBadgeAchievementRate($badgeId, $courseId) {
+	public function getBadgeAchievementRate($badgeId) {
 		global $DB;
 		$studentRoleId = 5;
 		$sql = "SELECT (
 					SELECT COUNT(*) FROM `mdl_badge_issued` WHERE badgeid = '$badgeId'
 				) / (
-					SELECT COUNT(*) FROM `mdl_enrol` WHERE `courseid` = '$courseId' AND `roleid` = '$studentRoleId' 
+					SELECT COUNT(*) FROM `mdl_enrol` WHERE `courseid` = '" . $this->courseId . "' AND `roleid` = '$studentRoleId' 
 				) AS achievementrate";
 		$db_record = $DB->get_record_sql($sql);
 		$achievementRate = doubleval($db_record->achievementrate);

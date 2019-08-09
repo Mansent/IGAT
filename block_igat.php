@@ -45,26 +45,26 @@ class block_igat extends block_base {
         $this->content = new stdClass();
         $this->content->items = array('');
         $this->content->icons = array('');
-
+        
+        $progressUrl = new moodle_url('/blocks/igat/view.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id, 'tab' => 'progress'));
         $badgesUrl = new moodle_url('/blocks/igat/view.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id, 'tab' => 'badges'));
-        $levelUrl = new moodle_url('/blocks/igat/view.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id, 'tab' => 'level'));
         $ranksUrl = new moodle_url('/blocks/igat/view.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id, 'tab' => 'ranks'));
         
         $this->content->text = ' 
+          <a href="' . $progressUrl . '">
+            <div class="igatcard igatgreen">
+              <div class="igatleftblock">
+                <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/graduation.png"/> Progress
+              </div>
+              <div class="igatlistinfo"><b>20 points</b> left until the next level!</div>
+            </div>
+          </a>
           <a href="' . $badgesUrl . '">
             <div class="igatcard igatblue">
               <div class="igatleftblock">
                 <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/achievement.png"/> Badges
               </div>
               <div class="igatlistinfo">Submit assignment 2 to <b>earn a badge!</b></div>
-            </div>
-          </a>
-          <a href="' . $levelUrl . '">
-            <div class="igatcard igatgreen">
-              <div class="igatleftblock">
-                <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/graduation.png"/> Level
-              </div>
-              <div class="igatlistinfo"><b>20 points</b> left until the next level!</div>
             </div>
           </a>
           <a href="' . $ranksUrl . '">
