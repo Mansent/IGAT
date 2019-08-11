@@ -6,7 +6,7 @@ TODO Provide more detailed description here.
 
 ## License ##
 
-2019 Manuel Gottschlich <manuel.gottschlich@rwth-aachen.de>
+2019 Manuel Gottschlich
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
