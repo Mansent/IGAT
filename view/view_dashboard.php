@@ -30,7 +30,7 @@ else if ($_GET['tab'] == 'settings') {
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
-        <a class="nav-link <?php echo $progressclass; ?>" href="#progress" data-toggle="tab" role="tab">Overview</a>
+        <a class="nav-link <?php echo $progressclass; ?>" href="#progress" data-toggle="tab" role="tab">Progress</a>
     </li>
     <li class="nav-item">
         <a class="nav-link <?php echo $badgesclass; ?>" href="#badges" data-toggle="tab" role="tab">Badges</a>

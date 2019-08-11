@@ -92,26 +92,31 @@ class progress_renderer
 			<span class="progressinfo"><b>37%</b> are in your level</span>
 			<span class="progressinfo"><b>13%</b> are in a higher level</span>
 			<span class="progressinfo"><b>50%</b> are in a lower level</span>
-			<a href="#ranks">View ranks</a>	
+			<a href="<?php echo new moodle_url('/blocks/igat/view.php', array('courseid' => $this->courseId, 'tab' => 'ranks')); ?>">View Ranks</a>	
 		</div>
 	</div>
 	
 	<hr />
 	
-	<h2>Your badges</h2>
+	<h2>Your Badges</h2>
 	<div class="progressflex">
 <?php 
+  $ownsBadges = false;
   foreach($badges as &$badge) {
-			if($badge->dateissued != null) { // user owns badge ?>
+			if($badge->dateissued != null) { // user owns badge 
+        $ownsBadges = true; ?>
         <div class="badgepreview">
-          <a href="/badges/badge.php?hash=<?php echo $badge->uniquehash; ?>">
+          <a href="<?php echo new moodle_url('/blocks/igat/view.php', array('courseid' => $this->courseId, 'tab' => 'badges')); ?>">
             <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" width="70" >
           </a>
         </div>
 <?php } 
-  } ?>
+  } 
+  if(!$ownsBadges) { ?>
+    <p>You haven't received a badge yet.</p>
+<?php } ?>
 	</div>
-	<a href="#badges">View all badges</a>
+	<a href="<?php echo new moodle_url('/blocks/igat/view.php', array('courseid' => $this->courseId, 'tab' => 'badges')); ?>">View all Badges</a>
 	
 	<hr />
 	
