@@ -123,14 +123,8 @@
 	border-bottom: 1px solid rgba(0,0,0,.125);
 }
 
-.igatbadgeowned {
-}
-
 .igatbadgeowned:hover {
 	background-color: lightgreen;
-}
-
-.igatbadgeavailable {
 }
 
 .igatbadgeavailable:hover {
@@ -160,4 +154,36 @@
 
 .collapseContainer {
 	margin-bottom: 0;
+}
+
+/* - Ranks Tab - */
+
+.leaderboard {
+  width: 100%;
+  text-align: center;
+}
+
+.leaderboard .smallcolumn {
+  width: 100px
+}
+
+.leaderboard .mediumcolumn {
+  width: 200px;
+}
+
+.leaderboard tr, th, td {
+  border: 1px solid rgba(0,0,0,.125);
+}
+
+.leaderboard th {
+  background: #ffea96;;
+}
+
+.leaderboard td {
+  padding: 5px;
+}
+
+.leaderboard .curuser {
+  background-color: rgba(250, 255, 215, 0.46);
+  font-weight: bold;
 }

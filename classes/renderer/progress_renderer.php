@@ -107,7 +107,7 @@ class progress_renderer
         $ownsBadges = true; ?>
         <div class="badgepreview">
           <a href="<?php echo new moodle_url('/blocks/igat/view.php', array('courseid' => $this->courseId, 'tab' => 'badges')); ?>">
-            <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" width="70" >
+            <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" width="70" />
           </a>
         </div>
 <?php } 

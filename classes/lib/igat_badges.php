@@ -18,14 +18,23 @@ class igat_badges
   }
   
 	/**
-	 * Loads all available badges for the user from the database. It can be checked 
+	 * Loads all available badges for the current user from the database. It can be checked 
 	 * if the user earns this badge by testing if $badge->dateissued != null.
 	 * @return array $badge all badges that are visible to this student
 	 */
 	public function getCurrentUserBadges()
 	{
 		global $USER;
-    
+    return $this->getUserBadges($USER->id);
+	}
+  
+  /**
+	 * Loads all available badges for a user from the database. It can be checked 
+	 * if the user earns this badge by testing if $badge->dateissued != null.
+   * @param int $userId the id of the user to load the badges for
+	 * @return array $badge all badges that are visible to this student
+	 */
+  public function getUserBadges($userId) {
     // Buffer result to save db queries for multiple function calls
     if($this->currentBadges != null) {
       return $this->currentBadges;
@@ -37,11 +46,11 @@ class igat_badges
 		$dir = '';
 		$page = 0;
 		$perpage = 1000;
-		$badges = badges_get_badges($type, $this->courseId, $sort, $dir, $page, $perpage, $USER->id);
+		$badges = badges_get_badges($type, $this->courseId, $sort, $dir, $page, $perpage, $userId);
     $this->currentBadges = &$badges;
 		
 		return $badges;
-	}
+  }
 	
 	/** 
 	 * Looks up the url for a badge image
