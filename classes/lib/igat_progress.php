@@ -33,7 +33,7 @@ class igat_progress
     global $DB;
     if($this->userInfo == null || $this->userInfoId != $userId) {
       $this->userInfo = $DB->get_record('block_xp', array('courseid' => $this->courseId, 'userid' => $userId)); 
-      $this->userId = $userId;
+      $this->userInfoId = $userId;
     }
     return $this->userInfo;    
   }

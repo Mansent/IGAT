@@ -6,12 +6,15 @@ class igat_statistics
 {
   private $courseId;
   
+  private $lib_progress;
+  
   /**
    * Creates a new igat statistics object.
    * @param int $courseId the id of the current moodle course
    */
   function __construct($courseId) {
     $this->courseId = $courseId;
+    $this->lib_progress = new igat_progress($courseId);
   }
 	
 	/**
@@ -37,5 +40,37 @@ class igat_statistics
 		
 		return $achievementRate . "%";
 	}
+  
+  /**
+   * Calculates the percentage of users in the same, a higher and a lower level for a user
+	 * @param int $userId the id of the user the statistics should be calculated for
+   * @retrun array the calculated statistics
+   */
+  public function getUserLevelStatistics($userId) {
+    global $DB;
+    
+    //Load level info
+    $userInfo = $this->lib_progress->getUserInfo($userId);
+    $userLevel = $userInfo->lvl;
+    
+    if($userLevel == "") {
+      return null;
+    }
+    
+    //Calculate statistic    
+    $num_total = $DB->count_records("block_xp");
+    $num_lower = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE `lvl` < $userLevel AND courseid = $this->courseId");
+    $num_higher = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE `lvl` > $userLevel AND courseid = $this->courseId");
+    $num_equal = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE `lvl` = $userLevel AND courseid = $this->courseId");
+    
+    if($num_total == 0) { // avoid division by zero
+      return null;
+    }
+    
+    $result->lower = $num_lower / $num_total;
+    $result->higher = $num_higher / $num_total;
+    $result->equal = $num_equal / $num_total;
+    return $result;
+  }
 }
 ?>

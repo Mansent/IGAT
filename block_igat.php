@@ -6,6 +6,10 @@
  * @copyright   2019 Manuel Gottschlich <manuel.gottschlich@rwth-aachen.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+ 
+require_once('classes/lib/igat_progress.php');
+require_once('classes/lib/igat_badges.php');
+require_once('classes/lib/igat_ranks.php');
 
 /**
  * igat block.
@@ -30,8 +34,11 @@ class block_igat extends block_base {
      * @return stdClass The block contents.
      */
     public function get_content() {
-
-        global $COURSE;
+        global $COURSE, $USER;
+        
+        $lib_progress = new igat_progress($COURSE->id);
+        $lib_badges = new igat_badges($COURSE->id);
+        $lib_ranks = new igat_ranks($COURSE->id);
 
         if ($this->content !== null) {
             return $this->content;
@@ -56,7 +63,7 @@ class block_igat extends block_base {
               <div class="igatleftblock">
                 <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/graduation.png"/> Progress
               </div>
-              <div class="igatlistinfo"><b>20 points</b> left until the next level!</div>
+              <div class="igatlistinfo"><b>' . $lib_progress->getPointsToNextLevel($USER->id) . ' points</b> left until the next level!</div>
             </div>
           </a>
           <a href="' . $badgesUrl . '">
@@ -64,7 +71,7 @@ class block_igat extends block_base {
               <div class="igatleftblock">
                 <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/achievement.png"/> Badges
               </div>
-              <div class="igatlistinfo">Submit assignment 2 to <b>earn a badge!</b></div>
+              <div class="igatlistinfo">' . $lib_badges->getRandomOpenBadgeCriterion($USER->id) . '</div>
             </div>
           </a>
           <a href="' . $ranksUrl . '">
@@ -72,7 +79,7 @@ class block_igat extends block_base {
               <div class="igatleftblock">
                 <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/podium.png"/> Ranks
               </div>
-              <div class="igatlistinfo">5 points left to catch up <b>Peter Lauber</b></div>
+              <div class="igatlistinfo">' . $lib_ranks->getRanksStatusMessage($USER->id) . '</div>
             </div>
           </a>
         ';

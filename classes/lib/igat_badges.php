@@ -82,8 +82,39 @@ class igat_badges
     return $counter;
   }
   
+  /**
+   * @return int the number of badges that are potentially available to earn for the user
+   */
   public function getNumAvailableBadges() {
     return count($this->getCurrentUserBadges());
+  }
+  
+  /**
+   * @param int $userId the id of the user to load the badges for
+   * @return string a random criterion for an open badge of the user
+   */
+  public function getRandomOpenBadgeCriterion($userId) {
+    echo 'bla';
+    $badges = $this->getUserBadges($userId);
+    // load open badges
+    $openBadges = array();
+    $i = 0;
+    foreach($badges as &$badge) {
+      if($badge->dateissued == null) {
+        array_push($openBadges, $badge);
+      }
+    }
+    
+    
+    //no open badges?
+    $numOpenBadges = count($openBadges);
+    if($numOpenBadges == 0) {
+      return "You earned all badges!";
+    }
+    
+    //get random badge criterion
+    $randBadge = $openBadges[array_rand($openBadges)];
+    return strip_tags($randBadge->criteria[1]->description) . ' to <b>earn a badge!</b>';
   }
 	
 	/**

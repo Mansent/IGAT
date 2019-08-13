@@ -45,6 +45,9 @@ class progress_renderer
     $pointsToNextLevel = $this->lib_progress->getPointsToNextLevel($USER->id);
     $levelProgress = $this->lib_progress->getCurrentLevelProgress($USER->id) * 100;
     
+    //user level progress statistics
+    $levelProgressStatistics = $this->lib_statistics->getUserLevelStatistics($USER->id);
+    
     //overall user progress
     $progress = (($numUserBadges + $userLevel) / ($numAvailableBadges +  $maxLevel)) * 100;
     
@@ -89,9 +92,9 @@ class progress_renderer
 		</div>
 		<div class="progressblock">
 			<h6>Statistics</h6>
-			<span class="progressinfo"><b>37%</b> are in your level</span>
-			<span class="progressinfo"><b>13%</b> are in a higher level</span>
-			<span class="progressinfo"><b>50%</b> are in a lower level</span>
+			<span class="progressinfo"><b><?php echo $levelProgressStatistics->equal * 100; ?>%</b> are in your level</span>
+			<span class="progressinfo"><b><?php echo $levelProgressStatistics->higher * 100; ?>%</b> are in a higher level</span>
+			<span class="progressinfo"><b><?php echo $levelProgressStatistics->lower * 100; ?>%</b> are in a lower level</span>
 			<a href="<?php echo new moodle_url('/blocks/igat/view.php', array('courseid' => $this->courseId, 'tab' => 'ranks')); ?>">View Ranks</a>	
 		</div>
 	</div>
