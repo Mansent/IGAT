@@ -38,7 +38,7 @@ class igat_ranks
           array_push($user_badges, $badge);
         }
       }
-      $user->badges = &$user_badges;
+      $user->badges = $user_badges;
       
       // cleanup unnecessary information
       unset($user->courseid);

@@ -50,8 +50,11 @@ class ranks_renderer
         echo '<td class="smallcolumn">' . $leader->lvl . '</td>';
         echo '<td>';
           foreach($leader->badges as &$badge) {
-            $url = $this->lib_badges->getBadgeImageURL($badge);
-            echo '<img src="' . $url . '" class="badgepreview" width="50" />';
+            $imgUrl = $this->lib_badges->getBadgeImageURL($badge);
+			$linkUrl = $this->lib_badges->getBadgePageURL($badge);
+			echo '<a href="' . $linkUrl . '">';
+            echo '<img src="' . $imgUrl . '" class="badgepreview" width="50" />';
+			echo '</a>';
           }
         echo '</td>';
         echo '</tr>';

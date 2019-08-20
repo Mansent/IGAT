@@ -8,6 +8,7 @@ class igat_badges
 {
   private $courseId;
   private $currentBadges;
+  private $currentUserId;
   
   /**
    * Creates a new badge library object.
@@ -36,9 +37,10 @@ class igat_badges
 	 */
   public function getUserBadges($userId) {
     // Buffer result to save db queries for multiple function calls
-    if($this->currentBadges != null) {
+    /*if($this->currentUserId == $userId) {
       return $this->currentBadges;
     }
+	$this->currentUserId = $userId;*/
 		
     // Only use default parameters
 		$type = 2;
@@ -50,6 +52,15 @@ class igat_badges
     $this->currentBadges = &$badges;
 		
 		return $badges;
+  }
+  
+  /**
+   * Gets the url of a badge information page
+	 * @param badge $badge the badge to get the link for 
+   * @return the url to the badge information page
+   */
+  public function getBadgePageUrl(badge $badge) {
+	  return "/badges/badge.php?hash=" . $badge->uniquehash;
   }
 	
 	/** 
