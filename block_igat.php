@@ -53,9 +53,9 @@ class block_igat extends block_base {
         $this->content->items = array('');
         $this->content->icons = array('');
         
-        $progressUrl = new moodle_url('/blocks/igat/view.php', array('courseid' => $COURSE->id, 'tab' => 'progress'));
-        $badgesUrl = new moodle_url('/blocks/igat/view.php', array('courseid' => $COURSE->id, 'tab' => 'badges'));
-        $ranksUrl = new moodle_url('/blocks/igat/view.php', array('courseid' => $COURSE->id, 'tab' => 'ranks'));
+        $progressUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'progress'));
+        $badgesUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'badges'));
+        $ranksUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'ranks'));
         
         $this->content->text = ' 
           <a href="' . $progressUrl . '">

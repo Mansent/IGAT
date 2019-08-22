@@ -51,10 +51,10 @@ class ranks_renderer
         echo '<td>';
           foreach($leader->badges as &$badge) {
             $imgUrl = $this->lib_badges->getBadgeImageURL($badge);
-			$linkUrl = $this->lib_badges->getBadgePageURL($badge);
-			echo '<a href="' . $linkUrl . '">';
+            $linkUrl = $this->lib_badges->getBadgePageURL($badge);
+            echo '<a href="' . $linkUrl . '">';
             echo '<img src="' . $imgUrl . '" class="badgepreview" width="50" />';
-			echo '</a>';
+            echo '</a>';
           }
         echo '</td>';
         echo '</tr>';
@@ -62,8 +62,13 @@ class ranks_renderer
       }
     ?> 
     </table>
-    
 <?php 
+    if($i == 1) { ?>
+      <span class="notifications" id="user-notifications"><div class="alert alert-info alert-block fade in " role="alert" data-aria-autofocus="true" tabindex="0">
+          No players have earned any points.
+      </div></span>
+<?php
+    }
   }
 }
 ?>

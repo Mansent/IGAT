@@ -53,6 +53,19 @@ class progress_renderer
     
     //achieved badges
 		$badges = $this->lib_badges->getCurrentUserBadges();
+    
+    if($maxLevel == 0) { ?>
+    <span class="notifications" id="user-notifications"><div class="alert alert-info alert-block fade in " role="alert" data-aria-autofocus="true" tabindex="0">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+<?php     if($userPoints < 0) {
+            echo 'The teacher has to configure the levels in the Level Up plugin';
+          }
+          else {
+            echo 'Gamification has not yet been setup by the teacher in the Level up plugin.';
+          } ?>
+    </div></span>
+    <?php
+    }
     ?>
 	
 	<h2>Your Progress</h1>
@@ -95,7 +108,7 @@ class progress_renderer
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->equal * 100; ?>%</b> are in your level</span>
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->higher * 100; ?>%</b> are in a higher level</span>
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->lower * 100; ?>%</b> are in a lower level</span>
-			<a href="<?php echo new moodle_url('/blocks/igat/view.php', array('courseid' => $this->courseId, 'tab' => 'ranks')); ?>">View Ranks</a>	
+			<a href="<?php echo new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $this->courseId, 'tab' => 'ranks')); ?>">View Ranks</a>	
 		</div>
 	</div>
 	
@@ -109,7 +122,7 @@ class progress_renderer
 			if($badge->dateissued != null) { // user owns badge 
         $ownsBadges = true; ?>
         <div class="badgepreview">
-          <a href="<?php echo new moodle_url('/blocks/igat/view.php', array('courseid' => $this->courseId, 'tab' => 'badges')); ?>">
+          <a href="<?php echo new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $this->courseId, 'tab' => 'badges')); ?>">
             <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" width="70" />
           </a>
         </div>
@@ -119,7 +132,7 @@ class progress_renderer
     <p>You haven't received a badge yet.</p>
 <?php } ?>
 	</div>
-	<a href="<?php echo new moodle_url('/blocks/igat/view.php', array('courseid' => $this->courseId, 'tab' => 'badges')); ?>">View all Badges</a>
+	<a href="<?php echo new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $this->courseId, 'tab' => 'badges')); ?>">View all Badges</a>
 	
 	<hr />
 	

@@ -58,7 +58,7 @@ class igat_statistics
     }
     
     //Calculate statistic    
-    $num_total = $DB->count_records("block_xp");
+    $num_total = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE courseid = $this->courseId");
     $num_lower = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE `lvl` < $userLevel AND courseid = $this->courseId");
     $num_higher = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE `lvl` > $userLevel AND courseid = $this->courseId");
     $num_equal = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE `lvl` = $userLevel AND courseid = $this->courseId");
