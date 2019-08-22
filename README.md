@@ -1,8 +1,19 @@
 # IGAT #
 
-TODO Describe the plugin shortly here.
+IGAT - Interactive Gamification Analytics Tool is an moodle block plugin that adds gamification analytics features to your course.
 
-TODO Provide more detailed description here.
+## Requirements ##
+* Moodle version 3.7.1
+* [Level up!](https://moodle.org/plugins/block_xp) version 2019161101
+
+## Installation and Configuration ##
+
+1. Download the latest release or clone this repository into a folder "igat" and zip this folder 
+2. Go to Site Administration->Plugins->Install Plugins in moodle and upload the zip to install this plugin
+3. Install "Level up!" plugin
+4. Add "Level up!" block to your course
+5. Configure gamification in "Level up!" settings and particularly click "Save changes" in levels tab.
+6. Add "IGAT" block to your course
 
 ## License ##
 
