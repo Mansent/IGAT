@@ -48,6 +48,9 @@ class progress_renderer
     //user level progress statistics
     $levelProgressStatistics = $this->lib_statistics->getUserLevelStatistics($USER->id);
     
+		//open user activities to earn points
+		$openActivities = $this->lib_progress->getOpenActivities($USER->id);
+		
     //overall user progress
     $progress = (($numUserBadges + $userLevel) / ($numAvailableBadges +  $maxLevel)) * 100;
     
@@ -87,7 +90,7 @@ class progress_renderer
 	
 	<h2>Your Points</h2>
 	<div class="progressflex">
-		<div class="progressblock">
+		<div class="progressblock" id="levelprogressblock">
 			<h6>Level</h6>
 			<img width="100" height="100" src="/blocks/igat/img/level.png"/>
 			<span class="leveloverlay"><?php echo $userLevel; ?></span>
@@ -109,6 +112,15 @@ class progress_renderer
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->higher * 100; ?>%</b> are in a higher level</span>
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->lower * 100; ?>%</b> are in a lower level</span>
 			<a href="<?php echo new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $this->courseId, 'tab' => 'ranks')); ?>">View Ranks</a>	
+		</div>
+		<div class="progressblock">
+			<h6>Earn Points</h6>
+			<?php foreach($openActivities as &$info) {
+				echo '<span class="progressinfo">' . $info . '</span>';
+			} 
+			if(count($openActivities) == 0) {
+				echo '<p>You completed all quizzes and assignments!</p>';
+			}?>
 		</div>
 	</div>
 	

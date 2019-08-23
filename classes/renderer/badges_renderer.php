@@ -38,6 +38,7 @@ class badges_renderer {
       $badges = $this->lib_badges->getCurrentUserBadges();
       echo '<h2>Your Badges</h2>';
       echo '<div class="igatbadgescontainer">';
+			$i = 0;
       foreach($badges as &$badge) {
         if($badge->dateissued != null) { // user owns badge ?>
           <a href="<?php echo $this->lib_badges->getBadgePageUrl($badge); ?>">
@@ -54,12 +55,17 @@ class badges_renderer {
               </div>
             </div>
           </a>
-  <?php		}
+  <?php		$i++;
+				}
       }
+			if($i == 0) {
+				echo '<p>You have not earned any badges yet.</p>';
+			}
       echo '</div>';
       
       echo '<h2>Available Badges</h2>';
       echo '<div class="igatbadgescontainer">';
+			$i = 0;
       foreach($badges as &$badge) {
         if($badge->dateissued == null) { // user has not yet achieved badge ?>
           <div class="igatbadge igatbadgeavailable">
@@ -73,9 +79,13 @@ class badges_renderer {
               </p>
               <?php $this->render_criteria($badge); ?>
             </div>
-          </div>				
-  <?php		}
-      }
+          </div>		
+  <?php		$i++;
+				}
+      }	
+			if($i == 0) {
+				echo '<p>Currently there are no badges available.</p>';
+			}
       echo '</div>';
     }
 	}

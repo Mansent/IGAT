@@ -81,8 +81,19 @@ class block_igat extends block_base {
               </div>
               <div class="igatlistinfo">' . $lib_ranks->getRanksStatusMessage($USER->id) . '</div>
             </div>
-          </a>
-        ';
+          </a>'
+		  . "
+		  <script>
+		  window.addEventListener('beforeunload', function (e) {
+			  console.log('Hallo');
+			  console.log(document.activeElement.href );
+			  // Cancel the event
+			  //e.preventDefault();
+			  // Chrome requires returnValue to be set
+			  //e.returnValue = '';
+			});
+		  </script>
+        ";
         
         
       $this->content->footer = '';

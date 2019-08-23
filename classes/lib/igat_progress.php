@@ -88,6 +88,60 @@ class igat_progress
     $progress = ($points - $curLevelPoints) / ($nextLevelPoints - $curLevelPoints);
     return $progress;
   }
+	
+	/**
+	 * Checks for which assignments and quizzes the user can earn points and generates short info messages 
+   * @param int $userId the id of the user
+   * @return the assignments and quizzes that the user can complete to earn points
+   */
+	public function getOpenActivities($userId) {
+		global $DB;
+		$result = array();
+		//get rules for points from db
+		$ruledata = $DB->get_records('block_xp_filters', array('courseid' => $this->courseId));
+		foreach($ruledata as &$rule) {
+			$points = $rule->points;
+			$ruledataJson = json_decode($rule->ruledata, true);
+			
+			if($ruledataJson['method'] == 'any') { //rules of type 'all' or 'none' are not supported
+				foreach($ruledataJson['rules'] as &$condition) {
+					if($condition['_class'] == 'block_xp_rule_cm') { // only consider activity conditions
+						$conditionContextId = $condition['value'];
+						
+						//get module info
+						$activityInfo = $DB->get_record_sql('SELECT mdl_modules.name, mdl_course_modules.instance FROM mdl_context 
+								INNER JOIN mdl_course_modules ON mdl_context.instanceid = mdl_course_modules.id 
+								INNER JOIN mdl_modules ON mdl_course_modules.module = mdl_modules.id 
+							WHERE mdl_context.id = ' . $conditionContextId . ';');
+						
+						$activityType = $activityInfo->name;
+						$activityId = $activityInfo->instance;
+						
+						//test if assigment or quiz is completed
+						if($activityType == "assign") {
+							$assignmentName = $DB->get_record('assign', array('id' => $activityId))->name;
+							$gradesCount = $DB->count_records_sql("SELECT COUNT(*) FROM mdl_assign_grades 
+								WHERE assignment = " . $activityId . " AND userid = " . $userId);
+								
+							if($gradesCount == 0) { //the assignment has not been completed yet
+								array_push($result, 'Complete assignment <i>' . $assignmentName . '</i> to earn <b>' . $points . ' points</b>');
+							}
+						}
+						else if($activityType == 'quiz') {
+							$quizName = $DB->get_record('quiz', array('id' => $activityId))->name;
+							$gradesCount = $DB->count_records_sql("SELECT COUNT(*) FROM mdl_quiz_grades 
+								WHERE quiz = " . $activityId . " AND userid = " . $userId);
+								
+							if($gradesCount == 0) { //the quiz has not been completed yet
+								array_push($result, 'Complete quiz <i>' . $quizName . '</i> to earn <b>' . $points . ' points</b>');
+							}
+						}
+					}
+				}
+			}
+		}
+		return $result;
+	}
   
   /**
    * @param int $userId the id of the user
