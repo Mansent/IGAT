@@ -57,11 +57,13 @@ class ranks_renderer
         echo '<td class="smallcolumn">' . $leader->lvl . '</td>';
         echo '<td>';
           foreach($leader->badges as &$badge) {
-            $imgUrl = $this->lib_badges->getBadgeImageURL($badge);
-            $linkUrl = $this->lib_badges->getBadgePageURL($badge);
-            echo '<a href="' . $linkUrl . '">';
-            echo '<img src="' . $imgUrl . '" class="badgepreview" width="50" />';
-            echo '</a>';
+						if(!$leader->anonymous) {
+							echo '<a href="' . $this->lib_badges->getBadgePageURL($badge) . '">';
+						}
+            echo '<img src="' . $this->lib_badges->getBadgeImageURL($badge) . '" class="badgepreview" width="50" />';
+            if(!$leader->anonymous) {
+							echo '</a>';
+						}
           }
         echo '</td>';
         echo '</tr>';

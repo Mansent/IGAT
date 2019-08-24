@@ -1,4 +1,6 @@
 <?php
+require_once('classes/lib/igat_usersettings.php');
+
 /**
  * Library for loading the player ranks for the leaderboard.
  */
@@ -22,13 +24,23 @@ class igat_ranks
     global $DB;
     
     $lib_badges = new igat_badges($this->courseId);
+		$lib_usersettings = new igat_usersettings($this->courseId);
     $records = $DB->get_records('block_xp', array('courseid' => $this->courseId), '`xp` DESC'); 
 
     foreach($records as &$user) {
-      // load user names 
-      $user_record = $DB->get_record('user', array('id' => $user->userid));
-      $user->firstname = $user_record->firstname;
-      $user->lastname = $user_record->lastname;
+			$usersettings = $lib_usersettings->getUsersettings($user->userid);
+			if($usersettings->anonymousleaderboard == 1) {
+				$user->firstname = "Anonymous";
+				$user->lastname = "";
+				$user->anonymous = true;
+			}
+			else {
+				// load user names 
+				$user_record = $DB->get_record('user', array('id' => $user->userid));
+				$user->firstname = $user_record->firstname;
+				$user->lastname = $user_record->lastname;
+				$user->anonymous = false;
+			}
       
       // load user badges
       $badges = $lib_badges->getUserBadges($user->userid);
