@@ -3,15 +3,14 @@
  * This file contains the tabs for the igat dashboard
  */
 
-require("classes/renderer/badges_renderer.php");
-require("classes/renderer/progress_renderer.php");
-require("classes/renderer/ranks_renderer.php");
-require("classes/renderer/usersettings_renderer.php");
+require_once("classes/renderer/badges_renderer.php");
+require_once("classes/renderer/progress_renderer.php");
+require_once("classes/renderer/ranks_renderer.php");
+require_once("classes/renderer/usersettings_renderer.php");
+require_once("classes/lib/igat_usersettings.php");
 
-$badges_renderer = new badges_renderer($courseid);
-$progress_renderer = new progress_renderer($courseid);
-$ranks_renderer = new ranks_renderer($courseid);
-$usersettings_renderer = new usersettings_renderer($courseid);
+$lib_usersettings = new igat_usersettings($courseid);
+$usersettings = $lib_usersettings->getUsersettings($USER->id);
 
 // Determine tab classes for activating current tab
 $badgesclass = "";
@@ -34,29 +33,39 @@ else if ($_GET['tab'] == 'settings') {
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
-        <a class="nav-link <?php echo $progressclass; ?>" href="#progress" data-toggle="tab" role="tab">Progress</a>
+        <a class="nav-link <?php echo $progressclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=progress">Progress</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link <?php echo $badgesclass; ?>" href="#badges" data-toggle="tab" role="tab">Badges</a>
+        <a class="nav-link <?php echo $badgesclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=badges">Badges</a>
     </li>
+<?php 
+if( ($usersettings->leaderboarddisplay != 'hide'	&& !isset($_POST['leaderboarddisplay'])) // hide ranks tab if the user has disabled it
+			|| (isset($_POST['leaderboarddisplay']) && $_POST['leaderboarddisplay'] != 'hide')) { ?>
     <li class="nav-item">
-        <a class="nav-link <?php echo $ranksclass; ?>" href="#ranks" data-toggle="tab" role="tab">Ranks</a>
+        <a class="nav-link <?php echo $ranksclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=ranks">Ranks</a>
     </li>
+<?php } ?>
     <li class="nav-item">
-        <a class="nav-link <?php echo $settingsclass; ?>" href="#settings" data-toggle="tab" role="tab">Settings</a>
+        <a class="nav-link <?php echo $settingsclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=settings">Settings</a>
     </li>
 </ul>
 <div class="tab-content mt-3">
-  <div class="tab-pane <?php echo $progressclass; ?>" id="progress" role="tabpanel">
-	<?php $progress_renderer->render_tab(); ?>
-  </div>
-  <div class="tab-pane <?php echo $badgesclass; ?>" id="badges" role="tabpanel">
-    <?php $badges_renderer->render_tab(); ?>
-  </div>
-  <div class="tab-pane <?php echo $ranksclass; ?>" id="ranks" role="tabpanel">
-    <?php $ranks_renderer->render_tab(); ?>
-  </div>  
-  <div class="tab-pane <?php echo $settingsclass; ?>" id="settings" role="tabpanel">
-    <?php $usersettings_renderer->render_tab(); ?>
-  </div>  
+  <div class="tab-pane active" id="progress" role="tabpanel">
+<?php if($_GET['tab'] == 'badges') {
+				$progress_renderer = new progress_renderer($courseid);;
+				$progress_renderer->render_tab();
+			}
+			else if ($_GET['tab'] == 'progress') {
+				$badges_renderer = new badges_renderer($courseid);
+				$badges_renderer->render_tab();
+			}
+			else if ($_GET['tab'] == 'ranks') {
+				$ranks_renderer = new ranks_renderer($courseid);
+				$ranks_renderer->render_tab();
+			}
+			else if ($_GET['tab'] == 'settings') {
+				$usersettings_renderer = new usersettings_renderer($courseid);
+				$usersettings_renderer->render_tab();
+			} ?>
+  </div> 
 </div>
