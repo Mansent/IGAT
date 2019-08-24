@@ -1,6 +1,7 @@
 <?php
 require_once('classes/lib/igat_ranks.php');
 require_once('classes/lib/igat_badges.php');
+require_once('classes/lib/igat_usersettings.php');
 
 /**
  * Responsible for managing and rendering the ranks tab in the gamification view 
@@ -11,6 +12,7 @@ class ranks_renderer
   
   private $lib_ranks;
   private $lib_badges;
+  private $lib_usersettings;
   
   /* 
    * Creates a new ranks renderer 
@@ -20,6 +22,7 @@ class ranks_renderer
 		$this->courseId = $courseId;
 		$this->lib_ranks = new igat_ranks($courseId);
 		$this->lib_badges = new igat_badges($courseId);
+		$this->lib_usersettings = new igat_usersettings($courseId);
 	}  
   
   /**
@@ -27,6 +30,10 @@ class ranks_renderer
    */
   public function render_tab() {
     global $USER;
+		
+		$usersettings = $this->lib_usersettings->getUsersettings($USER->id);
+		var_dump($usersettings);
+		
     $leaderboard = $this->lib_ranks->getLeaderboard(); ?>
     
     <table class="leaderboard">
