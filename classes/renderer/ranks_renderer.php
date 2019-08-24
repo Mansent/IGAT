@@ -29,12 +29,8 @@ class ranks_renderer
    * Renders the ranks tab
    */
   public function render_tab() {
-    global $USER;
-		
-		$usersettings = $this->lib_usersettings->getUsersettings($USER->id);
-		var_dump($usersettings);
-		
-    $leaderboard = $this->lib_ranks->getLeaderboard(); ?>
+    global $USER;		
+    $leaderboard = $this->lib_ranks->getLeaderboard($USER->id); ?>
     
     <table class="leaderboard">
       <tr>
@@ -44,14 +40,14 @@ class ranks_renderer
         <th class="smallcolumn">Level</th>
         <th>Badges</th>
       </tr>
-<?php $i = 1;
+<?php 
       foreach($leaderboard as &$leader) {
         $class = "";
         if($leader->userid == $USER->id) {
           $class = "curuser";
         }
         echo '<tr class="' . $class . '">';
-        echo '<td class="smallcolumn">' . $i . '</td>';
+        echo '<td class="smallcolumn">' . $leader->rank . '</td>';
         echo '<td class="mediumcolumn">' . $leader->firstname . ' ' . $leader->lastname . '</td>';
         echo '<td class="smallcolumn">' . $leader->xp . '</td>';
         echo '<td class="smallcolumn">' . $leader->lvl . '</td>';
@@ -67,7 +63,6 @@ class ranks_renderer
           }
         echo '</td>';
         echo '</tr>';
-        $i++;
       }
     ?> 
     </table>

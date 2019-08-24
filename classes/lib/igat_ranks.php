@@ -6,6 +6,7 @@
 class igat_ranks
 {
   private $courseId;
+	private $limitDistance = 5;
   
   /**
    * Creates a new igat statistics object.
@@ -15,17 +16,66 @@ class igat_ranks
     $this->courseId = $courseId;
   }
   
+	function getLeaderboard($userId) {
+		$lib_usersettings = new igat_usersettings($this->courseId);
+		$usersettings = $lib_usersettings->getUsersettings($userId);
+		
+		if($usersettings->leaderboarddisplay == 'all') {
+			return $this->loadLeaderboard();
+		}
+		else if($usersettings->leaderboarddisplay == 'limited') {
+			$leaderboard = $this->loadLeaderboard();
+			
+			// find current user
+			$currentUserIndex = -1;
+			for($i=0; $i<count($leaderboard); $i++) {
+				if($leaderboard[$i]->userid == $userId) {
+					$currentUserIndex = $i;
+					break;
+				}
+			}
+			if($currentUserIndex == -1) {
+				return array(); // User does not have any points in this course
+			}
+			
+			//build limited leaderboard
+			$lim_leaderboard = array();
+			$startIndex = max(0, $currentUserIndex - $this->limitDistance);
+			$endIndex = min($currentUserIndex + $this->limitDistance, count($leaderboard) - 1);
+			
+			if($startIndex > 0) { 
+				$rank = -1 * ($currentUserIndex - $startIndex);
+			}
+			else {
+				$rank = 1; // Users on top of the leaderboard should know that
+			}
+			for($i = $startIndex; $i<=$endIndex; $i++) {
+				$leaderboard[$i]->rank = $rank;
+				array_push($lim_leaderboard, $leaderboard[$i]);
+				$rank++;
+			}
+			
+			return $lim_leaderboard;
+		}
+		else
+		{
+			return array();
+		}
+	}
+	
   /**
    * Loads the full leaderboard from the database including user names and their badges 
    * @return an array containing all leaderboard information
    */
-  function getLeaderboard() {
+  function loadLeaderboard() {
     global $DB;
     
     $lib_badges = new igat_badges($this->courseId);
 		$lib_usersettings = new igat_usersettings($this->courseId);
     $records = $DB->get_records('block_xp', array('courseid' => $this->courseId), '`xp` DESC'); 
 
+		$leaderboard = array();
+		$i=0;
     foreach($records as &$user) {
 			$usersettings = $lib_usersettings->getUsersettings($user->userid);
 			if($usersettings->anonymousleaderboard == 1) {
@@ -40,7 +90,8 @@ class igat_ranks
 				$user->lastname = $user_record->lastname;
 				$user->anonymous = false;
 			}
-      
+      $user->rank = $i + 1;
+			
       // load user badges
       $badges = $lib_badges->getUserBadges($user->userid);
       $user_badges = array();
@@ -54,8 +105,11 @@ class igat_ranks
       // cleanup unnecessary information
       unset($user->courseid);
       unset($user->id);
-    }
-    return $records;
+			
+			$leaderboard[$i] = $user;
+			$i++;
+		}
+    return $leaderboard;
   }
   
   /*
