@@ -42,9 +42,26 @@ class igat_usersettings
 			return $this->getUsersettings($userId);
 		}
 		
-		$usersettings = array ('anonymous_leaderboard' => ($record->anonymousleaderboard == 1), 
-													 'leaderboard_display' => $record->leaderboarddisplay);
+		$usersettings = (object)array ('anonymousleaderboard' => $record->anonymousleaderboard, 
+																	 'leaderboarddisplay' => $record->leaderboarddisplay);
 		return $usersettings;
+	}
+	
+	/**
+	 * Saves the user settings for a user in the database
+	 * @param int $userId the user to save the settings for
+	 * @param usersettings $usersettings the usersettings object to save for this user
+	 */
+	public function saveUsersettings($userId, $usersettings) {
+		global $DB;
+		
+		$sql = "UPDATE mdl_block_igat_usersettings 
+			SET 
+				anonymousleaderboard = '" . $usersettings->anonymousleaderboard . "',
+				leaderboarddisplay = '" . $usersettings->leaderboarddisplay . "'
+			WHERE courseid='" . $this->courseId . "' AND userid='" . $userId . "'";
+			
+		$DB->execute($sql);
 	}
 }
 ?>

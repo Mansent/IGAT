@@ -105,7 +105,6 @@ class igat_badges
    * @return string a random criterion for an open badge of the user
    */
   public function getRandomOpenBadgeCriterion($userId) {
-    echo 'bla';
     $badges = $this->getUserBadges($userId);
     // load open badges
     $openBadges = array();
