@@ -1,5 +1,4 @@
 <?php
-require_once('classes/lib/igat_usersettings.php');
 
 /**
  * Library for loading the player ranks for the leaderboard.
