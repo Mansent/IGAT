@@ -2,6 +2,7 @@
 require_once('classes/lib/igat_progress.php');
 require_once('classes/lib/igat_badges.php');
 require_once('classes/lib/igat_statistics.php');
+require_once('classes/lib/igat_learningstyles.php');
 
 /**
  * Responsible for managing and rendering the levels tab in the gamification view 
@@ -13,6 +14,7 @@ class progress_renderer
   private $lib_progress;
 	private $lib_badges;
 	private $lib_statistics;
+	private $lib_learningstyles;
   
   /* 
    * Creates a new progress renderer 
@@ -23,6 +25,8 @@ class progress_renderer
     $this->lib_progress = new igat_progress($courseId);
 		$this->lib_badges = new igat_badges($courseId);
 		$this->lib_statistics = new igat_statistics($courseId);
+    $this->lib_learningstyles = new igat_learningstyles($courseId);
+    var_dump($this->lib_learningstyles);
 	}  
   
   /**
@@ -163,6 +167,10 @@ class progress_renderer
   </style>
 
 <?php
+    $ls = $this->lib_learningstyles->getUserScore($USER->id);
+    echo '<pre>' . var_export($ls, true) . '</pre>';
+    $exists = $this->lib_learningstyles->lsPluginInstalled();
+    echo '<pre>' . var_export($exists, true) . '</pre>';
   }
 }
 ?>
