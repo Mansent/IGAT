@@ -51,11 +51,11 @@ if( ($usersettings->leaderboarddisplay != 'hide'	&& !isset($_POST['leaderboarddi
 </ul>
 <div class="tab-content mt-3">
   <div class="tab-pane active" id="progress" role="tabpanel">
-<?php if($_GET['tab'] == 'badges') {
+<?php if($_GET['tab'] == 'progress') {
 				$progress_renderer = new progress_renderer($courseid);;
 				$progress_renderer->render_tab();
 			}
-			else if ($_GET['tab'] == 'progress') {
+			else if ($_GET['tab'] == 'badges') {
 				$badges_renderer = new badges_renderer($courseid);
 				$badges_renderer->render_tab();
 			}
