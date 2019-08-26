@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the content of the igat dashboard
+ * This file contains the content of the igat analytics page
  */
   
 require_once('../../config.php');
@@ -17,14 +17,14 @@ if (!$course = $DB->get_record('course', array('id' => $courseid))) {
 require_login($course);
 
 // Page initialization
-$PAGE->set_title("Gamification Dashboard");
-$PAGE->set_url('/blocks/igat/dashboard.php', array('id' => $courseid));
+$PAGE->set_title("Gamification Analytics");
+$PAGE->set_url('/blocks/igat/analytics.php', array('id' => $courseid));
 $PAGE->set_pagelayout('standard');
-$PAGE->set_heading(get_string('blocktitle', 'block_igat'));
+$PAGE->set_heading("Gamification Analytics");
 
 // Gernerate page html
 echo $OUTPUT->header(); 
 
-include('view/view_dashboard.php');
+include('view/view_analytics.php');
 
 echo $OUTPUT->footer(); ?>

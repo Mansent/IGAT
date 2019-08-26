@@ -152,25 +152,16 @@ class progress_renderer
 	<hr />
 	
 	<h2>Learning Styles</h2>
-  <!-- https://seiyria.com/bootstrap-slider/  -->
-  <input id="ex12c" type="text"/><br/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/bootstrap-slider.min.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.2/css/bootstrap-slider.min.css"  crossorigin="anonymous">
-  <script>
-      var sliderC = new Slider("#ex12c", { id: "slider12c", min: 0, max: 10, range: true, tooltip: 'always', value: [3, 7] });
-  </script>
-  <style>
-    #slider12c .slider-selection {
-      background: red;
-    }
-  </style>
-
 <?php
-    $ls = $this->lib_learningstyles->getUserScore($USER->id);
-    echo '<pre>' . var_export($ls, true) . '</pre>';
-    $exists = $this->lib_learningstyles->lsPluginInstalled();
-    echo '<pre>' . var_export($exists, true) . '</pre>';
-    $this->lib_learningstyles->recom(1);
+    $learningStyleSummary = $this->lib_learningstyles->getUserSummary($USER->id);
+    if($learningStyleSummary === false) {
+      echo '<p>You have not taken the learning style questionnaire yet. Take the questionnaire to get in-deph information and recommendations for your learning style</p>';
+    }
+    else {
+      foreach($learningStyleSummary as &$summary) {
+        echo '<p>' . $summary . '</p>';
+      }
+    }
   }
 }
 ?>

@@ -78,58 +78,53 @@ class igat_learningstyles {
     return $record->id;
   }
   
-  public function recom($dataset) {
+  /**
+   * Gets a summary of the users learning preferences 
+   * @param int $userId the id of the user to get the summary for
+   * @return array an array with an information text for each learning style dimension 
+   *          or false if the user has not taken the ls questionnaire yet
+   */
+  public function getUserSummary($userId) {
+    $dataset = $this->getUserDatasetId($userId);
+    if($dataset === null) {
+      return false;
+    }
     $scores = $this->datasetapi->get_scores_for_dataset($dataset);
 
-        $learningstyles = $this->learningstylesapi->get_learning_styles();
+    $learningstyles = $this->learningstylesapi->get_learning_styles();
 
-        $data = array_map(function (string $dimension) use ($learningstyles, $scores): array {
-            $styles = $learningstyles[$dimension];
+    $data = array_map(function (string $dimension) use ($learningstyles, $scores): string {
+      $styles = $learningstyles[$dimension];
 
-            $dimensionscores = array_map(function (string $style) use ($scores): int {
-                return (int) $scores[$style];
-            }, $styles);
+      $dimensionscores = array_map(function (string $style) use ($scores): int {
+        return (int) $scores[$style];
+      }, $styles);
 
-            $difference = abs($dimensionscores[0] - $dimensionscores[1]);
+      $difference = abs($dimensionscores[0] - $dimensionscores[1]);
 
-            $category = $this->get_category_for_score_difference($difference);
+      //get category
+      if ($difference <= 3) {
+        $category = 'mild';
+      }
+      else if ($difference <= 7) {
+        $category = 'moderate';
+      }
+      else {
+        $category = 'strong';
+      }
+      $highscoreindex = $dimensionscores[0] > $dimensionscores[1] ? 0 : 1;
 
-            $highscoreindex = $dimensionscores[0] > $dimensionscores[1] ? 0 : 1;
+      $style = $styles[$highscoreindex];
 
-            $style = $styles[$highscoreindex];
-
-            $heading = get_string('userrecommendationsheading', 'alstea', [
-                'category'  => get_string("stylecategorymidsentence:{$category}", 'alstea'),
-                'dimension' => get_string("dimension:{$dimension}", 'alstea'),
-                'style'     => get_string("stylemidsentence:{$style}", 'alstea'),
-            ]);
-
-            $content = get_string("userrecommendations:{$category}_{$style}", 'alstea');
-
-            return compact('heading', 'content');
-        }, array_keys($learningstyles));
-        
-        echo '<pre>' . var_export($data, true) . '</pre>';
+      $heading = get_string('userrecommendationsheading', 'alstea', [
+        'category'  => get_string("stylecategorymidsentence:{$category}", 'alstea'),
+        'dimension' => get_string("dimension:{$dimension}", 'alstea'),
+        'style'     => get_string("stylemidsentence:{$style}", 'alstea'),
+      ]);
+      return $heading;
+    }, array_keys($learningstyles));
+    
+    return $data;
   }
-  
-      /**
-     * Return the according category name for the given score difference.
-     *
-     * @param int $difference Score difference.
-     *
-     * @return string Category name.
-     */
-    private function get_category_for_score_difference(int $difference): string {
-        if ($difference <= 3) {
-            return 'mild';
-        }
-
-        if ($difference <= 7) {
-            return 'moderate';
-        }
-
-        return 'strong';
-    }
 }
-
 ?>
