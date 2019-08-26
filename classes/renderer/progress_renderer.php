@@ -26,7 +26,6 @@ class progress_renderer
 		$this->lib_badges = new igat_badges($courseId);
 		$this->lib_statistics = new igat_statistics($courseId);
     $this->lib_learningstyles = new igat_learningstyles($courseId);
-    var_dump($this->lib_learningstyles);
 	}  
   
   /**
@@ -171,6 +170,7 @@ class progress_renderer
     echo '<pre>' . var_export($ls, true) . '</pre>';
     $exists = $this->lib_learningstyles->lsPluginInstalled();
     echo '<pre>' . var_export($exists, true) . '</pre>';
+    $this->lib_learningstyles->recom(1);
   }
 }
 ?>
