@@ -153,15 +153,20 @@ class progress_renderer
 	
 	<h2>Learning Styles</h2>
 <?php
-    $learningStyleSummary = $this->lib_learningstyles->getUserSummary($USER->id);
-    if($learningStyleSummary === false) {
-      echo '<p>You have not taken the learning style questionnaire yet. Take the questionnaire to get in-deph information and recommendations for your learning style</p>';
-    }
-    else {
-      foreach($learningStyleSummary as &$summary) {
-        echo '<p>' . $summary . '</p>';
-      }
-    }
+	  if($this->lib_learningstyles->lsPluginInstalled()) {
+			$learningStyleSummary = $this->lib_learningstyles->getUserSummary($USER->id);
+			if($learningStyleSummary === false) {
+				echo '<p>You have not taken the learning style questionnaire yet. Take the questionnaire to get in-deph information and recommendations for your learning style</p>';
+			}
+			else {
+				foreach($learningStyleSummary as &$summary) {
+					echo '<p>' . $summary . '</p>';
+				}
+			}
+		}
+		else {
+			echo '<p>The learning styles plugin is not installed.</p>';
+		}
   }
 }
 ?>
