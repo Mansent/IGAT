@@ -15,6 +15,7 @@ class igat_statistics
   function __construct($courseId) {
     $this->courseId = $courseId;
     $this->lib_progress = new igat_progress($courseId);
+		$this->disableGamificationLogDeletion();
   }
 	
 	/**
@@ -72,5 +73,17 @@ class igat_statistics
     $result->equal = $num_equal / $num_total;
     return $result;
   }
+	
+	/**
+	 * By default, the log files for the gamification get deleted by the level up plugin after 3 days.
+	 * We need these files for our analysis, so this function deactivates the deletion of gamification 
+	 * log files by deactivating the scheduled task.
+	 */
+	public function disableGamificationLogDeletion() {
+		global $DB;
+		$sql = "UPDATE mdl_task_scheduled SET disabled = 1 WHERE `component` = 'block_xp'";
+			
+		$DB->execute($sql);
+	}
 }
 ?>

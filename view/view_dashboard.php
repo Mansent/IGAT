@@ -69,3 +69,7 @@ if( ($usersettings->leaderboarddisplay != 'hide'	&& !isset($_POST['leaderboarddi
 			} ?>
   </div> 
 </div>
+
+<?php // call js
+$PAGE->requires->js_call_amd('block_igat/dashboard-logger', 'init'); 
+?>
