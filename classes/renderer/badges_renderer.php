@@ -41,7 +41,7 @@ class badges_renderer {
 			$i = 0;
       foreach($badges as &$badge) {
         if($badge->dateissued != null) { // user owns badge ?>
-          <a href="<?php echo $this->lib_badges->getBadgePageUrl($badge); ?>">
+          <a href="<?php echo $this->lib_badges->getBadgePageUrl($badge); ?>" class="igatbadgelink">
             <div class="igatbadge igatbadgeowned">
               <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" />
               <div class="igatbadgeinfo">
