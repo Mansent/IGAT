@@ -8,9 +8,19 @@ require_once("classes/renderer/progress_renderer.php");
 require_once("classes/renderer/ranks_renderer.php");
 require_once("classes/renderer/usersettings_renderer.php");
 require_once("classes/lib/igat_usersettings.php");
+require_once("classes/lib/igat_capabilities.php");
 
 $lib_usersettings = new igat_usersettings($courseid);
 $usersettings = $lib_usersettings->getUsersettings($USER->id);
+
+// Show teachers info
+$lib_capabilities = new igat_capabilities();
+if($lib_capabilities->isManagerOrTeacher($courseid, $USER->id)) { ?>
+	<span class="notifications" id="user-notifications"><div class="alert alert-info alert-block fade in " role="alert" data-aria-autofocus="true" tabindex="0">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+				Points and levels are deactivated for teachers.
+    </div></span>
+<?php }
 
 // Determine tab classes for activating current tab
 $badgesclass = "";

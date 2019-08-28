@@ -20,7 +20,7 @@ require_login($course);
 $PAGE->set_title("Gamification Dashboard");
 $PAGE->set_url('/blocks/igat/dashboard.php', array('id' => $courseid));
 $PAGE->set_pagelayout('standard');
-$PAGE->set_heading(get_string('blocktitle', 'block_igat'));
+$PAGE->set_heading("Gamification Dashboard");
 
 // Gernerate page html
 echo $OUTPUT->header(); 

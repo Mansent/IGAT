@@ -20,9 +20,15 @@ class igat_usersettings
 	 */
 	private function createDefaultUserSettings($userId) {
 		global $DB;
+		$lib_capabilities = new igat_capabilities();
 		
 		$anonymous_leaderboard = 0;
-		$leaderboard_display = 'limited';
+		if($lib_capabilities->isManagerOrTeacher($this->courseId, $userId)) {
+			$leaderboard_display = 'all';
+		}
+		else {
+			$leaderboard_display = 'limited';
+		}
 		
 		$DB->insert_record('block_igat_usersettings', array('courseid' => $this->courseId, 'userid' => $userId, 
 			'anonymousleaderboard' => $anonymous_leaderboard, 'leaderboarddisplay' => $leaderboard_display));

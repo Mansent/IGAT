@@ -53,21 +53,4 @@ class igat_logging
 																												 'tab' => $tab,  
 																												 'next_page' => $nextPage));
 	}
-	
-	/**
-	 * Checks if logging is enabled for the given user
-	 * @param int $courseId the id of the course the user visited
-	 * @param int $userId the id of the user visited the page
-	 * @return boolean if the logging is enabled for the given course and user
-	 */
-	public function loggingEnabledForUser($courseId, $userId) {
-		$context = get_context_instance(CONTEXT_COURSE, $courseId);
-		$roles = get_user_roles($context, $userId, false);
-		foreach($roles as &$role) {
-			if($role->shortname == "manager" || $role->shortname == "editingteacher" ||$role->shortname == "teacher") {
-				return false;
-			}
-		}
-		return true;
-	}
 }

@@ -4,15 +4,18 @@
  */ 
 require_once('../../config.php');
 require_once('classes/lib/igat_logging.php');
+require_once('classes/lib/igat_capabilities.php');
 
 global $DB, $OUTPUT, $PAGE, $USER;
 $courseId = $_POST['courseid'];
+$lib_capabilities = new igat_capabilities();
 
 // Logging gamification dashboard data
-$lib_logging = new igat_logging();
-if($lib_logging->loggingEnabledForUser($courseId, $USER->id)) {
+if($lib_capabilities->isStudent($courseId, $USER->id)) {
 	if(!empty($_POST['courseid']) && !empty($_POST['loadtime']) && !empty($_POST['url']) 
 		&& !empty($_POST['leavetime']) && !empty($_POST['destination'])) {
+			
+		$lib_logging = new igat_logging();
 		$loadtime = $_POST['loadtime'];
 		$leavetime = $_POST['leavetime'];
 		$url = $_POST['url'];
