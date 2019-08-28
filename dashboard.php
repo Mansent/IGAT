@@ -9,7 +9,7 @@ global $DB, $OUTPUT, $PAGE, $USER;
 
 // Check required parameters course id and login.
 $courseid = required_param('courseid', PARAM_INT);
-$tab = required_param('courseid', PARAM_ALPHA);
+$tab = required_param('tab', PARAM_ALPHA);
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     print_error('invalidcourse', 'block_igat', $courseid);
