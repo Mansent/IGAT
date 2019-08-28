@@ -201,3 +201,43 @@
   background-color: #c7dff4;
   font-weight: bold;
 }
+
+/* --- Gamification Analytics --- */
+
+/* - Slider - */
+
+.slider-selection {
+  background: red;
+}
+
+.lsSliderContainer {
+	display: flex;
+}
+
+.lsSliderDimensionLeft {
+	width: 75px;
+	text-align: right;
+	margin-right: 10px;
+}
+
+.lsSliderDimensionRight {
+	width: 75px;
+	text-align: left;
+	margin-left: 10px;
+}
+
+.lsSlider {
+	max-width: 280px;
+}
+
+.sliderMin {
+	float: left;
+  margin-right: 19px;
+	width: 17px;
+}
+
+.sliderMax {
+	float: right;
+	margin-left: 15px;
+  width: 17px;
+}
