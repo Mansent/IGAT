@@ -82,8 +82,54 @@ class igat_statistics
 	public function disableGamificationLogDeletion() {
 		global $DB;
 		$sql = "UPDATE mdl_task_scheduled SET disabled = 1 WHERE `component` = 'block_xp'";
-			
 		$DB->execute($sql);
+	}
+	
+	
+	public function getDashboardPageViews() { 
+		global $DB;
+		$result;
+		$sql = "SELECT FROM_UNIXTIME(time/1000) AS date, COUNT(*) AS views FROM mdl_block_igat_dashboard_log ";
+		$groupby = " GROUP BY DAY(date) ORDER BY date";
+
+		//progress tab
+		$where = "WHERE tab = 'progress' AND courseid = " . $this->courseId . " ";
+		$records = $DB->get_records_sql($sql . $where . $groupby);	
+		$result->progress = $this->analyzeDashboardRecords($records);
+		
+		//badges tab
+		$where = "WHERE tab = 'badges' AND courseid = " . $this->courseId . " ";
+		$records = $DB->get_records_sql($sql . $where . $groupby);	
+		$result->badges = $this->analyzeDashboardRecords($records);
+		
+		//ranks tab
+		$where = "WHERE tab = 'ranks' AND courseid = " . $this->courseId . " ";
+		$records = $DB->get_records_sql($sql . $where . $groupby);	
+		$result->ranks = $this->analyzeDashboardRecords($records);
+		
+		//settigs tab
+		$where = "WHERE tab = 'settings' AND courseid = " . $this->courseId . " ";
+		$records = $DB->get_records_sql($sql . $where . $groupby);	
+		$result->settings = $this->analyzeDashboardRecords($records);
+		
+		$result->labels = $progress->labels; // TODO find correct labels
+		
+		return $result;
+	}
+	
+	private function analyzeDashboardRecords($records) {
+		$result = new stdClass();
+		$labels = array();
+		$data = array();
+		foreach($records as &$record) {
+				$date = strtotime($record->date);
+				
+				array_push($labels, date( 'd.m.', $date));
+				array_push($data, $record->views);
+		}
+		$result->labels = $labels;
+		$result->data = $data;
+		return $result;
 	}
 }
 ?>

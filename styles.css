@@ -227,17 +227,132 @@
 }
 
 .lsSlider {
-	max-width: 280px;
+	width: 290px;
+}
+
+.filtercard {
+	padding: 8px !important;
+	width: 530px;
 }
 
 .sliderMin {
 	float: left;
   margin-right: 19px;
-	width: 17px;
+	width: 25px;
 }
 
 .sliderMax {
 	float: right;
 	margin-left: 15px;
   width: 17px;
+}
+
+/* - Graphs - */
+
+.analyticsChart {
+	height: 250px;
+}
+
+.edgeWeight {
+	position: relative;
+}
+
+#progressToBadges {
+	top: 93px;
+	left: 443px;
+}
+
+#progressToRanks {
+	top: 83px;
+	left: 226px;
+}
+
+#progressToSettings {
+	top: 110px;
+	left: 334px;
+}
+
+#badgesToProgress {
+	top: 83px;
+	left: 403px;
+}
+
+#badgesToRanks {
+	top: 166px;
+	left: 271px;
+}
+
+#badgesToSettings {
+	top: 227px;
+	left: 279px;
+}
+
+#ranksToProgress {
+	top: 93px;
+	left: 119px;
+}
+
+#ranksToBadges {
+	top: 143px;
+	left: 130px;
+}
+
+#ranksToSettings {
+	top: 236px;
+	left: 2px;
+}
+
+#settingsToProgress {
+	top: 110px;
+	left: 66px;
+}
+
+#settingsToBadges {
+	top: 236px;
+	left: 171px;
+}
+
+#settingsToRanks {
+	top: 227px;
+	left: -39px;
+}
+
+#progressToMoodle {
+	top: 72px;
+	left: -238px;
+}
+
+#badgesToMoodle {
+	top: 206px;
+	left: -211px;
+}
+
+#ranksToMoodle {
+	top: 171px;
+	left: -297px;
+}
+
+#settingsToMoodle {
+	top: 273px;
+	left: -293px;
+}
+
+#progressToExternal {
+	top: 72px;
+	left: 92px;
+}
+
+#badgesToExternal {
+	top: 171px;
+	left: 52px;
+}
+
+#ranksToExternal {
+	top: 206px;
+	left: -29px;
+}
+
+#settingsToExternal {
+	top: 273px;
+	left: -48px;
 }
