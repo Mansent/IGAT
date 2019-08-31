@@ -4,15 +4,24 @@
  */
 class analytics_components_renderer 
 { 
-	private $sliderInit = false;
+	private $courseId;
+  private $sliderInit = false;
+  
+  /**
+   * Creates a new instance of this library
+   */
+  public function __construct($courseId) {
+    $this->courseId = $courseId;
+  }
 	
   /**
    * Renders a learning style dimension slider
 	 * $id string the id of the html slider element
+	 * $id int the id of the chart
 	 * $minDimension string the description of the slider  minimum dimension
 	 * $maxDimension string the description of the slider  maximum dimension
    */
-  public function renderSlider($id, $minDimension, $maxDimension) {  
+  public function renderSlider($id, $chartId, $minDimension, $maxDimension) {  
 		global $PAGE;
 		if(!$this->sliderInit) {?>
 			<!-- Slider base on https://seiyria.com/bootstrap-slider/  --> 		
@@ -35,7 +44,7 @@ class analytics_components_renderer
 			<div class="lsSliderDimensionRight"><?php echo $maxDimension; ?></div>
 		</div>
 <?php
-		$PAGE->requires->js_call_amd('block_igat/gamification-analytics', 'initSlider', array($id)); 
+		$PAGE->requires->js_call_amd('block_igat/gamification-analytics', 'initSlider', array($id, $chartId, $this->courseId)); 
 	}
 	
 	/**
@@ -49,10 +58,10 @@ class analytics_components_renderer
 		<div class="collapse" id="collapseFilter<?php echo $id; ?>">
 			<div class="card card-body filtercard">
 <?php
-				$this->renderSlider('processing' . $id, 'active', 'reflective');
-				$this->renderSlider('perception' . $id, 'sensing', 'intuitive');
-				$this->renderSlider('input' . $id, 'visual', 'verbal');
-				$this->renderSlider('understanding' . $id, 'sequential', 'global'); ?>
+				$this->renderSlider('processing' . $id, $id, 'active', 'reflective');
+				$this->renderSlider('perception' . $id, $id, 'sensing', 'intuitive');
+				$this->renderSlider('input' . $id, $id, 'visual', 'verbal');
+				$this->renderSlider('understanding' . $id, $id, 'sequential', 'global'); ?>
 			</div>
 	</div>
 <?php
@@ -75,8 +84,12 @@ class analytics_components_renderer
 
     var labels = [<?php echo '"' . implode('", "', $labels) . '"'; ?>];
 
-    // End Defining data
-    var myChart = new Chart(ctx, {
+    if(typeof chart == "undefined" && typeof config == "undefined") {
+      var chart = [];
+      var config = [];
+    }
+    
+    config[<?php echo $id; ?>] = {
         type: 'line',
         data: {
             labels: labels,
@@ -148,7 +161,8 @@ class analytics_components_renderer
 						}]
 					}
         }
-    });
+    };
+    chart[<?php echo $id; ?>] = new Chart(ctx, config[<?php echo $id; ?>]);
     </script>
 <?php		
 	}

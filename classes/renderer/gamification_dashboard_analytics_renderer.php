@@ -22,7 +22,7 @@ class gamification_dashboard_analytics_renderer
    * Renders the gamification dashboard analytics tab
    */
   public function render_tab() { 
-		$ac_renderer = new analytics_components_renderer();
+		$ac_renderer = new analytics_components_renderer($this->courseId);
 		$lib_statistics = new igat_statistics($this->courseId);
     $lib_learningstyles = new igat_learningstyles($this->courseId);
     $lib_learningstyles->refreshLearningStyleData();
