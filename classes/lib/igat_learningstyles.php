@@ -54,11 +54,11 @@ class igat_learningstyles {
    */
   public function getUserScore($userId) {
     if(!$this->lsPluginInstalled()) {
-      return false;
+      return 0;
     }
     $datasetId = $this->getUserDatasetId($userId);
     if($datasetId == null) {
-      return false;
+      return 0;
     }
     return $this->datasetapi->get_scores_for_dataset($datasetId);
   }
@@ -76,6 +76,40 @@ class igat_learningstyles {
       WHERE course = " . $this->courseId . " AND userid = " . $userId . " AND name = 'alstea'  
       ORDER BY timecreated DESC");
     return $record->id;
+  }
+  
+  /**
+   * Calculates all learning style score from the ALSTEA questionnaire data and
+   * stores them in the block_igat_learningstyles table. This enabels other functions
+   * to perform joins in sql queries and filter results by learning style.
+   */
+  public function refreshLearningStyleData() {
+    global $DB;
+    $DB->delete_records_select('block_igat_learningstyles', 'TRUE');
+    // get available datasets with user ids from db
+    $sql = "SELECT mdl_alstea_datasets.id, userid FROM `mdl_course_modules` 
+              INNER JOIN `mdl_modules` ON mdl_course_Modules.module = mdl_modules.id 
+              INNER JOIN `mdl_alstea_datasets` ON mdl_course_modules.id = mdl_alstea_datasets.cmid 
+            WHERE course = " . $this->courseId . " AND name = 'alstea'  
+            ORDER BY timecreated DESC";
+    $records = $DB->get_records_sql($sql);
+    
+    //calculate learning style questionnaire results
+    $insertRecords = array();
+    foreach($records as &$record) {
+      $score = $this->datasetapi->get_scores_for_dataset($record->id);
+      
+      $insertRecord = new stdClass();
+      $insertRecord->processing = $score['reflective'] - $score['active'];
+      $insertRecord->perception = $score['intuitive'] - $score['sensing'];
+      $insertRecord->input = $score['verbal'] - $score['visual'];
+      $insertRecord->comprehension = $score['global'] - $score['sequential'];
+      $insertRecord->userid = $record->userid;
+      $insertRecord->courseid = $this->courseId;
+      array_push($insertRecords, $insertRecord);
+    }
+    
+    $DB->insert_records('block_igat_learningstyles', $insertRecords);
   }
   
   /**

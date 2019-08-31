@@ -1,6 +1,7 @@
 <?php
 require_once('classes/renderer/analytics_components_renderer.php');
 require_once('classes/lib/igat_statistics.php');
+require_once('classes/lib/igat_learningstyles.php');
 require_once('classes/lib/igat_progress.php');
 /**
  * Responsible for gererating and rendering the gamification dashboard analytics 
@@ -22,18 +23,16 @@ class gamification_dashboard_analytics_renderer
    */
   public function render_tab() { 
 		$ac_renderer = new analytics_components_renderer();
-		$lib_statistics = new igat_statistics($this->courseId); //TODO no valid course id
+		$lib_statistics = new igat_statistics($this->courseId);
+    $lib_learningstyles = new igat_learningstyles($this->courseId);
+    $lib_learningstyles->refreshLearningStyleData();
+    
 		echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>'; // include chart.js
 		
 		echo '<h3>Gamification page views</h3>';
 		$ac_renderer->renderLsFilter(1); 
-		/*$labels = array ("27.08.",	"28.08.",	"29.08.",	"30.08.",	"01.09.",	"02.09.");
-		$progressData = array(10,	8,	7,	4,	8,	7);
-		$badgesData = array(3,	4,	12,	9,	8,	4);
-		$ranksData = array(2,	5,	3,	4,	6,	5);
-		$settingsData = array(6,	7,	3,	4,	5,	8);*/
 		$views = $lib_statistics->getDashboardPageViews();
-		$ac_renderer->renderDashboardLineChart(1, $views->progress->labels, "Number of Views", $views->progress->data, $views->badges->data, $views->ranks->data, $views->settings->data);
+		$ac_renderer->renderDashboardLineChart(1, $views->labels, "Number of Views", $views->progress, $views->badges, $views->ranks, $views->settings);
 
 		echo '<h3>Average page viewing time</h3>';
 		$ac_renderer->renderLsFilter(2);
@@ -43,7 +42,7 @@ class gamification_dashboard_analytics_renderer
 		
 		echo '<h3>Gamification dashboard subsequent pages</h3>';
 		$ac_renderer->renderLsFilter(3); ?>
-		<p>
+		<p class="graphContainer">
 			<span id="progressToBadges" class="edgeWeight">20%</span>
 			<span id="progressToRanks" class="edgeWeight">20%</span>
 			<span id="progressToSettings" class="edgeWeight">20%</span>

@@ -5,8 +5,10 @@
 class igat_statistics 
 {
   private $courseId;
-  
   private $lib_progress;
+  
+  private $minDate; // for loading graph
+  private $maxDate; 
   
   /**
    * Creates a new igat statistics object.
@@ -86,50 +88,92 @@ class igat_statistics
 	}
 	
 	
-	public function getDashboardPageViews() { 
+	public function getDashboardPageViews($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
 		global $DB;
+    $this->minDate = null;
+    $this->maxDate = null;
 		$result;
-		$sql = "SELECT FROM_UNIXTIME(time/1000) AS date, COUNT(*) AS views FROM mdl_block_igat_dashboard_log ";
-		$groupby = " GROUP BY DAY(date) ORDER BY date";
+    $sql = "SELECT FROM_UNIXTIME(time/1000) AS date, COUNT(*) AS views FROM mdl_block_igat_dashboard_log 
+              INNER JOIN mdl_block_igat_learningstyles ON 
+                mdl_block_igat_dashboard_log.courseid = mdl_block_igat_learningstyles.courseid 
+                AND mdl_block_igat_dashboard_log.userid = mdl_block_igat_learningstyles.userid 
+              WHERE tab = '+++tab+++' AND mdl_block_igat_dashboard_log.courseid = " . $this->courseId . " 
+                AND processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax
+              GROUP BY DAY(date) ORDER BY date";
 
 		//progress tab
-		$where = "WHERE tab = 'progress' AND courseid = " . $this->courseId . " ";
-		$records = $DB->get_records_sql($sql . $where . $groupby);	
-		$result->progress = $this->analyzeDashboardRecords($records);
+		$tabSql = str_replace('+++tab+++', 'progress', $sql);
+		$records = $DB->get_records_sql($tabSql);	
+		$progressRecords = $this->analyzeDashboardRecords($records);
 		
 		//badges tab
-		$where = "WHERE tab = 'badges' AND courseid = " . $this->courseId . " ";
-		$records = $DB->get_records_sql($sql . $where . $groupby);	
-		$result->badges = $this->analyzeDashboardRecords($records);
+		$tabSql = str_replace('+++tab+++', 'badges', $sql);
+		$records = $DB->get_records_sql($tabSql);		
+		$badgesRecords = $this->analyzeDashboardRecords($records);
 		
 		//ranks tab
-		$where = "WHERE tab = 'ranks' AND courseid = " . $this->courseId . " ";
-		$records = $DB->get_records_sql($sql . $where . $groupby);	
-		$result->ranks = $this->analyzeDashboardRecords($records);
+		$tabSql = str_replace('+++tab+++', 'ranks', $sql);
+		$records = $DB->get_records_sql($tabSql);	
+		$ranksRecords = $this->analyzeDashboardRecords($records);
 		
 		//settigs tab
-		$where = "WHERE tab = 'settings' AND courseid = " . $this->courseId . " ";
-		$records = $DB->get_records_sql($sql . $where . $groupby);	
-		$result->settings = $this->analyzeDashboardRecords($records);
+		$tabSql = str_replace('+++tab+++', 'settings', $sql);
+		$records = $DB->get_records_sql($tabSql);	
+		$settingsRecords = $this->analyzeDashboardRecords($records);
 		
-		$result->labels = $progress->labels; // TODO find correct labels
+    //generate labels for all days between min and max date
+		$result->labels = array();
+    $start = new DateTime(date('Y-m-d', $this->minDate));
+    $end = new DateTime(date('Y-m-d', $this->maxDate));
+    $end->setTime(0, 0, 1); // avoid excluding maxDate from loop
+    $period = new DatePeriod($start, new DateInterval('P1D'), $end);
+    foreach ($period as $date) {
+        array_push($result->labels, $date->format('d.m.'));
+    }
+    $result->progress = $this->generateContinousDataArray($period, $progressRecords);
+    $result->badges = $this->generateContinousDataArray($period, $badgesRecords);
+    $result->ranks = $this->generateContinousDataArray($period, $ranksRecords);
+    $result->settings = $this->generateContinousDataArray($period, $settingsRecords);
 		
 		return $result;
 	}
+  
+  private function generateContinousDataArray($period, $data) {
+    $result = array();
+    foreach ($period as $date) {
+      $dm = $date->format('d.m.');
+      if(array_key_exists($dm, $data)) {
+        array_push($result, $data[$dm]);
+      }
+      else {
+        array_push($result, 0);
+      }
+    }
+    return $result;
+  }
 	
 	private function analyzeDashboardRecords($records) {
-		$result = new stdClass();
-		$labels = array();
 		$data = array();
+    $isMinDate = true;
 		foreach($records as &$record) {
-				$date = strtotime($record->date);
-				
-				array_push($labels, date( 'd.m.', $date));
-				array_push($data, $record->views);
+      $date = strtotime($record->date);
+      if($isMinDate) {
+        if($this->minDate == null || $date < $this->minDate) { // buffer overall min date for the graph
+          $this->minDate = $date;
+          $isMinDate = false;
+        }
+      }
+      $dateFormatted = date( 'd.m.', $date) ;
+      $data[$dateFormatted] = $record->views;
 		}
-		$result->labels = $labels;
-		$result->data = $data;
-		return $result;
+    if($this->maxDate == null || $date > $this->maxDate) { // buffer overall max date for the graph
+      $this->maxDate = $date;
+    }
+		return $data;
 	}
 }
 ?>

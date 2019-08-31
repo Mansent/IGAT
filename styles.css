@@ -247,10 +247,14 @@
   width: 17px;
 }
 
-/* - Graphs - */
+/* - Charts and Graphs- */
 
 .analyticsChart {
 	height: 250px;
+}
+
+.graphContainer {
+  width: 800px;
 }
 
 .edgeWeight {
