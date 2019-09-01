@@ -70,14 +70,16 @@ class gamification_dashboard_analytics_renderer
 		echo '<h3>Leaderboard visibility settings</h3>';
 		$ac_renderer->renderLsFilter(4);
 		$labels = array('Show full', 'Show limited', 'Hide');
-		$data = array(12, 42, 33);
-		$ac_renderer->renderDashboardBarChart(3, $labels, $data, "Number of Students", "Visibility Settings"); 
+    $settingsData = $lib_statistics->getVisabilitySettingsStatistics();
+		$data = array($settingsData->all, $settingsData->limited, $settingsData->hide);
+		$ac_renderer->renderDashboardBarChart(4, $labels, $data, "Number of Students", "Visibility Settings"); 
 		
 		echo '<h3>Leaderboard anonymity settings</h3>';
 		$ac_renderer->renderLsFilter(5);
 		$labels = array('Show full name', 'Anonymous');
-		$data = array(40, 33);
-		$ac_renderer->renderDashboardBarChart(4, $labels, $data, "Number of Students", "Anonymity Settings"); 
+    $settingsData = $lib_statistics->getAnonymitySettingsStatistics();
+		$data = array($settingsData->show, $settingsData->hide);
+		$ac_renderer->renderDashboardBarChart(5, $labels, $data, "Number of Students", "Anonymity Settings"); 
 	}
 }
  ?>

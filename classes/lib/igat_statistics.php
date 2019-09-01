@@ -167,15 +167,9 @@ class igat_statistics
    */
 	public function getAverageDashboardViewDurations($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
-		global $DB;
-    
-    // Get min and max date
-    $sql = "SELECT FROM_UNIXTIME(MIN(time)/1000) AS mindate, FROM_UNIXTIME(MAX(time)/1000) AS maxdate FROM `mdl_block_igat_dashboard_log`";
-    $record = $DB->get_record_sql($sql);
-    $minDate = strtotime($record->mindate);
-    $maxDate = strtotime($record->maxdate); 
-        
+		global $DB;        
 		$result;
+    
     $sql = "SELECT AVG(duration) AS average FROM mdl_block_igat_dashboard_log 
               INNER JOIN mdl_block_igat_learningstyles ON 
                 mdl_block_igat_dashboard_log.courseid = mdl_block_igat_learningstyles.courseid 
@@ -206,6 +200,89 @@ class igat_statistics
 		$record = $DB->get_record_sql($tabSql);	
     $result->settings = (int)($record->average / 1000);
     
+		return $result;
+	}
+  
+  /**
+   * Counts which visibility setting was chosen by how many students filtered by learning syle
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */
+	public function getVisabilitySettingsStatistics($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
+		global $DB;        
+		$result;
+    
+    $sql = "SELECT COUNT(*) as sum FROM `mdl_block_igat_usersettings` 
+              INNER JOIN mdl_block_igat_learningstyles ON 
+                mdl_block_igat_usersettings.courseid = mdl_block_igat_learningstyles.courseid 
+                AND mdl_block_igat_usersettings.userid = mdl_block_igat_learningstyles.userid 
+              WHERE leaderboarddisplay = '+++display+++' AND mdl_block_igat_usersettings.courseid = " . $this->courseId . " 
+                AND processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax";
+
+		//hidden display
+		$displaySql = str_replace('+++display+++', 'hide', $sql);
+		$record = $DB->get_record_sql($displaySql);	
+    $result->hide = $record->sum;
+		
+		//limited display
+		$displaySql = str_replace('+++display+++', 'limited', $sql);
+		$record = $DB->get_record_sql($displaySql);	
+    $result->limited = $record->sum;
+		
+		//display all
+		$displaySql = str_replace('+++display+++', 'all', $sql);
+		$record = $DB->get_record_sql($displaySql);	
+    $result->all = $record->sum;
+		
+		return $result;
+	}
+
+ /**
+   * Counts which anonymity setting was chosen by how many students filtered by learning syle
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */
+	public function getAnonymitySettingsStatistics($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
+		global $DB;        
+		$result;
+    
+    $sql = "SELECT COUNT(*) as sum FROM `mdl_block_igat_usersettings` 
+              INNER JOIN mdl_block_igat_learningstyles ON 
+                mdl_block_igat_usersettings.courseid = mdl_block_igat_learningstyles.courseid 
+                AND mdl_block_igat_usersettings.userid = mdl_block_igat_learningstyles.userid 
+              WHERE anonymousleaderboard = '+++anonymity+++' AND mdl_block_igat_usersettings.courseid = " . $this->courseId . " 
+                AND processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax";
+
+		//hidden display
+		$anonymitySql = str_replace('+++anonymity+++', '1', $sql);
+		$record = $DB->get_record_sql($anonymitySql);	
+    $result->hide = $record->sum;
+		
+		//limited display
+		$anonymitySql = str_replace('+++anonymity+++', '0', $sql);
+		$record = $DB->get_record_sql($anonymitySql);	
+    $result->show = $record->sum;
+		
 		return $result;
 	}
 

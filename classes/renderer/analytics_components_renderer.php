@@ -292,11 +292,11 @@ class analytics_components_renderer
 <?php		
 	}
 	/**
-	 * Outputs the data for the average view duration in json format
+	 * Outputs the data for a bar chart json format
 	 * @param array $datasetName the name of the dataset
 	 * @param array $data the data values for the chart 
    */   
-  public function printJsonAverageViewDuration($datasetName, $data) { ?>
+  public function printJsonBarChartDataset($datasetName, $data) { ?>
     [{
       "label": "<?php echo $datasetName; ?>", 
       "data": [<?php echo implode(', ', $data); ?>],

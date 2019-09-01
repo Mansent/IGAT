@@ -47,8 +47,25 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
                                                         $_POST['inputMin'], $_POST['inputMax'],
                                                         $_POST['understandingMin'], $_POST['understandingMax']);
         $data = array($durations->progress, $durations->badges, $durations->ranks, $durations->settings);
-        $ac_renderer->printJsonAverageViewDuration("Viewing duration", $data);
+        $ac_renderer->printJsonBarChartDataset("Viewing duration", $data);
       }
+      else if($graphId == 4) { //Chosen leaerboard display setting
+        $displaySettings = $lib_statistics->getVisabilitySettingsStatistics($_POST['processingMin'], $_POST['processingMax'],
+                                                        $_POST['perceptionMin'], $_POST['perceptionMax'],
+                                                        $_POST['inputMin'], $_POST['inputMax'],
+                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+        $data = array($displaySettings->all, $displaySettings->limited, $displaySettings->hide);
+        $ac_renderer->printJsonBarChartDataset("Visibility Settings", $data);
+      }
+      else if($graphId == 5) { //Chosen leaerboard anonymity setting
+        $displaySettings = $lib_statistics->getAnonymitySettingsStatistics($_POST['processingMin'], $_POST['processingMax'],
+                                                        $_POST['perceptionMin'], $_POST['perceptionMax'],
+                                                        $_POST['inputMin'], $_POST['inputMax'],
+                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+        $data = array($displaySettings->show, $displaySettings->hide);
+        $ac_renderer->printJsonBarChartDataset("Anonymity Settings", $data);
+      }
+      
     }
 
 ?>
