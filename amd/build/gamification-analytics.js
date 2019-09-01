@@ -40,11 +40,14 @@ function updateGraphData(id, courseId) {
           async: "false",
           url: "/blocks/igat/ajax.php",
           data: filterData,
-          success: function(html) {
-              console.log(html);
+          success: function(json) {
+            let newDatasets = JSON.parse(json);
+            config[id].data.datasets = newDatasets;
+            chart[id].update();
           },
-          error: function(html) {
-              console.log(html);
+          error: function(result) {
+            console.log("Error updating learning styles");
+            console.log(result);
           }
       });
       

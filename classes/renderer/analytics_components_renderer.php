@@ -94,48 +94,48 @@ class analytics_components_renderer
         data: {
             labels: labels,
             datasets: [{
-                label: 'Progress tab', // Name the series
-                data: [<?php echo implode(", ", $progressData); ?>], // Specify the data values array
-								fill: false,
-								backgroundColor: [ // Specify custom colors
-                    'rgba(0, 123, 255, 0.4)'
-                ],
-                borderColor: [ // Add custom color borders
-                    'rgba(0, 123, 255, 1)'
-                ]
-            },
-						{
-                label: 'Badges tab', // Name the series
-                data: [<?php echo implode(", ", $badgesData); ?>], // Specify the data values array
-								fill: false,
-								backgroundColor: [ // Specify custom colors
-                    'rgba(255, 193, 7, 0.4)'
-                ],
-                borderColor: [ // Add custom color borders
-                    'rgba(255, 193, 7, 1)'
-                ]
-            },
-						{
-                label: 'Ranks tab', // Name the series
-                data: [<?php echo implode(", ", $ranksData); ?>], // Specify the data values array
-								fill: false,
-								backgroundColor: [ // Specify custom colors
-                    'rgba(220, 53, 69, 0.4)'
-                ],
-                borderColor: [ // Add custom color borders
-                    'rgba(220, 53, 69, 1)'
-                ]
-            },
-						{
-                label: 'Settings tab', // Name the series
-                data: [<?php echo implode(", ", $settingsData); ?>], // Specify the data values array
-								fill: false,
-								backgroundColor: [ // Specify custom colors
-                    'rgba(40, 167, 69, 0.4)'
-                ],
-                borderColor: [ // Add custom color borders
-                    'rgba(40, 167, 69, 1)'
-                ]
+                  label: 'Progress tab',
+                  data: [<?php echo implode(", ", $progressData); ?>], 
+                  fill: false,
+                  backgroundColor: [
+                      'rgba(0, 123, 255, 0.4)'
+                  ],
+                  borderColor: [
+                      'rgba(0, 123, 255, 1)'
+                  ]
+              },
+              {
+                  label: 'Badges tab', 
+                  data: [<?php echo implode(", ", $badgesData); ?>],
+                  fill: false,
+                  backgroundColor: [
+                      'rgba(255, 193, 7, 0.4)'
+                  ],
+                  borderColor: [
+                      'rgba(255, 193, 7, 1)'
+                  ]
+              },
+              {
+                  label: 'Ranks tab',
+                  data: [<?php echo implode(", ", $ranksData); ?>], 
+                  fill: false,
+                  backgroundColor: [
+                      'rgba(220, 53, 69, 0.4)'
+                  ],
+                  borderColor: [
+                      'rgba(220, 53, 69, 1)'
+                  ]
+              },
+              {
+                  label: 'Settings tab', 
+                  data: [<?php echo implode(", ", $settingsData); ?>], 
+                  fill: false,
+                  backgroundColor: [ 
+                      'rgba(40, 167, 69, 0.4)'
+                  ],
+                  borderColor: [
+                      'rgba(40, 167, 69, 1)'
+                  ]
             }]
         },
         options: {
@@ -166,6 +166,61 @@ class analytics_components_renderer
     </script>
 <?php		
 	}
+  
+  /**
+   * Outputs the datasets for a line chart in json format for ajax
+	 * @param array $progressData the data values for the progess tab 
+	 * @param array $badgesData the data values for the badges tab 
+	 * @param array $ranksData the data values for the ranks tab 
+	 * @param array $settingsData the data values for the settings tab 
+   */
+  public function printJsonDashboardLineChartDatasets($progressData, $badgesData, $ranksData, $settingsData) { ?>
+    [{
+        "label": "Progress tab",
+        "data": [<?php echo implode(", ", $progressData); ?>], 
+        "fill": false,
+        "backgroundColor": [
+            "rgba(0, 123, 255, 0.4)"
+        ],
+        "borderColor": [
+            "rgba(0, 123, 255, 1)"
+        ]
+    },
+    {
+        "label": "Badges tab", 
+        "data": [<?php echo implode(", ", $badgesData); ?>],
+        "fill": false,
+        "backgroundColor": [
+            "rgba(255, 193, 7, 0.4)"
+        ],
+        "borderColor": [
+            "rgba(255, 193, 7, 1)"
+        ]
+    },
+    {
+        "label": "Ranks tab",
+        "data": [<?php echo implode(", ", $ranksData); ?>], 
+        "fill": false,
+        "backgroundColor": [
+            "rgba(220, 53, 69, 0.4)"
+        ],
+        "borderColor": [
+            "rgba(220, 53, 69, 1)"
+        ]
+    },
+    {
+        "label": "Settings tab", 
+        "data": [<?php echo implode(", ", $settingsData); ?>], 
+        "fill": false,
+        "backgroundColor": [ 
+            "rgba(40, 167, 69, 0.4)"
+        ],
+        "borderColor": [
+            "rgba(40, 167, 69, 1)"
+        ]
+    }]
+<?php
+  }
 	
 	/**
 	 * Renders a line chart containing data for each gamification dashboard tab

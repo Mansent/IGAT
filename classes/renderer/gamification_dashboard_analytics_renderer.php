@@ -34,11 +34,11 @@ class gamification_dashboard_analytics_renderer
 		$views = $lib_statistics->getDashboardPageViews();
 		$ac_renderer->renderDashboardLineChart(1, $views->labels, "Number of Views", $views->progress, $views->badges, $views->ranks, $views->settings);
 
-		echo '<h3>Average page viewing time</h3>';
+		echo '<h3>Average page viewing duration</h3>';
 		$ac_renderer->renderLsFilter(2);
 		$labels = array('Progress tab', 'Badges tab', 'Ranks tab', 'Settings tab');
 		$data = array(3, 1, 5, 4);
-		$ac_renderer->renderDashboardBarChart(2, $labels, $data, "Average viewing time (seonds)", "Viewing time"); 
+		$ac_renderer->renderDashboardBarChart(2, $labels, $data, "Average viewing duration (seonds)", "Viewing duration"); 
 		
 		echo '<h3>Gamification dashboard subsequent pages</h3>';
 		$ac_renderer->renderLsFilter(3); ?>

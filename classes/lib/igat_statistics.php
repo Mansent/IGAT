@@ -7,9 +7,6 @@ class igat_statistics
   private $courseId;
   private $lib_progress;
   
-  private $minDate; // for loading graph
-  private $maxDate; 
-  
   /**
    * Creates a new igat statistics object.
    * @param int $courseId the id of the current moodle course
@@ -87,12 +84,27 @@ class igat_statistics
 		$DB->execute($sql);
 	}
 	
-	
+	/**
+   * Calculates the number of page views for each tab in the gamification dashboard filtered by learning style
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */
 	public function getDashboardPageViews($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
 		global $DB;
-    $this->minDate = null;
-    $this->maxDate = null;
+    
+    // Get min and max date
+    $sql = "SELECT FROM_UNIXTIME(MIN(time)/1000) AS mindate, FROM_UNIXTIME(MAX(time)/1000) AS maxdate FROM `mdl_block_igat_dashboard_log`";
+    $record = $DB->get_record_sql($sql);
+    $minDate = strtotime($record->mindate);
+    $maxDate = strtotime($record->maxdate); 
+        
 		$result;
     $sql = "SELECT FROM_UNIXTIME(time/1000) AS date, COUNT(*) AS views FROM mdl_block_igat_dashboard_log 
               INNER JOIN mdl_block_igat_learningstyles ON 
@@ -127,8 +139,8 @@ class igat_statistics
 		
     //generate labels for all days between min and max date
 		$result->labels = array();
-    $start = new DateTime(date('Y-m-d', $this->minDate));
-    $end = new DateTime(date('Y-m-d', $this->maxDate));
+    $start = new DateTime(date('Y-m-d', $minDate));
+    $end = new DateTime(date('Y-m-d', $maxDate));
     $end->setTime(0, 0, 1); // avoid excluding maxDate from loop
     $period = new DatePeriod($start, new DateInterval('P1D'), $end);
     foreach ($period as $date) {
@@ -141,7 +153,13 @@ class igat_statistics
 		
 		return $result;
 	}
-  
+
+  /**
+   * Helper function that builds an array of the data filling in the missing dates from a period
+   * $period DatePeriod the period to fill in missing dates
+   * $data the data to user
+   * @returns array of the data with zero for the missing dates in the period
+   */   
   private function generateContinousDataArray($period, $data) {
     $result = array();
     foreach ($period as $date) {
@@ -156,23 +174,18 @@ class igat_statistics
     return $result;
   }
 	
+  /**
+   * Helper function that processes database records to data array 
+   * $records the records from an sql query
+   * @return the processed data array
+   */
 	private function analyzeDashboardRecords($records) {
 		$data = array();
-    $isMinDate = true;
 		foreach($records as &$record) {
       $date = strtotime($record->date);
-      if($isMinDate) {
-        if($this->minDate == null || $date < $this->minDate) { // buffer overall min date for the graph
-          $this->minDate = $date;
-          $isMinDate = false;
-        }
-      }
       $dateFormatted = date( 'd.m.', $date) ;
       $data[$dateFormatted] = $record->views;
 		}
-    if($this->maxDate == null || $date > $this->maxDate) { // buffer overall max date for the graph
-      $this->maxDate = $date;
-    }
 		return $data;
 	}
 }
