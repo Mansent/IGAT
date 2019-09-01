@@ -234,9 +234,13 @@ class analytics_components_renderer
 		<div class="analyticsChart"><canvas id="dashboardChart<?php echo $id; ?>"></canvas></div>
     <script>
     var ctx = document.getElementById("dashboardChart<?php echo $id; ?>").getContext('2d');
-
-    // End Defining data
-    var myChart = new Chart(ctx, {
+    
+    if(typeof chart == "undefined" && typeof config == "undefined") {
+      var chart = [];
+      var config = [];
+    }
+    
+    config[<?php echo $id; ?>] = {
         type: 'bar',
         data: {
             labels: [<?php echo '"' . implode('", "', $labels) . '"'; ?>],
@@ -281,9 +285,37 @@ class analytics_components_renderer
 						}]
 					}
         }
-    });
+    };
+    
+    chart[<?php echo $id; ?>] = new Chart(ctx, config[<?php echo $id; ?>]);
     </script>
 <?php		
 	}
+	/**
+	 * Outputs the data for the average view duration in json format
+	 * @param array $datasetName the name of the dataset
+	 * @param array $data the data values for the chart 
+   */   
+  public function printJsonAverageViewDuration($datasetName, $data) { ?>
+    [{
+      "label": "<?php echo $datasetName; ?>", 
+      "data": [<?php echo implode(', ', $data); ?>],
+      "fill": false,
+      "backgroundColor": [ 
+          "rgba(0, 123, 255, 0.4)",
+          "rgba(255, 193, 7, 0.4)",
+          "rgba(220, 53, 69, 0.4)",
+          "rgba(40, 167, 69, 0.4)"
+          
+      ],
+      "borderColor": [ 
+          "rgba(0, 123, 255, 1)",
+          "rgba(255, 193, 7, 1)",
+          "rgba(220, 53, 69, 1)",
+          "rgba(40, 167, 69, 1)"
+      ]
+    }] 
+<?php    
+  }
 }
  ?>

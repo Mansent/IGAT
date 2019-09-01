@@ -153,6 +153,61 @@ class igat_statistics
 		
 		return $result;
 	}
+  
+  /**
+   * Calculates the average view durations for each tab in the gamification dashboard filtered by learning style
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */
+	public function getAverageDashboardViewDurations($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
+		global $DB;
+    
+    // Get min and max date
+    $sql = "SELECT FROM_UNIXTIME(MIN(time)/1000) AS mindate, FROM_UNIXTIME(MAX(time)/1000) AS maxdate FROM `mdl_block_igat_dashboard_log`";
+    $record = $DB->get_record_sql($sql);
+    $minDate = strtotime($record->mindate);
+    $maxDate = strtotime($record->maxdate); 
+        
+		$result;
+    $sql = "SELECT AVG(duration) AS average FROM mdl_block_igat_dashboard_log 
+              INNER JOIN mdl_block_igat_learningstyles ON 
+                mdl_block_igat_dashboard_log.courseid = mdl_block_igat_learningstyles.courseid 
+                AND mdl_block_igat_dashboard_log.userid = mdl_block_igat_learningstyles.userid 
+              WHERE tab = '+++tab+++' AND mdl_block_igat_dashboard_log.courseid = " . $this->courseId . " 
+                AND processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax";
+
+		//progress tab
+		$tabSql = str_replace('+++tab+++', 'progress', $sql);
+		$record = $DB->get_record_sql($tabSql);	
+    $result->progress = (int)($record->average / 1000);
+		
+		//badges tab
+		$tabSql = str_replace('+++tab+++', 'badges', $sql);
+		$record = $DB->get_record_sql($tabSql);	
+    $result->badges = (int)($record->average / 1000);
+		
+		//ranks tab
+		$tabSql = str_replace('+++tab+++', 'ranks', $sql);
+		$record = $DB->get_record_sql($tabSql);	
+    $result->ranks = (int)($record->average / 1000);
+		
+		//settigs tab
+		$tabSql = str_replace('+++tab+++', 'settings', $sql);
+		$record = $DB->get_record_sql($tabSql);	
+    $result->settings = (int)($record->average / 1000);
+    
+		return $result;
+	}
 
   /**
    * Helper function that builds an array of the data filling in the missing dates from a period

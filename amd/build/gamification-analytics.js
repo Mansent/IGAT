@@ -24,6 +24,7 @@ function updateGraphData(id, courseId) {
     {
       //Do server request
       let filterData = {
+        'graphid': id,
         'courseid': courseId,
         'processingMin': processingMin,
         'processingMax': processingMax,

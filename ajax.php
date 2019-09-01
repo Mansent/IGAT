@@ -28,18 +28,27 @@ if(!empty($_POST['courseid']) && !empty($_POST['loadtime']) && !empty($_POST['ur
 }
 
 // Gamification Analytics Request
-if(isset($_POST['processingMin']) && isset($_POST['processingMax']) && isset($_POST['perceptionMin']) && isset($_POST['perceptionMax'])
-    && isset($_POST['inputMin']) && isset($_POST['inputMax']) && isset($_POST['understandingMin']) && isset($_POST['understandingMax'])) {
-      
-      //Dashboard page views
+if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['processingMax']) && isset($_POST['perceptionMin']) 
+    && isset($_POST['perceptionMax']) && isset($_POST['inputMin']) && isset($_POST['inputMax']) && isset($_POST['understandingMin']) 
+    && isset($_POST['understandingMax'])) {
+      $graphId = $_POST['graphid'];
       $ac_renderer = new analytics_components_renderer($courseId);
       $lib_statistics = new igat_statistics($courseId);
-      $views = $lib_statistics->getDashboardPageViews($_POST['processingMin'], $_POST['processingMax'],
-                                                      $_POST['perceptionMin'], $_POST['perceptionMax'],
-                                                      $_POST['inputMin'], $_POST['inputMax'],
-                                                      $_POST['understandingMin'], $_POST['understandingMax']);
-      $ac_renderer->printJsonDashboardLineChartDatasets($views->progress, $views->badges, $views->ranks, $views->settings);
-
+      if($graphId == 1) { //Dashboard page views
+        $views = $lib_statistics->getDashboardPageViews($_POST['processingMin'], $_POST['processingMax'],
+                                                        $_POST['perceptionMin'], $_POST['perceptionMax'],
+                                                        $_POST['inputMin'], $_POST['inputMax'],
+                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+        $ac_renderer->printJsonDashboardLineChartDatasets($views->progress, $views->badges, $views->ranks, $views->settings);
+      }
+      else if($graphId == 2) { //Dashboard page view durations 
+        $durations = $lib_statistics->getAverageDashboardViewDurations($_POST['processingMin'], $_POST['processingMax'],
+                                                        $_POST['perceptionMin'], $_POST['perceptionMax'],
+                                                        $_POST['inputMin'], $_POST['inputMax'],
+                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+        $data = array($durations->progress, $durations->badges, $durations->ranks, $durations->settings);
+        $ac_renderer->printJsonAverageViewDuration("Viewing duration", $data);
+      }
     }
 
 ?>

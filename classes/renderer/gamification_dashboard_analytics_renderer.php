@@ -37,7 +37,8 @@ class gamification_dashboard_analytics_renderer
 		echo '<h3>Average page viewing duration</h3>';
 		$ac_renderer->renderLsFilter(2);
 		$labels = array('Progress tab', 'Badges tab', 'Ranks tab', 'Settings tab');
-		$data = array(3, 1, 5, 4);
+		$durations = $lib_statistics->getAverageDashboardViewDurations();
+    $data = array($durations->progress, $durations->badges, $durations->ranks, $durations->settings);
 		$ac_renderer->renderDashboardBarChart(2, $labels, $data, "Average viewing duration (seonds)", "Viewing duration"); 
 		
 		echo '<h3>Gamification dashboard subsequent pages</h3>';
