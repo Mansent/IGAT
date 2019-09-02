@@ -49,6 +49,13 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
         $data = array($durations->progress, $durations->badges, $durations->ranks, $durations->settings);
         $ac_renderer->printJsonBarChartDataset("Viewing duration", $data);
       }
+			else if($graphId == 3) {				
+				$transitions = $lib_statistics->getSubsequentPagesStatistics($_POST['processingMin'], $_POST['processingMax'],
+                                                        $_POST['perceptionMin'], $_POST['perceptionMax'],
+                                                        $_POST['inputMin'], $_POST['inputMax'],
+                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+				$ac_renderer->renderSubsequentPagesJson($transitions);
+			}
       else if($graphId == 4) { //Chosen leaerboard display setting
         $displaySettings = $lib_statistics->getVisabilitySettingsStatistics($_POST['processingMin'], $_POST['processingMax'],
                                                         $_POST['perceptionMin'], $_POST['perceptionMax'],
@@ -65,7 +72,13 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
         $data = array($displaySettings->show, $displaySettings->hide);
         $ac_renderer->printJsonBarChartDataset("Anonymity Settings", $data);
       }
-      
+      else if($graphId == 6) { //Gamification feedback rate
+				$feedbackRate = $lib_statistics->getGamificationFeedbackRate($_POST['processingMin'], $_POST['processingMax'],
+                                                        $_POST['perceptionMin'], $_POST['perceptionMax'],
+                                                        $_POST['inputMin'], $_POST['inputMax'],
+                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+				echo $feedbackRate;
+			}
     }
 
 ?>

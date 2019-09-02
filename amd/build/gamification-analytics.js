@@ -42,9 +42,21 @@ function updateGraphData(id, courseId) {
           url: "/blocks/igat/ajax.php",
           data: filterData,
           success: function(json) {
-            let newDatasets = JSON.parse(json);
-            config[id].data.datasets = newDatasets;
-            chart[id].update();
+						if(id == 3) { // dashboard subsequent pages
+							let newData = JSON.parse(json);
+							for(let htmlId in newData) {
+								document.getElementById(htmlId).innerText = newData[htmlId];
+							}
+						}
+						else if(id == 6) { // gamification feedback rate
+							let feedbackRate = json;
+							document.getElementById("feedbackRate").innerText = feedbackRate;
+						}
+						else { // line chart or bar chart
+							let newDatasets = JSON.parse(json);
+							config[id].data.datasets = newDatasets;
+							chart[id].update();
+						}
           },
           error: function(result) {
             console.log("Error updating learning styles");

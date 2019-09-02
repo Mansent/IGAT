@@ -259,6 +259,8 @@
 
 .edgeWeight {
 	position: relative;
+	width: 28.5px;
+	display: inline-block;
 }
 
 #progressToBadges {

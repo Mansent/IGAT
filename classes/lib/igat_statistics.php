@@ -286,6 +286,99 @@ class igat_statistics
 		return $result;
 	}
 
+ /**
+   * Gets the statistics for the subsequent pages in the gamification dashboard
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */
+	public function getSubsequentPagesStatistics($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
+		global $DB;        
+		$result;
+    
+    $sql = "SELECT mdl_block_igat_dashboard_log.id, tab, next_page, COUNT(*) AS sum FROM `mdl_block_igat_dashboard_log` 
+              INNER JOIN mdl_block_igat_learningstyles ON 
+                mdl_block_igat_dashboard_log.courseid = mdl_block_igat_learningstyles.courseid 
+                AND mdl_block_igat_dashboard_log.userid = mdl_block_igat_learningstyles.userid 
+              WHERE tab != next_page AND mdl_block_igat_dashboard_log.courseid = " . $this->courseId . " 
+                AND processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax
+							GROUP BY tab, next_page";
+
+		//hidden display
+		$records = $DB->get_records_sql($sql);
+		
+		$total = array();
+		$edges = array();
+		foreach($records as &$record) {
+			if(!isset($total[$record->tab])) {
+				$total[$record->tab] = 0;
+			}
+			$total[$record->tab] += $record->sum;
+			$edges[$record->tab][$record->next_page] = $record->sum;
+		}
+		
+		$tabs = array('progress', 'badges', 'ranks', 'settings', 'moodle', 'external');
+		foreach($tabs as &$from) {
+			foreach($tabs as &$to) {
+				if($from != 'moodle' && $from != 'external') {
+					if(!isset($edges[$from][$to])) {
+						$edges[$from][$to] = 0;
+					}
+					else {
+						$percentage = round($edges[$from][$to] / $total[$from] * 100);
+						$edges[$from][$to] = (int)$percentage;
+					}
+				}
+			}
+		}
+		
+		return $edges;
+	}
+
+ /**
+   * Gets the gamification feedback rate (average number of positive reinforcements 
+	 * of the gamification per day, reinforcements e.g. user earning points/badges/leveling up)
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */	
+	public function getGamificationFeedbackRate($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
+		global $DB;
+		$sql = "SELECT id, AVG(Eventcount.sum) AS feedbackRate FROM 
+							(SELECT mdl_block_xp_log.id, COUNT(*) AS sum, DATE(FROM_UNIXTIME(time)) AS d FROM `mdl_block_xp_log`
+							INNER JOIN mdl_block_igat_learningstyles ON 
+                mdl_block_xp_log.courseid = mdl_block_igat_learningstyles.courseid 
+                AND mdl_block_xp_log.userid = mdl_block_igat_learningstyles.userid 
+              WHERE mdl_block_xp_log.courseid = " . $this->courseId . " 
+                AND processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax
+							GROUP BY d) 
+							AS Eventcount";
+							
+		$record = $DB->get_record_sql($sql);
+		if(empty($record->feedbackrate)) {
+			return 0;
+		}
+		return (float)$record->feedbackrate;
+	}
+
   /**
    * Helper function that builds an array of the data filling in the missing dates from a period
    * $period DatePeriod the period to fill in missing dates

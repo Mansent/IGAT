@@ -42,31 +42,10 @@ class gamification_dashboard_analytics_renderer
 		$ac_renderer->renderDashboardBarChart(2, $labels, $data, "Average viewing duration (seonds)", "Viewing duration"); 
 		
 		echo '<h3>Gamification dashboard subsequent pages</h3>';
-		$ac_renderer->renderLsFilter(3); ?>
-		<p class="graphContainer">
-			<span id="progressToBadges" class="edgeWeight">20%</span>
-			<span id="progressToRanks" class="edgeWeight">20%</span>
-			<span id="progressToSettings" class="edgeWeight">20%</span>
-			<span id="badgesToProgress" class="edgeWeight">20%</span>
-			<span id="badgesToRanks" class="edgeWeight">20%</span>
-			<span id="badgesToSettings" class="edgeWeight">20%</span>
-			<span id="ranksToProgress" class="edgeWeight">20%</span>
-			<span id="ranksToBadges" class="edgeWeight">20%</span>
-			<span id="ranksToSettings" class="edgeWeight">20%</span>
-			<span id="settingsToProgress" class="edgeWeight">20%</span>
-			<span id="settingsToBadges" class="edgeWeight">20%</span>
-			<span id="settingsToRanks" class="edgeWeight">20%</span>
-			<span id="progressToMoodle" class="edgeWeight">20%</span>
-			<span id="badgesToMoodle" class="edgeWeight">20%</span>
-			<span id="ranksToMoodle" class="edgeWeight">20%</span>
-			<span id="settingsToMoodle" class="edgeWeight">20%</span>
-			<span id="progressToExternal" class="edgeWeight">20%</span>
-			<span id="badgesToExternal" class="edgeWeight">20%</span>
-			<span id="ranksToExternal" class="edgeWeight">20%</span>
-			<span id="settingsToExternal" class="edgeWeight">20%</span>
-			<img src="/blocks/igat/img/graph.png" width="800" />
-		</p>
-<?php
+		$transitions = $lib_statistics->getSubsequentPagesStatistics();
+		$ac_renderer->renderLsFilter(3);
+		$ac_renderer->renderSubsequentPagesGraph($transitions);
+		
 		echo '<h3>Leaderboard visibility settings</h3>';
 		$ac_renderer->renderLsFilter(4);
 		$labels = array('Show full', 'Show limited', 'Hide');

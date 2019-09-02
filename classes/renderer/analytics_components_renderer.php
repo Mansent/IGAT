@@ -317,5 +317,53 @@ class analytics_components_renderer
     }] 
 <?php    
   }
+	
+	/**
+	 * Renders the subsequent pages graph
+	 * @param data array the data for the graph 
+	 */
+	public function renderSubsequentPagesGraph($data) { ?>
+		<p class="graphContainer">
+			<span id="progressToBadges" class="edgeWeight"><?php echo $data['progress']['badges']; ?>%</span>
+			<span id="progressToRanks" class="edgeWeight"><?php echo $data['progress']['ranks']; ?>%</span>
+			<span id="progressToSettings" class="edgeWeight"><?php echo $data['progress']['settings']; ?>%</span>
+			<span id="badgesToProgress" class="edgeWeight"><?php echo $data['badges']['progress']; ?>%</span>
+			<span id="badgesToRanks" class="edgeWeight"><?php echo $data['badges']['ranks']; ?>%</span>
+			<span id="badgesToSettings" class="edgeWeight"><?php echo $data['badges']['settings']; ?>%</span>
+			<span id="ranksToProgress" class="edgeWeight"><?php echo $data['ranks']['progress']; ?>%</span>
+			<span id="ranksToBadges" class="edgeWeight"><?php echo $data['ranks']['badges']; ?>%</span>
+			<span id="ranksToSettings" class="edgeWeight"><?php echo $data['ranks']['settings']; ?>%</span>
+			<span id="settingsToProgress" class="edgeWeight"><?php echo $data['settings']['progress']; ?>%</span>
+			<span id="settingsToBadges" class="edgeWeight"><?php echo $data['settings']['badges']; ?>%</span>
+			<span id="settingsToRanks" class="edgeWeight"><?php echo $data['settings']['ranks']; ?>%</span>
+			<span id="progressToMoodle" class="edgeWeight"><?php echo $data['progress']['moodle']; ?>%</span>
+			<span id="badgesToMoodle" class="edgeWeight"><?php echo $data['badges']['moodle']; ?>%</span>
+			<span id="ranksToMoodle" class="edgeWeight"><?php echo $data['ranks']['moodle']; ?>%</span>
+			<span id="settingsToMoodle" class="edgeWeight"><?php echo $data['settings']['moodle']; ?>%</span>
+			<span id="progressToExternal" class="edgeWeight"><?php echo $data['progress']['external']; ?>%</span>
+			<span id="badgesToExternal" class="edgeWeight"><?php echo $data['badges']['external']; ?>%</span>
+			<span id="ranksToExternal" class="edgeWeight"><?php echo $data['ranks']['external']; ?>%</span>
+			<span id="settingsToExternal" class="edgeWeight"><?php echo $data['settings']['external']; ?>%</span>
+			<img src="/blocks/igat/img/graph.png" width="800" />
+		</p>
+<?php	
+	}
+	
+	/**
+	 * Renders the subsequent pages json for the ajax call.
+	 * @param $data the subsequent pages statistics datta
+	 */
+	public function renderSubsequentPagesJSON($data) {
+		$res = array();
+		$tabs = array('progress', 'badges', 'ranks', 'settings', 'moodle', 'external');
+		foreach($tabs as &$from) {
+			foreach($tabs as &$to) {
+				if($from != 'external' && $from != 'moodle' && $from != $to) {
+					$res[$from . 'To' . ucfirst($to)] = $data[$from][$to] . '%';
+				}
+			}
+		}
+		echo json_encode($res);
+	}
 }
  ?>
