@@ -454,6 +454,52 @@ class igat_statistics
 		return $result;
 	}
 
+	/**
+   * Gets the levels distribution of the current students in this course
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */	
+	public function getLevelsDistribution($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
+		global $DB;
+		
+		$levelsInfo = $this->lib_progress->getLevelsInfo();
+		$sql = "SELECT lvl, COUNT(*) AS sum FROM `mdl_block_xp` 
+						INNER JOIN mdl_block_igat_learningstyles ON 
+                mdl_block_xp.courseid = mdl_block_igat_learningstyles.courseid 
+                AND mdl_block_xp.userid = mdl_block_igat_learningstyles.userid 
+              WHERE mdl_block_xp.courseid = " . $this->courseId . " 
+                AND processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax 
+						GROUP BY lvl"; 
+		
+		$data = array();
+		$records = $DB->get_records_sql($sql);
+		foreach($records as &$record) {
+			$data[$record->lvl] = $record->sum;
+		}
+		
+		// Add levels with 0 students to result
+		$result = array();
+		for($i=0; $i<count($levelsInfo); $i++) {
+			if(!isset($data[$i])) {
+				$result[$i] = 0;
+			}
+			else {
+				$result[$i] = $data[$i];
+			}
+		}
+		return $result;
+	}
+
   /**
    * Helper function that builds an array of the data filling in the missing dates from a period
    * $period DatePeriod the period to fill in missing dates

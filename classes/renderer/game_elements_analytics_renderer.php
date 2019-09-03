@@ -42,6 +42,10 @@ class game_elements_analytics_renderer
     
 		echo '<h3>Levels distribution</h3>';
 		$ac_renderer->renderLsFilter(8);
+		$distribution = $lib_statistics->getLevelsDistribution();
+		$labels = array_keys($distribution);
+		$data = array_values($distribution);
+		$ac_renderer->renderBarChart(8, $labels, $data, "Students", "Levels Distribution", false); 
     
 		echo '<h3>Average days to reach level</h3>';
 		$ac_renderer->renderLsFilter(9);  ?>

@@ -49,7 +49,7 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
         $data = array($durations->progress, $durations->badges, $durations->ranks, $durations->settings);
         $ac_renderer->printJsonBarChartDataset("Viewing duration", $data, true);
       }
-			else if($graphId == 3) {				
+			else if($graphId == 3) { //Subsequent pages
 				$transitions = $lib_statistics->getSubsequentPagesStatistics($_POST['processingMin'], $_POST['processingMax'],
                                                         $_POST['perceptionMin'], $_POST['perceptionMax'],
                                                         $_POST['inputMin'], $_POST['inputMax'],
@@ -79,13 +79,21 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
                                                         $_POST['understandingMin'], $_POST['understandingMax']);
 				echo $feedbackRate;
 			}
-			else if($graphId == 7) {
+			else if($graphId == 7) { //Points Distribution
 				$histogram = $lib_statistics->getPointsDistribution($_POST['processingMin'], $_POST['processingMax'],
                                                         $_POST['perceptionMin'], $_POST['perceptionMax'],
                                                         $_POST['inputMin'], $_POST['inputMax'],
                                                         $_POST['understandingMin'], $_POST['understandingMax']);
 				$data = array_values($histogram);
         $ac_renderer->printJsonBarChartDataset("Points Distribution", $data, false);
+			}
+			else if($graphId == 8) { //Levels distribution
+				$distribution = $lib_statistics->getLevelsDistribution($_POST['processingMin'], $_POST['processingMax'],
+                                                        $_POST['perceptionMin'], $_POST['perceptionMax'],
+                                                        $_POST['inputMin'], $_POST['inputMax'],
+                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+				$data = array_values($distribution);
+        $ac_renderer->printJsonBarChartDataset("Levels Distribution", $data, false);
 			}
     }
 
