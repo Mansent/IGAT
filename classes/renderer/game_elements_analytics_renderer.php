@@ -29,12 +29,43 @@ class game_elements_analytics_renderer
 		echo '<h3>Gamification feedback rate</h3>';
 		$ac_renderer->renderLsFilter(6); 
 		$feedbackRate = $lib_statistics->getGamificationFeedbackRate();
-		echo '<p>The student receive on average <b id="feedbackRate">' . $feedbackRate . '</b> feedbacks per day.</p>';
+		echo '<p>The students receive on average <b id="feedbackRate">' . $feedbackRate . '</b> gamification reinforcements per day they are active in this course.</p>';
 		
 		echo '<h3>Points distribution</h3>';
+		$ac_renderer->renderLsFilter(7); 
+    
 		echo '<h3>Levels distribution</h3>';
+		$ac_renderer->renderLsFilter(8);
+    
 		echo '<h3>Average days to reach level</h3>';
+		$ac_renderer->renderLsFilter(9);  ?>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-secondary active">
+        <input type="radio" name="options" id="option1" autocomplete="off" checked> Level 1
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option2" autocomplete="off"> Level 2
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option3" autocomplete="off"> Level 3
+      </label>
+    </div>
+    <?php
+    
 		echo '<h3>Average days to earn badge</h3>';
+		$ac_renderer->renderLsFilter(9);  ?>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-secondary active">
+        <input type="radio" name="options" id="option1" autocomplete="off" checked> Badge 1
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option2" autocomplete="off"> Badge 2
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option3" autocomplete="off"> Badge 3
+      </label>
+    </div>
+    <?php
 	}
 }
  ?>

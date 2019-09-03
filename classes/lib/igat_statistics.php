@@ -370,7 +370,7 @@ class igat_statistics
                 AND input >= $inputMin AND input <= $inputMax
                 AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax
 							GROUP BY d) 
-							AS Eventcount";
+							AS Eventcount"; 
 							
 		$record = $DB->get_record_sql($sql);
 		if(empty($record->feedbackrate)) {
