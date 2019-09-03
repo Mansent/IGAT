@@ -229,8 +229,9 @@ class analytics_components_renderer
 	 * @param array $data the data values for the chart 
 	 * @param string $yAxisName the text description of the y axis
 	 * @param array $datasetName the name of the dataset
+	 * @param boolean $enableColors enable bar colering
 	 */
-	public function renderDashboardBarChart($id, $labels, $data, $yAxisName, $datasetName) { ?>
+	public function renderBarChart($id, $labels, $data, $yAxisName, $datasetName, $enableColors) { ?>
 		<div class="analyticsChart"><canvas id="dashboardChart<?php echo $id; ?>"></canvas></div>
     <script>
     var ctx = document.getElementById("dashboardChart<?php echo $id; ?>").getContext('2d');
@@ -248,6 +249,7 @@ class analytics_components_renderer
                 label: '<?php echo $datasetName; ?>', // Name the series
                 data: [<?php echo implode(', ', $data); ?>], // Specify the data values array
 								fill: false,
+<?php 				if($enableColors) { ?>
 								backgroundColor: [ // Specify custom colors
                     'rgba(0, 123, 255, 0.4)',
                     'rgba(255, 193, 7, 0.4)',
@@ -261,6 +263,11 @@ class analytics_components_renderer
                     'rgba(220, 53, 69, 1)',
                     'rgba(40, 167, 69, 1)'
                 ]
+<?php 				}
+							else { ?>
+								backgroundColor: 'rgba(0, 123, 255, 0.4)',
+                borderColor: 'rgba(0, 123, 255, 1)'
+<?php 				} ?>
             }]
         },
         options: {
@@ -296,24 +303,30 @@ class analytics_components_renderer
 	 * @param array $datasetName the name of the dataset
 	 * @param array $data the data values for the chart 
    */   
-  public function printJsonBarChartDataset($datasetName, $data) { ?>
+  public function printJsonBarChartDataset($datasetName, $data, $enableColors) { ?>
     [{
       "label": "<?php echo $datasetName; ?>", 
       "data": [<?php echo implode(', ', $data); ?>],
       "fill": false,
-      "backgroundColor": [ 
-          "rgba(0, 123, 255, 0.4)",
-          "rgba(255, 193, 7, 0.4)",
-          "rgba(220, 53, 69, 0.4)",
-          "rgba(40, 167, 69, 0.4)"
-          
-      ],
-      "borderColor": [ 
-          "rgba(0, 123, 255, 1)",
-          "rgba(255, 193, 7, 1)",
-          "rgba(220, 53, 69, 1)",
-          "rgba(40, 167, 69, 1)"
-      ]
+<?php 				if($enableColors) { ?>
+								"backgroundColor": [ 
+                    "rgba(0, 123, 255, 0.4)",
+                    "rgba(255, 193, 7, 0.4)",
+                    "rgba(220, 53, 69, 0.4)",
+                    "rgba(40, 167, 69, 0.4)"
+										
+                ],
+                "borderColor": [
+                    "rgba(0, 123, 255, 1)",
+                    "rgba(255, 193, 7, 1)",
+                    "rgba(220, 53, 69, 1)",
+                    "rgba(40, 167, 69, 1)"
+                ]
+<?php 				}
+							else { ?>
+								"backgroundColor": "rgba(0, 123, 255, 0.4)",
+                "borderColor": "rgba(0, 123, 255, 1)"
+<?php 				} ?>
     }] 
 <?php    
   }

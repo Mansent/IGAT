@@ -39,7 +39,7 @@ class gamification_dashboard_analytics_renderer
 		$labels = array('Progress tab', 'Badges tab', 'Ranks tab', 'Settings tab');
 		$durations = $lib_statistics->getAverageDashboardViewDurations();
     $data = array($durations->progress, $durations->badges, $durations->ranks, $durations->settings);
-		$ac_renderer->renderDashboardBarChart(2, $labels, $data, "Average viewing duration (seonds)", "Viewing duration"); 
+		$ac_renderer->renderBarChart(2, $labels, $data, "Average viewing duration (seonds)", "Viewing duration", true); 
 		
 		echo '<h3>Gamification dashboard subsequent pages</h3>';
 		$transitions = $lib_statistics->getSubsequentPagesStatistics();
@@ -51,14 +51,14 @@ class gamification_dashboard_analytics_renderer
 		$labels = array('Show full', 'Show limited', 'Hide');
     $settingsData = $lib_statistics->getVisabilitySettingsStatistics();
 		$data = array($settingsData->all, $settingsData->limited, $settingsData->hide);
-		$ac_renderer->renderDashboardBarChart(4, $labels, $data, "Number of Students", "Visibility Settings"); 
+		$ac_renderer->renderBarChart(4, $labels, $data, "Number of Students", "Visibility Settings", true); 
 		
 		echo '<h3>Leaderboard anonymity settings</h3>';
 		$ac_renderer->renderLsFilter(5);
 		$labels = array('Show full name', 'Anonymous');
     $settingsData = $lib_statistics->getAnonymitySettingsStatistics();
 		$data = array($settingsData->show, $settingsData->hide);
-		$ac_renderer->renderDashboardBarChart(5, $labels, $data, "Number of Students", "Anonymity Settings"); 
+		$ac_renderer->renderBarChart(5, $labels, $data, "Number of Students", "Anonymity Settings", true); 
 	}
 }
  ?>

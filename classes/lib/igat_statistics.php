@@ -378,6 +378,81 @@ class igat_statistics
 		}
 		return (float)$record->feedbackrate;
 	}
+	
+	/**
+   * Gets the point distribution of the current students in this course
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */	
+	public function getPointsDistribution($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
+		global $DB;
+		
+		//Get bins size in relation to number of levels and points for highest level
+		$levelsInfo = $this->lib_progress->getLevelsInfo();
+		$numLevels = count($levelsInfo);
+		$maxLevelPoints = $levelsInfo[$numLevels];
+		$binSizeUnrounded = (int)($maxLevelPoints / (1.2 * $numLevels));
+		$binSize = (int)round($binSizeUnrounded, -(strlen($binSizeUnrounded) - 1));
+		$bins = array();
+		$currentBin = 0;
+		while($currentBin < $maxLevelPoints) {
+			array_push($bins, $currentBin);
+			$currentBin += $binSize;
+		}
+		
+		// Build sql query for bins
+		$binSql = "";
+		for($i=0; $i<count($bins); $i++) {
+			if($i < (count($bins) - 1)) {
+				$binSql .= "WHEN xp >= " . $bins[$i] . " AND xp < " . $bins[$i+1] . " THEN '[" . $bins[$i] . ", " . $bins[$i+1]. "]' ";
+			}
+			else {
+				$binSql .= "ELSE '>=" . $bins[$i] . "'";
+			}
+		}
+		$sql = "SELECT mdl_block_xp.id, COUNT(*) AS sum, CASE " . $binSql . "	END AS bins
+						FROM `mdl_block_xp` 
+						INNER JOIN mdl_block_igat_learningstyles ON 
+                mdl_block_xp.courseid = mdl_block_igat_learningstyles.courseid 
+                AND mdl_block_xp.userid = mdl_block_igat_learningstyles.userid 
+              WHERE mdl_block_xp.courseid = " . $this->courseId . " 
+                AND processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax 
+							GROUP BY bins"; 
+		
+		$histogram = array();
+		$records = $DB->get_records_sql($sql);
+		foreach($records as &$record) {
+			$histogram[$record->bins] = $record->sum;
+		}
+		
+		// Add bins with 0 students to histogram
+		$result = array();
+		for($i=0; $i<count($bins); $i++) {
+			if($i < (count($bins) - 1)) {
+				$key = "[" . $bins[$i] . ", " . $bins[$i+1]. "]";
+			}
+			else {
+				$key = ">=" . $bins[$i];
+			}
+			if(!isset($histogram[$key])) {
+				$result[$key] = 0;
+			}
+			else {
+				$result[$key] = $histogram[$key];
+			}
+		}
+		return $result;
+	}
 
   /**
    * Helper function that builds an array of the data filling in the missing dates from a period
