@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/igat/db" VERSION="20190831" COMMENT="XMLDB file for Moodle blocks/igat"
+<XMLDB PATH="blocks/igat/db" VERSION="20190904" COMMENT="XMLDB file for Moodle blocks/igat"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -39,6 +39,18 @@
         <FIELD NAME="perception" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="input" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="comprehension" TYPE="int" LENGTH="3" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_igat_levelup_log" COMMENT="A log of when the students leveled up to do analysis">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="newlevel" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="time" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

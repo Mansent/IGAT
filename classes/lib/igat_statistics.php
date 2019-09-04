@@ -360,7 +360,7 @@ class igat_statistics
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
 		global $DB;
 		$sql = "SELECT id, AVG(Eventcount.sum) AS feedbackRate FROM 
-							(SELECT mdl_block_xp_log.id, COUNT(*) AS sum, DATE(FROM_UNIXTIME(time)) AS d FROM `mdl_block_xp_log`
+							(SELECT mdl_block_xp_log.id, mdl_block_xp_log.userid, COUNT(*) AS sum, DATE(FROM_UNIXTIME(time)) AS d FROM `mdl_block_xp_log`
 							INNER JOIN mdl_block_igat_learningstyles ON 
                 mdl_block_xp_log.courseid = mdl_block_igat_learningstyles.courseid 
                 AND mdl_block_xp_log.userid = mdl_block_igat_learningstyles.userid 
@@ -369,7 +369,7 @@ class igat_statistics
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
                 AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax
-							GROUP BY d) 
+							GROUP BY userid, d) 
 							AS Eventcount"; 
 							
 		$record = $DB->get_record_sql($sql);
@@ -499,6 +499,64 @@ class igat_statistics
 		}
 		return $result;
 	}
+  
+  /**
+   * Gets the average days needed to advance to all levels filtered by learning style
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */	
+  public function getAverageDaysToLevel($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
+    global $DB;
+    // Get average days between first gamification event and level up time for each level, a day has 86400 seconds
+    $sql = "SELECT id, newlevel, AVG((leveluptime - firsteventtime) / 86400) AS avgdays FROM (
+              SELECT mdl_block_igat_levelup_log.id,
+                     mdl_block_igat_levelup_log.courseid, 
+                     mdl_block_igat_levelup_log.userid, 
+                     newlevel, 
+                     mdl_block_igat_levelup_log.time as leveluptime, 
+                     mdl_block_xp_log.time as firsteventtime 
+              FROM `mdl_block_igat_levelup_log` 
+              INNER JOIN `mdl_block_xp_log`
+                ON mdl_block_igat_levelup_log.courseid = mdl_block_xp_log.courseid 
+                AND mdl_block_igat_levelup_log.userid = mdl_block_xp_log.userid 
+              INNER JOIN mdl_block_igat_learningstyles ON 
+                mdl_block_igat_levelup_log.courseid = mdl_block_igat_learningstyles.courseid 
+                AND mdl_block_igat_levelup_log.userid = mdl_block_igat_learningstyles.userid 
+              WHERE mdl_block_igat_levelup_log.courseid = " . $this->courseId . " 
+                AND processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax 
+              GROUP BY mdl_block_igat_levelup_log.courseid, mdl_block_igat_levelup_log.userid, mdl_block_igat_levelup_log.newlevel
+            ) AS levelups 
+            GROUP BY newlevel";
+    $records = $DB->get_records_sql($sql);
+    $data = array();
+    foreach($records as &$record) {
+      $data[$record->newlevel] = $record->avgdays;
+    }
+    
+    //fill in missing level info 
+		$levelsInfo = $this->lib_progress->getLevelsInfo();
+    $numLevels = count($levelsInfo);
+    $result = array();
+    for($level=1; $level<=$numLevels; $level++) {
+      if(empty($data[$level])) {
+        $result[$level] = 0;
+      }
+      else {
+        $result[$level] = (float)$data[$level];
+      }
+    }
+    return $result;
+  }
 
   /**
    * Helper function that builds an array of the data filling in the missing dates from a period

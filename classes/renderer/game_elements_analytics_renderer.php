@@ -31,7 +31,7 @@ class game_elements_analytics_renderer
 		echo '<h3>Gamification feedback rate</h3>';
 		$ac_renderer->renderLsFilter(6); 
 		$feedbackRate = $lib_statistics->getGamificationFeedbackRate();
-		echo '<p>The students receive on average <b id="feedbackRate">' . $feedbackRate . '</b> gamification reinforcements per day they are active in this course.</p>';
+		echo '<p>The students receive on average <b id="feedbackRate">' . $feedbackRate . '</b> gamification reinforcements per day they are active.</p>';
 		
 		echo '<h3>Points distribution</h3>';
 		$ac_renderer->renderLsFilter(7); 
@@ -48,19 +48,11 @@ class game_elements_analytics_renderer
 		$ac_renderer->renderBarChart(8, $labels, $data, "Students", "Levels Distribution", false); 
     
 		echo '<h3>Average days to reach level</h3>';
-		$ac_renderer->renderLsFilter(9);  ?>
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-      <label class="btn btn-secondary active">
-        <input type="radio" name="options" id="option1" autocomplete="off" checked> Level 1
-      </label>
-      <label class="btn btn-secondary">
-        <input type="radio" name="options" id="option2" autocomplete="off"> Level 2
-      </label>
-      <label class="btn btn-secondary">
-        <input type="radio" name="options" id="option3" autocomplete="off"> Level 3
-      </label>
-    </div>
-    <?php
+		$ac_renderer->renderLsFilter(9); 
+    $daysdata = $lib_statistics->getAverageDaysToLevel();
+		$labels = array_keys($daysdata);
+		$data = array_values($daysdata);
+		$ac_renderer->renderBarChart(9, $labels, $data, "Days", "Average days to reach level", false); 
     
 		echo '<h3>Average days to earn badge</h3>';
 		$ac_renderer->renderLsFilter(10);  ?>
