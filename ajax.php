@@ -103,6 +103,14 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
 				$data = array_values($distribution);
         $ac_renderer->printJsonBarChartDataset("Average days to reach levels", $data, false);
 			}
+			else if($graphId == 10) { //Average days to earn badges
+				$distribution = $lib_statistics->getAverageDaysToBadges($_POST['processingMin'], $_POST['processingMax'],
+                                                        $_POST['perceptionMin'], $_POST['perceptionMax'],
+                                                        $_POST['inputMin'], $_POST['inputMax'],
+                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+				$data = array_values($distribution);
+        $ac_renderer->printJsonBarChartDataset("Average days to earn badges", $data, false);
+			}
     }
 
 ?>

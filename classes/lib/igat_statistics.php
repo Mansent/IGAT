@@ -557,6 +557,49 @@ class igat_statistics
     }
     return $result;
   }
+ 
+  /**
+   * Gets the average days needed to earn a badge for all badges filtered by learning style
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */	 
+  public function getAverageDaysToBadges($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
+    global $DB;
+    $sql = "SELECT id, name, userid, AVG((dateissued - firsteventtime) / 86400) AS avgdays FROM ( 
+              SELECT mdl_badge.id, 
+                     name, 
+                     mdl_badge_issued.userid, 
+                     dateissued, 
+                     mdl_block_xp_log.time as firsteventtime 
+              FROM `mdl_badge` 
+              INNER JOIN `mdl_badge_issued` ON mdl_badge.id = mdl_badge_issued.badgeid 
+              INNER JOIN `mdl_block_xp_log` ON mdl_badge.courseid = mdl_block_xp_log.courseid 
+                      AND mdl_badge_issued.userid = mdl_block_xp_log.userid  
+              INNER JOIN mdl_block_igat_learningstyles ON 
+                mdl_badge.courseid = mdl_block_igat_learningstyles.courseid 
+                AND mdl_badge_issued.userid = mdl_block_igat_learningstyles.userid 
+              WHERE mdl_badge.courseid = " . $this->courseId . " 
+                AND processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax 
+              GROUP BY mdl_badge.id, mdl_badge.courseid, mdl_badge_issued.userid
+            ) AS d 
+            GROUP BY id";
+    $records = $DB->get_records_sql($sql);
+    $data = array();
+    foreach($records as &$record) {
+      $data[$record->name] = $record->avgdays;
+    }
+    return $data;
+  }
 
   /**
    * Helper function that builds an array of the data filling in the missing dates from a period

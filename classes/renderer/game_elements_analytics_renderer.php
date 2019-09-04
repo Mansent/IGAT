@@ -55,19 +55,11 @@ class game_elements_analytics_renderer
 		$ac_renderer->renderBarChart(9, $labels, $data, "Days", "Average days to reach level", false); 
     
 		echo '<h3>Average days to earn badge</h3>';
-		$ac_renderer->renderLsFilter(10);  ?>
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-      <label class="btn btn-secondary active">
-        <input type="radio" name="options" id="option1" autocomplete="off" checked> Badge 1
-      </label>
-      <label class="btn btn-secondary">
-        <input type="radio" name="options" id="option2" autocomplete="off"> Badge 2
-      </label>
-      <label class="btn btn-secondary">
-        <input type="radio" name="options" id="option3" autocomplete="off"> Badge 3
-      </label>
-    </div>
-    <?php
+		$ac_renderer->renderLsFilter(10);
+    $daysdata = $lib_statistics->getAverageDaysToBadges();
+    $labels = array_keys($daysdata);
+		$data = array_values($daysdata);
+		$ac_renderer->renderBarChart(10, $labels, $data, "Days", "Average days to earn badges", false); 
 	}
 }
  ?>
