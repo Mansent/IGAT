@@ -1,8 +1,9 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 require_once('classes/lib/igat_badges.php');
 require_once('classes/lib/igat_statistics.php');
 require_once($CFG->libdir . '/enrollib.php');
-
 
 /**
  * Responsible for managing and rendering the badges tab in the gamification view 
@@ -11,10 +12,10 @@ class badges_renderer {
 	private $lib_badges;
 	private $lib_statistics;
   
-/* 
- * Creates a new badges renderer 
- * @param courseId the id of the current course.
- */
+  /* 
+   * Creates a new badges renderer 
+   * @param courseId the id of the current course.
+   */
 	public function __construct($courseId) {
 		$this->lib_badges = new igat_badges($courseId);
 		$this->lib_statistics = new igat_statistics($courseId);

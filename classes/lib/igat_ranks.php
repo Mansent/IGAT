@@ -1,4 +1,5 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Library for loading the player ranks for the leaderboard.

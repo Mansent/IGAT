@@ -1,4 +1,6 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Helper class for quickly checking the users rights.
  */

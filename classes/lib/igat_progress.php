@@ -1,4 +1,6 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Library for managing user points and levels.
  */

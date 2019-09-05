@@ -1,4 +1,6 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 require_once('classes/lib/igat_usersettings.php');
 require_once('classes/forms/usersettings_form.php');
 

@@ -1,4 +1,6 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 require_once('classes/lib/igat_progress.php');
 require_once('classes/lib/igat_badges.php');
 require_once('classes/lib/igat_statistics.php');

@@ -1,4 +1,6 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 require_once('classes/renderer/analytics_components_renderer.php');
 require_once('classes/lib/igat_statistics.php');
 require_once('classes/lib/igat_learningstyles.php');

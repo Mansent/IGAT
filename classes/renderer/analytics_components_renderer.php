@@ -1,4 +1,6 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Renders individual components for the gamification analytics page 
  */

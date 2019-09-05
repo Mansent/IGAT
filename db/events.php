@@ -1,4 +1,6 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Registers the event observers for the igat plugin.
  */

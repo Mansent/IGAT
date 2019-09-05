@@ -2,6 +2,8 @@
 /**
  * This file contains the tabs for the igat dashboard
  */
+ 
+defined('MOODLE_INTERNAL') || die();
 
 require_once("classes/renderer/badges_renderer.php");
 require_once("classes/renderer/progress_renderer.php");

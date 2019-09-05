@@ -6,6 +6,8 @@
  * @copyright   2019 Manuel Gottschlich <manuel.gottschlich@rwth-aachen.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
  
 require_once('classes/lib/igat_progress.php');
 require_once('classes/lib/igat_badges.php');

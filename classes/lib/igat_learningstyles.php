@@ -1,4 +1,6 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 require_once("../../mod/alstea/classes/api/learningstylesapi.php");
 require_once("../../mod/alstea/classes/api/datasetapi.php");
 

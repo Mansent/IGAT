@@ -1,4 +1,6 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Library for logging user behavior data and managing logs.
  */

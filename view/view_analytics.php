@@ -1,20 +1,26 @@
 <?php 
-	require_once("classes/renderer/game_elements_analytics_renderer.php");
-	require_once("classes/renderer/gamification_dashboard_analytics_renderer.php");
+/**
+ * Navigation for the Gamification Analytics Dashboard
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+require_once("classes/renderer/game_elements_analytics_renderer.php");
+require_once("classes/renderer/gamification_dashboard_analytics_renderer.php");
 
 
-	$tab = $_GET['tab'];
-	if($tab != 'gameelements' && $tab != 'dashboard') {
-		$tab = 'dashboard';
-	}
-	$gameelementsClass = '';
-	$dashboardClass = '';
-	if($tab == 'gameelements') {
-		$gameelementsClass = 'active';
-	}
-	else if($tab == 'dashboard') {
-		$dashboardClass = 'active';
-	}
+$tab = $_GET['tab'];
+if($tab != 'gameelements' && $tab != 'dashboard') {
+  $tab = 'dashboard';
+}
+$gameelementsClass = '';
+$dashboardClass = '';
+if($tab == 'gameelements') {
+  $gameelementsClass = 'active';
+}
+else if($tab == 'dashboard') {
+  $dashboardClass = 'active';
+}
 ?>
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">

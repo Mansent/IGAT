@@ -1,6 +1,8 @@
 <?php
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Library for calculating various statistics from the database.
+ * Library for calculating statistics and analytics from the database.
  */
 class igat_statistics 
 {
