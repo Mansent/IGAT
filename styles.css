@@ -362,3 +362,8 @@
 	top: 273px;
 	left: -48px;
 }
+
+/* --- General --- */
+[data-key="badgesview"] {
+  display: none !important;
+}
