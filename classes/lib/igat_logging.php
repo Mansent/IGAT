@@ -55,4 +55,42 @@ class igat_logging
 																												 'tab' => $tab,  
 																												 'next_page' => $nextPage));
 	}
+  
+  /**
+   * Deletes all records from the logs before a given date
+   * @param $date the date to delete logs before
+   * @param $courseId the id of the course 
+   */
+  public function deleteLogsBefore($date, $courseId) {
+    global $DB;
+    if(!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $date)) { // YYYY-MM-DD
+      return false;
+    }
+    $sql = "DELETE FROM mdl_block_xp_log WHERE time < UNIX_TIMESTAMP('" . $date . "') AND courseid = " . $courseId;
+    $DB->execute($sql);
+    
+    $sql = "DELETE FROM mdl_block_igat_dashboard_log WHERE time < (UNIX_TIMESTAMP('" . $date . "') * 1000) AND courseid = " . $courseId;
+    $DB->execute($sql);
+    
+    return true;
+  }
+  
+  /**
+   * Deletes all records from the logs after a given date
+   * @param $date the date to delete logs after
+   * @param $courseId the id of the course 
+   */
+  public function deleteLogsAfter($date, $courseId) {
+    global $DB;
+    if(!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $date)) { // YYYY-MM-DD
+      return false;
+    }
+    $sql = "DELETE FROM mdl_block_xp_log WHERE time > UNIX_TIMESTAMP('" . $date . "') AND courseid = " . $courseId;
+    $DB->execute($sql);
+    
+    $sql = "DELETE FROM mdl_block_igat_dashboard_log WHERE time > (UNIX_TIMESTAMP('" . $date . "') * 1000) AND courseid = " . $courseId;
+    $DB->execute($sql);
+    
+    return true;
+  }
 }
