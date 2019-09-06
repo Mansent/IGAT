@@ -92,23 +92,32 @@ class block_igat extends block_base {
               <div class="igatleftblock">
                 <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/graduation.png"/> Progress
               </div>
-              <div class="igatlistinfo"><b>' . $lib_progress->getPointsToNextLevel($USER->id) . ' points</b> left until the next level!</div>
+              <div class="igatlistinfo">
+								<b>' . $lib_progress->getPointsToNextLevel($USER->id) . ' points</b> until next level!<br />
+								<button type="button" class="btn btn-primary">Show progress</button>
+							</div>
             </div>
           </a>
           <a href="' . $badgesUrl . '">
             <div class="igatcard igatblue">
               <div class="igatleftblock">
-                <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/achievement.png"/> Badges
+                <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/achievement.png"/> Badges<br />
               </div>
-              <div class="igatlistinfo">' . $lib_badges->getRandomOpenBadgeCriterion($USER->id) . '</div>
+              <div class="igatlistinfo">
+								' . $lib_badges->getRandomOpenBadgeCriterion($USER->id) . '<br />
+								<button type="button" class="btn btn-primary">Show badges</button>
+							</div>
             </div>
           </a>
           <a href="' . $ranksUrl . '">
             <div class="igatcard igatyellow">
               <div class="igatleftblock">
-                <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/podium.png"/> Ranks
+                <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/podium.png"/> Leaderboard
               </div>
-              <div class="igatlistinfo">' . $lib_ranks->getRanksStatusMessage($USER->id) . '</div>
+              <div class="igatlistinfo">
+								' . $lib_ranks->getRanksStatusMessage($USER->id) . '<br />
+								<button type="button" class="btn btn-primary">Show leaderboard</button>
+							</div>
             </div>
           </a>';
 			}

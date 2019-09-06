@@ -51,10 +51,10 @@ else if ($_GET['tab'] == 'settings') {
         <a class="nav-link <?php echo $badgesclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=badges">Badges</a>
     </li>
 <?php 
-if( ($usersettings->leaderboarddisplay != 'hide'	&& !isset($_POST['leaderboarddisplay'])) // hide ranks tab if the user has disabled it
+if( ($usersettings->leaderboarddisplay != 'hide'	&& !isset($_POST['leaderboarddisplay'])) // hide leaderboard tab if the user has disabled it
 			|| (isset($_POST['leaderboarddisplay']) && $_POST['leaderboarddisplay'] != 'hide')) { ?>
     <li class="nav-item">
-        <a class="nav-link <?php echo $ranksclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=ranks">Ranks</a>
+        <a class="nav-link <?php echo $ranksclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=ranks">Leaderboard</a>
     </li>
 <?php } ?>
     <li class="nav-item">

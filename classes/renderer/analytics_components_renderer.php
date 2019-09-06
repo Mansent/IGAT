@@ -118,7 +118,7 @@ class analytics_components_renderer
                   ]
               },
               {
-                  label: 'Ranks tab',
+                  label: 'Leaderboard tab',
                   data: [<?php echo implode(", ", $ranksData); ?>], 
                   fill: false,
                   backgroundColor: [

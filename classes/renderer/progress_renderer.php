@@ -116,7 +116,7 @@ class progress_renderer
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->equal * 100; ?>%</b> are in your level</span>
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->higher * 100; ?>%</b> are in a higher level</span>
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->lower * 100; ?>%</b> are in a lower level</span>
-			<a href="<?php echo new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $this->courseId, 'tab' => 'ranks')); ?>">View Ranks</a>	
+			<a href="<?php echo new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $this->courseId, 'tab' => 'ranks')); ?>">View Leaderboard</a>	
 		</div>
 		<div class="progressblock">
 			<h6>Earn Points</h6>
