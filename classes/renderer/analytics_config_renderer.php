@@ -30,7 +30,7 @@ class analytics_config_renderer
       $res = $this->lib_logging->deleteLogsBefore($date, $this->courseId);
     }
     if(!empty($_POST['deleteAfter'])) {
-      $date = $_POST['deleteBefore'];
+      $date = $_POST['deleteAfter'];
       $res = $this->lib_logging->deleteLogsAfter($date, $this->courseId);
     }
     if($res !== 'nodelete') { ?>

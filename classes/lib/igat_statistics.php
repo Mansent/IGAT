@@ -361,19 +361,31 @@ class igat_statistics
 	public function getGamificationFeedbackRate($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
 		global $DB;
-		$sql = "SELECT id, AVG(Eventcount.sum) AS feedbackRate FROM 
-							(SELECT mdl_block_xp_log.id, mdl_block_xp_log.userid, COUNT(*) AS sum, DATE(FROM_UNIXTIME(time)) AS d FROM `mdl_block_xp_log`
-							INNER JOIN mdl_block_igat_learningstyles ON 
-                mdl_block_xp_log.courseid = mdl_block_igat_learningstyles.courseid 
-                AND mdl_block_xp_log.userid = mdl_block_igat_learningstyles.userid 
-              WHERE mdl_block_xp_log.courseid = " . $this->courseId . " 
+    /* 1. Get days each student active in course
+     * 2. Join count of gamification events to this
+     * 3. Join learning styles filter to the result
+     * 4. Take average event counts as feedback rate */
+    $sql = "SELECT id, AVG(Eventcount.sum) AS feedbackRate FROM (
+              SELECT c.id, c.d, c.sum FROM (
+                SELECT l.id, l.userid, l.courseid, l.d, COUNT(xp) AS sum  FROM (
+                  SELECT id, courseid, userid, DATE(FROM_UNIXTIME(timecreated)) AS d FROM `mdl_logstore_standard_log` 
+                  WHERE action = 'viewed' AND target = 'course' AND courseid = " . $this->courseId . " 
+                  GROUP BY userid, d
+                ) AS l 
+                LEFT JOIN mdl_block_xp_log 
+                ON mdl_block_xp_log.userid = l.userid 
+                  AND mdl_block_xp_log.courseid = l.courseid 
+                  AND DATE(FROM_UNIXTIME(mdl_block_xp_log.time)) = l.d 
+                GROUP BY l.userid, l.d
+              ) AS c 
+              INNER JOIN mdl_block_igat_learningstyles ON c.courseid = mdl_block_igat_learningstyles.courseid 
+                AND c.userid = mdl_block_igat_learningstyles.userid 
+              WHERE c.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
                 AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax
-							GROUP BY userid, d) 
-							AS Eventcount"; 
-							
+            ) AS Eventcount";
 		$record = $DB->get_record_sql($sql);
 		if(empty($record->feedbackrate)) {
 			return 0;

@@ -66,10 +66,17 @@ class igat_logging
     if(!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $date)) { // YYYY-MM-DD
       return false;
     }
+    
+    // Delete block xp logs used for game element statistics
     $sql = "DELETE FROM mdl_block_xp_log WHERE time < UNIX_TIMESTAMP('" . $date . "') AND courseid = " . $courseId;
     $DB->execute($sql);
     
+    // Delete gamification dashboard view logs
     $sql = "DELETE FROM mdl_block_igat_dashboard_log WHERE time < (UNIX_TIMESTAMP('" . $date . "') * 1000) AND courseid = " . $courseId;
+    $DB->execute($sql);
+    
+    // Delete moodle logs used for gamification feedback rate calculation
+    $sql = "DELETE FROM mdl_logstore_standard_log WHERE timecreated < UNIX_TIMESTAMP('" . $date . "') AND courseid = " . $courseId;
     $DB->execute($sql);
     
     return true;
@@ -82,15 +89,20 @@ class igat_logging
    */
   public function deleteLogsAfter($date, $courseId) {
     global $DB;
-    if(!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $date)) { // YYYY-MM-DD
+     if(!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $date)) { // YYYY-MM-DD
       return false;
     }
+    // Delete block xp logs used for game element statistics
     $sql = "DELETE FROM mdl_block_xp_log WHERE time > UNIX_TIMESTAMP('" . $date . "') AND courseid = " . $courseId;
     $DB->execute($sql);
     
+    // Delete gamification dashboard view logs
     $sql = "DELETE FROM mdl_block_igat_dashboard_log WHERE time > (UNIX_TIMESTAMP('" . $date . "') * 1000) AND courseid = " . $courseId;
     $DB->execute($sql);
     
+    // Delete moodle logs used for gamification feedback rate calculation
+    $sql = "DELETE FROM mdl_logstore_standard_log WHERE timecreated > UNIX_TIMESTAMP('" . $date . "') AND courseid = " . $courseId;
+    $DB->execute($sql);
     return true;
   }
 }
