@@ -17,7 +17,7 @@ class usersettings_form extends moodleform {
 					
 				//leaderboard display type
 				$leaderboard_display_types = array('all' => 'All students', 
-																					 'limited' => '5 studens ahead of me and behind me', 
+																					 'limited' => '5 students ahead of me and behind me', 
 																					 'hide' => 'Hide leaderboard');
 				$mform->addElement('select', 'leaderboarddisplay', 'Leaderboard display', $leaderboard_display_types);
 				

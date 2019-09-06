@@ -117,7 +117,6 @@ class igat_badges
       }
     }
     
-    
     //no open badges?
     $numOpenBadges = count($openBadges);
     if($numOpenBadges == 0) {
@@ -126,7 +125,8 @@ class igat_badges
     
     //get random badge criterion
     $randBadge = $openBadges[array_rand($openBadges)];
-    return strip_tags($randBadge->criteria[1]->description) . ' to <b>earn a badge!</b>';
+    end($randBadge->criteria);
+    return strip_tags($randBadge->criteria[key($randBadge->criteria)]->description) . ' to <b>earn a badge!</b>';
   }
 	
 	/**

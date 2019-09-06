@@ -1,19 +1,29 @@
+
 # IGAT #
 
-IGAT - Interactive Gamification Analytics Tool is an moodle block plugin that adds gamification analytics features to your course.
+IGAT - Interactive Gamification Analytics Tool is an moodle block plugin that adds gamification analytics features to your course. This plugin buils upon the moodle badge system and the gamification added by the "Level Up!" plugin. It allows indeph behavior analysis of students with different learning styles by using the "ALSTEA" plugin. 
+
+## Features ##
+* A gamification dashboard for the students - everything concerning the gamification is at one place
+* Gamification analytics for teachers: Indeph statistics about the gamification that can be filtered by learning style
+	* Gamification dashboard statistics: gamification tab views, tab view duration, subsequent pages to gamification dashboard, chosen leaderboard settings
+	* Game elemtents analytics: gamification feedback rate, points distribution, level distribution, average time to earn badges and reach levels
 
 ## Requirements ##
 * Moodle version 3.7.1
-* [Level up!](https://moodle.org/plugins/block_xp) version 2019161101
+* [Level up!](https://moodle.org/plugins/block_xp) plugin version 2019161101
+* ALSTEA plugin version 2018101302
 
 ## Installation and Configuration ##
 
-1. Download the latest release or clone this repository into a folder "igat" and zip this folder 
-2. Go to Site Administration->Plugins->Install Plugins in moodle and upload the zip to install this plugin
-3. Install "Level up!" plugin
-4. Add "Level up!" block to your course
-5. Configure gamification in "Level up!" settings and particularly click "Save changes" in levels tab.
+1. Install "Level up!" plugin and add "Level up!" block to your course
+2. Configure gamification in "Level up!" settings and particularly click "Save changes" in levels tab.
+3. Install "ALSTEA" plugin and add it to your course
+4. Download the latest release of IGAT or clone this repository into a folder "igat" and zip this folder 
+5. Go to Site Administration->Plugins->Install Plugins in moodle and upload the zip to install this plugin
 6. Add "IGAT" block to your course
+
+Now, the level up block can be hidden in this course. The gamification configuration can be accessed via "Gamification Analytics"->Configuration. There is also a link for managing the badges. Always create a criteria description when setting badge criteria, as this description will be userd on the students IGAT block.
 
 ## License ##
 
