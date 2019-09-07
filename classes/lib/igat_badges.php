@@ -125,8 +125,12 @@ class igat_badges
     
     //get random badge criterion
     $randBadge = $openBadges[array_rand($openBadges)];
-    end($randBadge->criteria);
-    return strip_tags($randBadge->criteria[key($randBadge->criteria)]->description) . ' to <b>earn a badge!</b>';
+    foreach($randBadge->criteria as &$criterion) {
+      if(!empty($criterion->description)) {
+        return strip_tags($criterion->description) . ' to <b>earn a badge!</b>';
+      }
+    }
+    return "Earn badges!";
   }
 	
 	/**
