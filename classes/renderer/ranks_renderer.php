@@ -34,6 +34,8 @@ class ranks_renderer
     global $USER;		
     $leaderboard = $this->lib_ranks->getLeaderboard($USER->id); ?>
     
+    <p>The ranks are calculated based on experience points.</p>
+    
     <table class="leaderboard">
       <tr>
         <th class="smallcolumn">Rank</th>
@@ -43,6 +45,7 @@ class ranks_renderer
         <th>Badges</th>
       </tr>
 <?php 
+			$usersettings = $this->lib_usersettings->getUsersettings($USER->id);
       foreach($leaderboard as &$leader) {
         $class = "";
         if($leader->userid == $USER->id) {
@@ -50,7 +53,15 @@ class ranks_renderer
         }
         echo '<tr class="' . $class . '">';
         echo '<td class="smallcolumn">' . $leader->rank . '</td>';
-        echo '<td class="mediumcolumn">' . $leader->firstname . ' ' . $leader->lastname . '</td>';
+        if($leader->userid == $USER->id) {
+          echo '<td class="mediumcolumn">YOU</td>';
+        }
+        else if($usersettings->anonymousleaderboard == 1){
+          echo '<td class="mediumcolumn">Someone</td>';
+        }
+        else {
+          echo '<td class="mediumcolumn">' . $leader->firstname . ' ' . $leader->lastname . '</td>';
+        }
         echo '<td class="smallcolumn">' . $leader->xp . '</td>';
         echo '<td class="smallcolumn">' . $leader->lvl . '</td>';
         echo '<td>';

@@ -13,7 +13,7 @@ class usersettings_form extends moodleform {
 				
 				// Anonymity in leaderboard
 				$mform->addElement('advcheckbox', 'anonymousleaderboard', 
-					'Anonymity in leaderboard', 'Show <b>anonymous</b> instead of my name in the leaderboard tab for all students');
+					'Anonymity in leaderboard', 'Show <b>anonymous</b> instead of my name in the leaderboard tab for all students and hide all other students names for me.');
 					
 				//leaderboard display type
 				$leaderboard_display_types = array('all' => 'All students', 

@@ -50,8 +50,8 @@ class badges_renderer {
                 <p><?php echo $badge->description; ?></p>
                 <p>Earned on <?php echo userdate($badge->dateissued, '%d %b %Y'); ?></p>
                 <p> 
-                  <?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id); ?>
-                  of your class earned this badge
+                  <b><?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id); ?>
+                  of your class earned this badge</b>
                 </p>
               </div>
             </div>
@@ -75,8 +75,8 @@ class badges_renderer {
               <h3><?php echo $badge->name; ?></h3>
               <p><?php echo $badge->description; ?></p>
               <p> 
-                <?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id, $courseId); ?>
-                of your class earned this badge
+                <b><?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id, $courseId); ?>
+                of your class earned this badge</b>
               </p>
               <?php $this->render_criteria($badge); ?>
             </div>

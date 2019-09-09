@@ -113,9 +113,9 @@ class progress_renderer
 		</div>
 		<div class="progressblock">
 			<h6>Statistics</h6>
-			<span class="progressinfo"><b><?php echo $levelProgressStatistics->equal * 100; ?>%</b> are in your level</span>
-			<span class="progressinfo"><b><?php echo $levelProgressStatistics->higher * 100; ?>%</b> are in a higher level</span>
-			<span class="progressinfo"><b><?php echo $levelProgressStatistics->lower * 100; ?>%</b> are in a lower level</span>
+			<span class="progressinfo"><b><?php echo $levelProgressStatistics->equal * 100; ?>%</b> of your peers are in your level</span>
+			<span class="progressinfo"><b><?php echo $levelProgressStatistics->higher * 100; ?>%</b> of your peers are in a higher level</span>
+			<span class="progressinfo"><b><?php echo $levelProgressStatistics->lower * 100; ?>%</b> of your peers are in a lower level</span>
 			<a href="<?php echo new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $this->courseId, 'tab' => 'ranks')); ?>">View Leaderboard</a>	
 		</div>
 		<div class="progressblock">
@@ -124,7 +124,7 @@ class progress_renderer
 				echo '<span class="progressinfo">' . $info . '</span>';
 			} 
 			if(count($openActivities) == 0) {
-				echo '<p>You completed all quizzes and assignments!</p>';
+				echo '<p>There are no open assignments or quizzes with a point reward that you have not completed yet.</p>';
 			}?>
 		</div>
 	</div>
