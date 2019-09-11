@@ -24,7 +24,7 @@ class igat_capabilities
 	}
 	
 	/**
-	 * Checks if the user is manager, teacher or non-editing teacher.
+	 * Checks if the user is admin, manager, teacher or non-editing teacher.
 	 * @param int $courseId the id of the course to check for
 	 * @param int $userId the id of the user to check for
 	 * @return boolean true if the user is manager or teacher
@@ -37,6 +37,15 @@ class igat_capabilities
 				return true;
 			}
 		}
+    
+    //check for admin
+    $admins = get_admins();
+    $isadmin = false;
+    foreach($admins as $admin) {
+        if ($userId == $admin->id) {
+            return true;
+        }
+    }
 		return false;
 	}
 }

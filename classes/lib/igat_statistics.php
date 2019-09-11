@@ -442,7 +442,6 @@ class igat_statistics
                 AND input >= $inputMin AND input <= $inputMax
                 AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax 
 							GROUP BY bins"; 
-		
 		$histogram = array();
 		$records = $DB->get_records_sql($sql);
 		foreach($records as &$record) {
@@ -513,6 +512,42 @@ class igat_statistics
 		}
 		return $result;
 	}
+  
+  /**
+   * Gets the badges distribution of the current students in this course
+   * @param int $processingMin the minimum processing learning style score
+   * @param int $processingMax the maximum processing learning style score
+   * @param int $perceptionMin the minimum perception learning style score
+   * @param int $perceptionMax the maximum perception learning style score
+   * @param int $inputMin the minimum input learning style score
+   * @param int $inputMax the maximum input learning style score
+   * @param int $comprehensionMin the minimum comprehension learning style score
+   * @param int $comprehensionMax the maximum comprehension learning style score
+   */	
+  public function getBadgesDistribution($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
+    global $DB;
+    $sql = "SELECT name, COUNT(badgeid) AS sum FROM mdl_badge 
+            LEFT JOIN ( 
+              SELECT badgeid FROM mdl_badge_issued 
+              INNER JOIN mdl_block_igat_learningstyles 
+                ON mdl_badge_issued.userid = mdl_block_igat_learningstyles.userid 
+              WHERE processing >= $processingMin AND processing <= $processingMax
+                AND perception >= $perceptionMin AND perception <= $perceptionMax
+                AND input >= $inputMin AND input <= $inputMax
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax 
+            ) AS issu 
+            ON mdl_badge.id = issu.badgeid
+            WHERE courseid = " . $this->courseId . "
+            GROUP BY mdl_badge.id ";
+    
+    $data = array();
+		$records = $DB->get_records_sql($sql);
+		foreach($records as &$record) {
+			$data[$record->name] = $record->sum;
+		}
+    return $data;
+  }
   
   /**
    * Gets the average days needed to advance to all levels filtered by learning style

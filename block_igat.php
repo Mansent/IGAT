@@ -13,6 +13,7 @@ require_once('classes/lib/igat_progress.php');
 require_once('classes/lib/igat_badges.php');
 require_once('classes/lib/igat_ranks.php');
 require_once('classes/lib/igat_capabilities.php');
+require_once('classes/lib/igat_notification.php');
 
 /**
  * igat block.
@@ -43,6 +44,7 @@ class block_igat extends block_base {
         $lib_badges = new igat_badges($COURSE->id);
         $lib_ranks = new igat_ranks($COURSE->id);
 				$lib_capabilities = new igat_capabilities();
+        $lib_notification = new igat_notification();
 
         if ($this->content !== null) {
             return $this->content;
@@ -121,7 +123,36 @@ class block_igat extends block_base {
             </div>
           </a>';
 			}
-			
+      
+      // Check notifications
+      $notification = $lib_notification->getNotification($COURSE->id, $USER->id);
+      if($notification !== false) {
+        $this->content->text .= ' <div id="notificationContainer">'; 
+        if($notification->object == 'level') {
+          $this->content->text .= '
+          <b>You reached a new level!</b>
+          <div>
+            <img width="100" height="100" src="/blocks/igat/img/level.png"/>
+            <span class="leveloverlay">' . $notification->object_id . '</span>
+          </div>';
+        }
+        else if ($notification->object == 'badge') {
+          $badge = $lib_badges->getBadge($notification->object_id);
+          $this->content->text .= '
+          <b>You earned the badge ' . $badge->name . '!</b>
+          <div>
+            <img width="100" height="100" src="' . $lib_badges->getBadgeImageURL($badge) .  '"/>
+          </div>';
+        }
+        $this->content->text .= ' 
+            <button type="button" class="btn btn-primary">OK</button>
+          </div>
+          <script>
+            document.getElementById("notificationContainer").onclick = function(){
+              document.getElementById("notificationContainer").style.display = "none";
+            };
+          </script>';
+      }
       $this->content->footer = '';
 
       return $this->content;

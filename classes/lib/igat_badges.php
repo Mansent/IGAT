@@ -10,7 +10,6 @@ class igat_badges
 {
   private $courseId;
   private $currentBadges;
-  private $currentUserId;
   
   /**
    * Creates a new badge library object.
@@ -25,8 +24,7 @@ class igat_badges
 	 * if the user earns this badge by testing if $badge->dateissued != null.
 	 * @return array $badge all badges that are visible to this student
 	 */
-	public function getCurrentUserBadges()
-	{
+	public function getCurrentUserBadges() {
 		global $USER;
     return $this->getUserBadges($USER->id);
 	}
@@ -38,11 +36,6 @@ class igat_badges
 	 * @return array $badge all badges that are visible to this student
 	 */
   public function getUserBadges($userId) {
-    // Buffer result to save db queries for multiple function calls
-    /*if($this->currentUserId == $userId) {
-      return $this->currentBadges;
-    }
-	$this->currentUserId = $userId;*/
 		
     // Only use default parameters
 		$type = 2;
@@ -76,6 +69,22 @@ class igat_badges
 		$fsize = 'f1';
 		$imageurl = moodle_url::make_pluginfile_url($context->id, 'badges', 'badgeimage', $badge->id, '/', $fsize, false);
 		return $imageurl;
+  }
+
+  /** 
+	 * Gets a badge for this user from an id
+	 * @param int $id the id of the badge to get 
+	 * @return badge the requested badge 
+	 */
+  public function getBadge($id) {
+    global $USER;
+    $badges = $this->getUserBadges($USER->id);
+    foreach($badges as &$badge) {
+      if($badge->id == $id) {
+        return $badge;
+      }
+    }
+    return null;
   }
   
   /**

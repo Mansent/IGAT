@@ -49,12 +49,20 @@ class game_elements_analytics_renderer
 		$data = array_values($distribution);
 		$ac_renderer->renderBarChart(8, $labels, $data, "Students", "Levels Distribution", false); 
     
+    
 		echo '<h3>Average days to reach level</h3>';
 		$ac_renderer->renderLsFilter(9); 
     $daysdata = $lib_statistics->getAverageDaysToLevel();
 		$labels = array_keys($daysdata);
 		$data = array_values($daysdata);
 		$ac_renderer->renderBarChart(9, $labels, $data, "Days", "Average days to reach level", false); 
+    
+    echo '<h3>Badges distribution</h3>';
+    $ac_renderer->renderLsFilter(11);
+    $distribution = $lib_statistics->getBadgesDistribution();
+		$labels = array_keys($distribution);
+		$data = array_values($distribution);
+		$ac_renderer->renderBarChart(11, $labels, $data, "Students", "Badges Distribution", false); 
     
 		echo '<h3>Average days to earn badge</h3>';
 		$ac_renderer->renderLsFilter(10);
