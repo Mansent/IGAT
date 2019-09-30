@@ -28,18 +28,17 @@ class igat_learningstyles {
    * @return boolean if it is installed
    */
   public function lsPluginInstalled() {
-    global $DB;
-    
+    global $DB, $CFG;
     if(isset($pluginInstalled)) {
       return $pluginInstalled;
     }
     
-    $records = $DB->get_records_sql("SHOW TABLES LIKE 'mdl_alstea'"); // check if table for alstea exists
+    $records = $DB->get_records_sql("SHOW TABLES LIKE '" . $CFG->prefix . "alstea'"); // check if table for alstea exists
     $dbOk = (count($records) > 0);
     
     if($dbOk) {
-      $records = $DB->get_records_sql("SELECT * FROM `mdl_course_modules` 
-          INNER JOIN `mdl_modules` ON mdl_course_Modules.module = mdl_modules.id 
+      $records = $DB->get_records_sql("SELECT * FROM `" . $CFG->prefix . "course_modules` 
+          INNER JOIN `" . $CFG->prefix . "modules` ON " . $CFG->prefix . "course_Modules.module = " . $CFG->prefix . "modules.id 
         WHERE name = 'alstea'");
       $courseOk = (count($records) > 0);
       $this->pluginInstalled = $courseOk;
@@ -71,10 +70,10 @@ class igat_learningstyles {
    * @return int gets the id of the newest alstea datast for the given user
    */
   private function getUserDatasetId($userId) {
-    global $DB;
-    $record = $DB->get_record_sql("SELECT mdl_alstea_datasets.id FROM `mdl_course_modules` 
-        INNER JOIN `mdl_modules` ON mdl_course_Modules.module = mdl_modules.id 
-        INNER JOIN `mdl_alstea_datasets` ON mdl_course_modules.id = mdl_alstea_datasets.cmid 
+    global $DB, $CFG;
+    $record = $DB->get_record_sql("SELECT " . $CFG->prefix . "alstea_datasets.id FROM `" . $CFG->prefix . "course_modules` 
+        INNER JOIN `" . $CFG->prefix . "modules` ON " . $CFG->prefix . "course_Modules.module = " . $CFG->prefix . "modules.id 
+        INNER JOIN `" . $CFG->prefix . "alstea_datasets` ON " . $CFG->prefix . "course_modules.id = " . $CFG->prefix . "alstea_datasets.cmid 
       WHERE course = " . $this->courseId . " AND userid = " . $userId . " AND name = 'alstea'  
       ORDER BY timecreated DESC");
     return $record->id;
@@ -86,12 +85,12 @@ class igat_learningstyles {
    * to perform joins in sql queries and filter results by learning style.
    */
   public function refreshLearningStyleData() {
-    global $DB;
+    global $DB, $CFG;
     $DB->delete_records_select('block_igat_learningstyles', 'TRUE');
     // get available datasets with user ids from db
-    $sql = "SELECT mdl_alstea_datasets.id, userid FROM `mdl_course_modules` 
-              INNER JOIN `mdl_modules` ON mdl_course_Modules.module = mdl_modules.id 
-              INNER JOIN `mdl_alstea_datasets` ON mdl_course_modules.id = mdl_alstea_datasets.cmid 
+    $sql = "SELECT " . $CFG->prefix . "alstea_datasets.id, userid FROM `" . $CFG->prefix . "course_modules` 
+              INNER JOIN `" . $CFG->prefix . "modules` ON " . $CFG->prefix . "course_Modules.module = " . $CFG->prefix . "modules.id 
+              INNER JOIN `" . $CFG->prefix . "alstea_datasets` ON " . $CFG->prefix . "course_modules.id = " . $CFG->prefix . "alstea_datasets.cmid 
             WHERE course = " . $this->courseId . " AND name = 'alstea'  
             ORDER BY timecreated DESC";
     $records = $DB->get_records_sql($sql);

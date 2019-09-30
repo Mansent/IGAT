@@ -13,9 +13,9 @@ class igat_notification
 	 * @return the notification or false if ther is no new notification
 	 */
 	public function getNotification($courseId, $userId) {
-		global $DB;
+		global $DB, $CFG;
     
-    $sql = 'SELECT * FROM mdl_block_igat_notifications 
+    $sql = 'SELECT * FROM ' . $CFG->prefix . 'block_igat_notifications 
                                     WHERE courseid = ' . $courseId . ' 
                                     AND userid = ' . $userId . ' 
                                     AND processed = 0';
@@ -24,7 +24,7 @@ class igat_notification
       return false;
     }
     
-    $sql = "UPDATE mdl_block_igat_notifications SET processed = 1 WHERE id = " . $record->id;
+    $sql = "UPDATE " . $CFG->prefix . "block_igat_notifications SET processed = 1 WHERE id = " . $record->id;
     $DB->execute($sql); 
     return $record;
 	}

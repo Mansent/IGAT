@@ -26,12 +26,12 @@ class igat_statistics
 	 * @return the calculated badge achievement rate
 	 */
 	public function getBadgeAchievementRate($badgeId) {
-		global $DB;
+		global $DB, $CFG;
 		$studentRoleId = 5;
 		$sql = "SELECT (
-					SELECT COUNT(*) FROM `mdl_badge_issued` WHERE badgeid = '$badgeId'
+					SELECT COUNT(*) FROM `" . $CFG->prefix . "badge_issued` WHERE badgeid = '$badgeId'
 				) / (
-					SELECT COUNT(*) FROM `mdl_enrol` WHERE `courseid` = '" . $this->courseId . "' AND `roleid` = '$studentRoleId' 
+					SELECT COUNT(*) FROM `" . $CFG->prefix . "enrol` WHERE `courseid` = '" . $this->courseId . "' AND `roleid` = '$studentRoleId' 
 				) AS achievementrate";
 		$db_record = $DB->get_record_sql($sql);
 		$achievementRate = doubleval($db_record->achievementrate);
@@ -49,7 +49,7 @@ class igat_statistics
    * @retrun array the calculated statistics
    */
   public function getUserLevelStatistics($userId) {
-    global $DB;
+    global $DB, $CFG;
     
     //Load level info
     $userInfo = $this->lib_progress->getUserInfo($userId);
@@ -60,10 +60,10 @@ class igat_statistics
     }
     
     //Calculate statistic    
-    $num_total = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE courseid = $this->courseId");
-    $num_lower = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE `lvl` < $userLevel AND courseid = $this->courseId");
-    $num_higher = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE `lvl` > $userLevel AND courseid = $this->courseId");
-    $num_equal = $DB->count_records_sql("SELECT COUNT(*) FROM `mdl_block_xp` WHERE `lvl` = $userLevel AND courseid = $this->courseId");
+    $num_total = $DB->count_records_sql("SELECT COUNT(*) FROM `" . $CFG->prefix . "block_xp` WHERE courseid = $this->courseId");
+    $num_lower = $DB->count_records_sql("SELECT COUNT(*) FROM `" . $CFG->prefix . "block_xp` WHERE `lvl` < $userLevel AND courseid = $this->courseId");
+    $num_higher = $DB->count_records_sql("SELECT COUNT(*) FROM `" . $CFG->prefix . "block_xp` WHERE `lvl` > $userLevel AND courseid = $this->courseId");
+    $num_equal = $DB->count_records_sql("SELECT COUNT(*) FROM `" . $CFG->prefix . "block_xp` WHERE `lvl` = $userLevel AND courseid = $this->courseId");
     
     if($num_total == 0) { // avoid division by zero
       return null;
@@ -81,8 +81,8 @@ class igat_statistics
 	 * log files by deactivating the scheduled task.
 	 */
 	public function disableGamificationLogDeletion() {
-		global $DB;
-		$sql = "UPDATE mdl_task_scheduled SET disabled = 1 WHERE `component` = 'block_xp'";
+		global $DB, $CFG;
+		$sql = "UPDATE " . $CFG->prefix . "task_scheduled SET disabled = 1 WHERE `component` = 'block_xp'";
 		$DB->execute($sql);
 	}
 	
@@ -99,20 +99,20 @@ class igat_statistics
    */
 	public function getDashboardPageViews($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
-		global $DB;
+		global $DB, $CFG;
     
     // Get min and max date
-    $sql = "SELECT FROM_UNIXTIME(MIN(time)/1000) AS mindate, FROM_UNIXTIME(MAX(time)/1000) AS maxdate FROM `mdl_block_igat_dashboard_log`";
+    $sql = "SELECT FROM_UNIXTIME(MIN(time)/1000) AS mindate, FROM_UNIXTIME(MAX(time)/1000) AS maxdate FROM `" . $CFG->prefix . "block_igat_dashboard_log`";
     $record = $DB->get_record_sql($sql);
     $minDate = strtotime($record->mindate);
     $maxDate = strtotime($record->maxdate); 
         
 		$result;
-    $sql = "SELECT FROM_UNIXTIME(time/1000) AS date, COUNT(*) AS views FROM mdl_block_igat_dashboard_log 
-              INNER JOIN mdl_block_igat_learningstyles ON 
-                mdl_block_igat_dashboard_log.courseid = mdl_block_igat_learningstyles.courseid 
-                AND mdl_block_igat_dashboard_log.userid = mdl_block_igat_learningstyles.userid 
-              WHERE tab = '+++tab+++' AND mdl_block_igat_dashboard_log.courseid = " . $this->courseId . " 
+    $sql = "SELECT FROM_UNIXTIME(time/1000) AS date, COUNT(*) AS views FROM " . $CFG->prefix . "block_igat_dashboard_log 
+              INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
+                " . $CFG->prefix . "block_igat_dashboard_log.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
+                AND " . $CFG->prefix . "block_igat_dashboard_log.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
+              WHERE tab = '+++tab+++' AND " . $CFG->prefix . "block_igat_dashboard_log.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
@@ -169,14 +169,14 @@ class igat_statistics
    */
 	public function getAverageDashboardViewDurations($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
-		global $DB;        
+		global $DB, $CFG;        
 		$result;
     
-    $sql = "SELECT AVG(duration) AS average FROM mdl_block_igat_dashboard_log 
-              INNER JOIN mdl_block_igat_learningstyles ON 
-                mdl_block_igat_dashboard_log.courseid = mdl_block_igat_learningstyles.courseid 
-                AND mdl_block_igat_dashboard_log.userid = mdl_block_igat_learningstyles.userid 
-              WHERE tab = '+++tab+++' AND mdl_block_igat_dashboard_log.courseid = " . $this->courseId . " 
+    $sql = "SELECT AVG(duration) AS average FROM " . $CFG->prefix . "block_igat_dashboard_log 
+              INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
+                " . $CFG->prefix . "block_igat_dashboard_log.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
+                AND " . $CFG->prefix . "block_igat_dashboard_log.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
+              WHERE tab = '+++tab+++' AND " . $CFG->prefix . "block_igat_dashboard_log.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
@@ -218,14 +218,14 @@ class igat_statistics
    */
 	public function getVisabilitySettingsStatistics($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
-		global $DB;        
+		global $DB, $CFG;        
 		$result;
     
-    $sql = "SELECT COUNT(*) as sum FROM `mdl_block_igat_usersettings` 
-              INNER JOIN mdl_block_igat_learningstyles ON 
-                mdl_block_igat_usersettings.courseid = mdl_block_igat_learningstyles.courseid 
-                AND mdl_block_igat_usersettings.userid = mdl_block_igat_learningstyles.userid 
-              WHERE leaderboarddisplay = '+++display+++' AND mdl_block_igat_usersettings.courseid = " . $this->courseId . " 
+    $sql = "SELECT COUNT(*) as sum FROM `" . $CFG->prefix . "block_igat_usersettings` 
+              INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
+                " . $CFG->prefix . "block_igat_usersettings.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
+                AND " . $CFG->prefix . "block_igat_usersettings.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
+              WHERE leaderboarddisplay = '+++display+++' AND " . $CFG->prefix . "block_igat_usersettings.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
@@ -262,14 +262,14 @@ class igat_statistics
    */
 	public function getAnonymitySettingsStatistics($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
-		global $DB;        
+		global $DB, $CFG;        
 		$result;
     
-    $sql = "SELECT COUNT(*) as sum FROM `mdl_block_igat_usersettings` 
-              INNER JOIN mdl_block_igat_learningstyles ON 
-                mdl_block_igat_usersettings.courseid = mdl_block_igat_learningstyles.courseid 
-                AND mdl_block_igat_usersettings.userid = mdl_block_igat_learningstyles.userid 
-              WHERE anonymousleaderboard = '+++anonymity+++' AND mdl_block_igat_usersettings.courseid = " . $this->courseId . " 
+    $sql = "SELECT COUNT(*) as sum FROM `" . $CFG->prefix . "block_igat_usersettings` 
+              INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
+                " . $CFG->prefix . "block_igat_usersettings.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
+                AND " . $CFG->prefix . "block_igat_usersettings.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
+              WHERE anonymousleaderboard = '+++anonymity+++' AND " . $CFG->prefix . "block_igat_usersettings.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
@@ -301,14 +301,14 @@ class igat_statistics
    */
 	public function getSubsequentPagesStatistics($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
-		global $DB;        
+		global $DB, $CFG;        
 		$result;
     
-    $sql = "SELECT mdl_block_igat_dashboard_log.id, tab, next_page, COUNT(*) AS sum FROM `mdl_block_igat_dashboard_log` 
-              INNER JOIN mdl_block_igat_learningstyles ON 
-                mdl_block_igat_dashboard_log.courseid = mdl_block_igat_learningstyles.courseid 
-                AND mdl_block_igat_dashboard_log.userid = mdl_block_igat_learningstyles.userid 
-              WHERE tab != next_page AND mdl_block_igat_dashboard_log.courseid = " . $this->courseId . " 
+    $sql = "SELECT " . $CFG->prefix . "block_igat_dashboard_log.id, tab, next_page, COUNT(*) AS sum FROM `" . $CFG->prefix . "block_igat_dashboard_log` 
+              INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
+                " . $CFG->prefix . "block_igat_dashboard_log.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
+                AND " . $CFG->prefix . "block_igat_dashboard_log.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
+              WHERE tab != next_page AND " . $CFG->prefix . "block_igat_dashboard_log.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
@@ -360,7 +360,7 @@ class igat_statistics
    */	
 	public function getGamificationFeedbackRate($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
-		global $DB;
+		global $DB, $CFG;
     /* 1. Get days each student active in course
      * 2. Join count of gamification events to this
      * 3. Join learning styles filter to the result
@@ -368,18 +368,18 @@ class igat_statistics
     $sql = "SELECT id, AVG(Eventcount.sum) AS feedbackRate FROM (
               SELECT c.id, c.d, c.sum FROM (
                 SELECT l.id, l.userid, l.courseid, l.d, COUNT(xp) AS sum  FROM (
-                  SELECT id, courseid, userid, DATE(FROM_UNIXTIME(timecreated)) AS d FROM `mdl_logstore_standard_log` 
+                  SELECT id, courseid, userid, DATE(FROM_UNIXTIME(timecreated)) AS d FROM `" . $CFG->prefix . "logstore_standard_log` 
                   WHERE action = 'viewed' AND target = 'course' AND courseid = " . $this->courseId . " 
                   GROUP BY userid, d
                 ) AS l 
-                LEFT JOIN mdl_block_xp_log 
-                ON mdl_block_xp_log.userid = l.userid 
-                  AND mdl_block_xp_log.courseid = l.courseid 
-                  AND DATE(FROM_UNIXTIME(mdl_block_xp_log.time)) = l.d 
+                LEFT JOIN " . $CFG->prefix . "block_xp_log 
+                ON " . $CFG->prefix . "block_xp_log.userid = l.userid 
+                  AND " . $CFG->prefix . "block_xp_log.courseid = l.courseid 
+                  AND DATE(FROM_UNIXTIME(" . $CFG->prefix . "block_xp_log.time)) = l.d 
                 GROUP BY l.userid, l.d
               ) AS c 
-              INNER JOIN mdl_block_igat_learningstyles ON c.courseid = mdl_block_igat_learningstyles.courseid 
-                AND c.userid = mdl_block_igat_learningstyles.userid 
+              INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON c.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
+                AND c.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
               WHERE c.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
@@ -406,7 +406,7 @@ class igat_statistics
    */	
 	public function getPointsDistribution($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
-		global $DB;
+		global $DB, $CFG;
 		
 		//Get bins size in relation to number of levels and points for highest level
 		$levelsInfo = $this->lib_progress->getLevelsInfo();
@@ -431,12 +431,12 @@ class igat_statistics
 				$binSql .= "ELSE '>=" . $bins[$i] . "'";
 			}
 		}
-		$sql = "SELECT mdl_block_xp.id, COUNT(*) AS sum, CASE " . $binSql . "	END AS bins
-						FROM `mdl_block_xp` 
-						INNER JOIN mdl_block_igat_learningstyles ON 
-                mdl_block_xp.courseid = mdl_block_igat_learningstyles.courseid 
-                AND mdl_block_xp.userid = mdl_block_igat_learningstyles.userid 
-              WHERE mdl_block_xp.courseid = " . $this->courseId . " 
+		$sql = "SELECT " . $CFG->prefix . "block_xp.id, COUNT(*) AS sum, CASE " . $binSql . "	END AS bins
+						FROM `" . $CFG->prefix . "block_xp` 
+						INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
+                " . $CFG->prefix . "block_xp.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
+                AND " . $CFG->prefix . "block_xp.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
+              WHERE " . $CFG->prefix . "block_xp.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
@@ -480,14 +480,14 @@ class igat_statistics
    */	
 	public function getLevelsDistribution($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
-		global $DB;
+		global $DB, $CFG;
 		
 		$levelsInfo = $this->lib_progress->getLevelsInfo();
-		$sql = "SELECT lvl, COUNT(*) AS sum FROM `mdl_block_xp` 
-						INNER JOIN mdl_block_igat_learningstyles ON 
-                mdl_block_xp.courseid = mdl_block_igat_learningstyles.courseid 
-                AND mdl_block_xp.userid = mdl_block_igat_learningstyles.userid 
-              WHERE mdl_block_xp.courseid = " . $this->courseId . " 
+		$sql = "SELECT lvl, COUNT(*) AS sum FROM `" . $CFG->prefix . "block_xp` 
+						INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
+                " . $CFG->prefix . "block_xp.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
+                AND " . $CFG->prefix . "block_xp.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
+              WHERE " . $CFG->prefix . "block_xp.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
@@ -526,20 +526,20 @@ class igat_statistics
    */	
   public function getBadgesDistribution($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
-    global $DB;
-    $sql = "SELECT name, COUNT(badgeid) AS sum FROM mdl_badge 
+    global $DB, $CFG;
+    $sql = "SELECT name, COUNT(badgeid) AS sum FROM " . $CFG->prefix . "badge 
             LEFT JOIN ( 
-              SELECT badgeid FROM mdl_badge_issued 
-              INNER JOIN mdl_block_igat_learningstyles 
-                ON mdl_badge_issued.userid = mdl_block_igat_learningstyles.userid 
+              SELECT badgeid FROM " . $CFG->prefix . "badge_issued 
+              INNER JOIN " . $CFG->prefix . "block_igat_learningstyles 
+                ON " . $CFG->prefix . "badge_issued.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
               WHERE processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
                 AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax 
             ) AS issu 
-            ON mdl_badge.id = issu.badgeid
+            ON " . $CFG->prefix . "badge.id = issu.badgeid
             WHERE courseid = " . $this->courseId . "
-            GROUP BY mdl_badge.id ";
+            GROUP BY " . $CFG->prefix . "badge.id ";
     
     $data = array();
 		$records = $DB->get_records_sql($sql);
@@ -562,28 +562,28 @@ class igat_statistics
    */	
   public function getAverageDaysToLevel($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
-    global $DB;
+    global $DB, $CFG;
     // Get average days between first gamification event and level up time for each level, a day has 86400 seconds
     $sql = "SELECT id, newlevel, AVG((leveluptime - firsteventtime) / 86400) AS avgdays FROM (
-              SELECT mdl_block_igat_levelup_log.id,
-                     mdl_block_igat_levelup_log.courseid, 
-                     mdl_block_igat_levelup_log.userid, 
+              SELECT " . $CFG->prefix . "block_igat_levelup_log.id,
+                     " . $CFG->prefix . "block_igat_levelup_log.courseid, 
+                     " . $CFG->prefix . "block_igat_levelup_log.userid, 
                      newlevel, 
-                     mdl_block_igat_levelup_log.time as leveluptime, 
-                     mdl_block_xp_log.time as firsteventtime 
-              FROM `mdl_block_igat_levelup_log` 
-              INNER JOIN `mdl_block_xp_log`
-                ON mdl_block_igat_levelup_log.courseid = mdl_block_xp_log.courseid 
-                AND mdl_block_igat_levelup_log.userid = mdl_block_xp_log.userid 
-              INNER JOIN mdl_block_igat_learningstyles ON 
-                mdl_block_igat_levelup_log.courseid = mdl_block_igat_learningstyles.courseid 
-                AND mdl_block_igat_levelup_log.userid = mdl_block_igat_learningstyles.userid 
-              WHERE mdl_block_igat_levelup_log.courseid = " . $this->courseId . " 
+                     " . $CFG->prefix . "block_igat_levelup_log.time as leveluptime, 
+                     " . $CFG->prefix . "block_xp_log.time as firsteventtime 
+              FROM `" . $CFG->prefix . "block_igat_levelup_log` 
+              INNER JOIN `" . $CFG->prefix . "block_xp_log`
+                ON " . $CFG->prefix . "block_igat_levelup_log.courseid = " . $CFG->prefix . "block_xp_log.courseid 
+                AND " . $CFG->prefix . "block_igat_levelup_log.userid = " . $CFG->prefix . "block_xp_log.userid 
+              INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
+                " . $CFG->prefix . "block_igat_levelup_log.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
+                AND " . $CFG->prefix . "block_igat_levelup_log.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
+              WHERE " . $CFG->prefix . "block_igat_levelup_log.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
                 AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax 
-              GROUP BY mdl_block_igat_levelup_log.courseid, mdl_block_igat_levelup_log.userid, mdl_block_igat_levelup_log.newlevel
+              GROUP BY " . $CFG->prefix . "block_igat_levelup_log.courseid, " . $CFG->prefix . "block_igat_levelup_log.userid, " . $CFG->prefix . "block_igat_levelup_log.newlevel
             ) AS levelups 
             GROUP BY newlevel";
     $records = $DB->get_records_sql($sql);
@@ -620,26 +620,26 @@ class igat_statistics
    */	 
   public function getAverageDaysToBadges($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
-    global $DB;
+    global $DB, $CFG;
     $sql = "SELECT id, name, userid, AVG((dateissued - firsteventtime) / 86400) AS avgdays FROM ( 
-              SELECT mdl_badge.id, 
+              SELECT " . $CFG->prefix . "badge.id, 
                      name, 
-                     mdl_badge_issued.userid, 
+                     " . $CFG->prefix . "badge_issued.userid, 
                      dateissued, 
-                     mdl_block_xp_log.time as firsteventtime 
-              FROM `mdl_badge` 
-              INNER JOIN `mdl_badge_issued` ON mdl_badge.id = mdl_badge_issued.badgeid 
-              INNER JOIN `mdl_block_xp_log` ON mdl_badge.courseid = mdl_block_xp_log.courseid 
-                      AND mdl_badge_issued.userid = mdl_block_xp_log.userid  
-              INNER JOIN mdl_block_igat_learningstyles ON 
-                mdl_badge.courseid = mdl_block_igat_learningstyles.courseid 
-                AND mdl_badge_issued.userid = mdl_block_igat_learningstyles.userid 
-              WHERE mdl_badge.courseid = " . $this->courseId . " 
+                     " . $CFG->prefix . "block_xp_log.time as firsteventtime 
+              FROM `" . $CFG->prefix . "badge` 
+              INNER JOIN `" . $CFG->prefix . "badge_issued` ON " . $CFG->prefix . "badge.id = " . $CFG->prefix . "badge_issued.badgeid 
+              INNER JOIN `" . $CFG->prefix . "block_xp_log` ON " . $CFG->prefix . "badge.courseid = " . $CFG->prefix . "block_xp_log.courseid 
+                      AND " . $CFG->prefix . "badge_issued.userid = " . $CFG->prefix . "block_xp_log.userid  
+              INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
+                " . $CFG->prefix . "badge.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
+                AND " . $CFG->prefix . "badge_issued.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
+              WHERE " . $CFG->prefix . "badge.courseid = " . $this->courseId . " 
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
                 AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax 
-              GROUP BY mdl_badge.id, mdl_badge.courseid, mdl_badge_issued.userid
+              GROUP BY " . $CFG->prefix . "badge.id, " . $CFG->prefix . "badge.courseid, " . $CFG->prefix . "badge_issued.userid
             ) AS d 
             GROUP BY id";
     $records = $DB->get_records_sql($sql);

@@ -119,14 +119,14 @@ class igat_ranks
    * @return string the message created
    */
   function getRanksStatusMessage($userId) {
-    global $DB;
+    global $DB, $CFG;
     $userPoints = $DB->get_record('block_xp', array('userid' => $userId, 'courseid' => $this->courseId))->xp;
     if($userPoints === null) {
       return "";
     }
     
-    $userBelow = $DB->get_record_sql("SELECT * FROM mdl_block_xp WHERE courseid = $this->courseId AND xp < $userPoints ORDER BY xp DESC LIMIT 1;");
-    $userAbove = $DB->get_record_sql("SELECT * FROM mdl_block_xp WHERE courseid = $this->courseId AND xp > $userPoints ORDER BY xp ASC LIMIT 1;");
+    $userBelow = $DB->get_record_sql("SELECT * FROM " . $CFG->prefix . "block_xp WHERE courseid = $this->courseId AND xp < $userPoints ORDER BY xp DESC LIMIT 1;");
+    $userAbove = $DB->get_record_sql("SELECT * FROM " . $CFG->prefix . "block_xp WHERE courseid = $this->courseId AND xp > $userPoints ORDER BY xp ASC LIMIT 1;");
     
     if($userAbove != null) {
       $pointDiff = $userAbove->xp - $userPoints;

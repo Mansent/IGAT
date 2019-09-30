@@ -61,9 +61,9 @@ class igat_usersettings
 	 * @param usersettings $usersettings the usersettings object to save for this user
 	 */
 	public function saveUsersettings($userId, $usersettings) {
-		global $DB;
+		global $DB, $CFG;
 		
-		$sql = "UPDATE mdl_block_igat_usersettings 
+		$sql = "UPDATE " . $CFG->prefix . "block_igat_usersettings 
 			SET 
 				anonymousleaderboard = '" . $usersettings->anonymousleaderboard . "',
 				leaderboarddisplay = '" . $usersettings->leaderboarddisplay . "'
