@@ -57,7 +57,7 @@ class ranks_renderer
           echo '<td class="mediumcolumn">YOU</td>';
         }
         else if($usersettings->anonymousleaderboard == 1){
-          echo '<td class="mediumcolumn">Someone</td>';
+          echo '<td class="mediumcolumn">Someone else</td>';
         }
         else {
           echo '<td class="mediumcolumn">' . $leader->firstname . ' ' . $leader->lastname . '</td>';
