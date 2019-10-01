@@ -69,9 +69,9 @@ class igat_statistics
       return null;
     }
     
-    $result->lower = $num_lower / $num_total;
-    $result->higher = $num_higher / $num_total;
-    $result->equal = $num_equal / $num_total;
+    $result->lower = round($num_lower / $num_total);
+    $result->higher = round($num_higher / $num_total);
+    $result->equal = round($num_equal / $num_total);
     return $result;
   }
 	
