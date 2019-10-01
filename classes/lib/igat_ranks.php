@@ -51,7 +51,12 @@ class igat_ranks
 				$rank = 1; // Users on top of the leaderboard should know that
 			}
 			for($i = $startIndex; $i<=$endIndex; $i++) {
-				$leaderboard[$i]->rank = $rank;
+				if($rank > 0 && startIndex < 0) { // if showing only relative rank use + sign
+				  $leaderboard[$i]->rank = '+' . $rank;
+				}
+				else {
+				  $leaderboard[$i]->rank = $rank;
+				}
 				array_push($lim_leaderboard, $leaderboard[$i]);
 				$rank++;
 			}
@@ -120,6 +125,7 @@ class igat_ranks
    */
   function getRanksStatusMessage($userId) {
     global $DB, $CFG;
+		$lib_usersettings = new igat_usersettings($this->courseId);
     $userPoints = $DB->get_record('block_xp', array('userid' => $userId, 'courseid' => $this->courseId))->xp;
     if($userPoints === null) {
       return "";
@@ -130,9 +136,14 @@ class igat_ranks
     
     if($userAbove != null) {
       $pointDiff = $userAbove->xp - $userPoints;
-      $user_record = $DB->get_record('user', array('id' => $userAbove->userid));
-      $user_record = $DB->get_record('user', array('id' => $userAbove->userid));
-      return $pointDiff . " points left to catch up <b>" . $user_record->firstname . " " . $user_record->lastname . "</b>";
+      $usersettings = $lib_usersettings->getUsersettings($userAbove->userid);
+      if($usersettings->anonymousleaderboard) {
+        return $pointDiff . " points left to catch up to <b>anonymous user</b>";
+      }
+      else {
+        $user_record = $DB->get_record('user', array('id' => $userAbove->userid));
+        return $pointDiff . " points left to catch up <b>" . $user_record->firstname . " " . $user_record->lastname . "</b>";
+      }
     }
     else {
       return "Your are <b>number one!</b>";

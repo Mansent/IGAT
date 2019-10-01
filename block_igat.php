@@ -14,6 +14,7 @@ require_once('classes/lib/igat_badges.php');
 require_once('classes/lib/igat_ranks.php');
 require_once('classes/lib/igat_capabilities.php');
 require_once('classes/lib/igat_notification.php');
+require_once('classes/lib/igat_usersettings.php');
 
 /**
  * igat block.
