@@ -72,7 +72,7 @@ class igat_learningstyles {
   private function getUserDatasetId($userId) {
     global $DB, $CFG;
     $record = $DB->get_record_sql("SELECT " . $CFG->prefix . "alstea_datasets.id FROM `" . $CFG->prefix . "course_modules` 
-        INNER JOIN `" . $CFG->prefix . "modules` ON " . $CFG->prefix . "course_Modules.module = " . $CFG->prefix . "modules.id 
+        INNER JOIN `" . $CFG->prefix . "modules` ON " . $CFG->prefix . "course_modules.module = " . $CFG->prefix . "modules.id 
         INNER JOIN `" . $CFG->prefix . "alstea_datasets` ON " . $CFG->prefix . "course_modules.id = " . $CFG->prefix . "alstea_datasets.cmid 
       WHERE course = " . $this->courseId . " AND userid = " . $userId . " AND name = 'alstea'  
       ORDER BY timecreated DESC");
@@ -89,7 +89,7 @@ class igat_learningstyles {
     $DB->delete_records_select('block_igat_learningstyles', 'TRUE');
     // get available datasets with user ids from db
     $sql = "SELECT " . $CFG->prefix . "alstea_datasets.id, userid FROM `" . $CFG->prefix . "course_modules` 
-              INNER JOIN `" . $CFG->prefix . "modules` ON " . $CFG->prefix . "course_Modules.module = " . $CFG->prefix . "modules.id 
+              INNER JOIN `" . $CFG->prefix . "modules` ON " . $CFG->prefix . "course_modules.module = " . $CFG->prefix . "modules.id 
               INNER JOIN `" . $CFG->prefix . "alstea_datasets` ON " . $CFG->prefix . "course_modules.id = " . $CFG->prefix . "alstea_datasets.cmid 
             WHERE course = " . $this->courseId . " AND name = 'alstea'  
             ORDER BY timecreated DESC";
