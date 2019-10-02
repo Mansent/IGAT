@@ -1,7 +1,7 @@
 <?php
-defined('MOODLE_INTERNAL') || die();
-
 namespace block_igat;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * This class is responsible for processing all registered events
