@@ -41,16 +41,22 @@ else if ($_GET['tab'] == 'ranks') {
 else if ($_GET['tab'] == 'settings') {
   $settingsclass = "active";
 }
+
+$lib_badges = new igat_badges($courseid);
+$numAvailableBadges = $lib_badges->getNumAvailableBadges();
 ?>
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
         <a class="nav-link <?php echo $progressclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=progress">Progress</a>
     </li>
+<?php 
+if($numAvailableBadges > 0) { ?>
     <li class="nav-item">
         <a class="nav-link <?php echo $badgesclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=badges">Badges</a>
     </li>
 <?php 
+}
 if( ($usersettings->leaderboarddisplay != 'hide'	&& !isset($_POST['leaderboarddisplay'])) // hide leaderboard tab if the user has disabled it
 			|| (isset($_POST['leaderboarddisplay']) && $_POST['leaderboarddisplay'] != 'hide')) { ?>
     <li class="nav-item">

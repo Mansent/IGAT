@@ -25,70 +25,58 @@ class badges_renderer {
    * Renders the badges tab
    */
 	public function render_tab() {
-    //any badges available?
-    $numAvailableBadges = $this->lib_badges->getNumAvailableBadges();
-    if($numAvailableBadges == 0) { ?>
-      <span class="notifications" id="user-notifications"><div class="alert alert-info alert-block fade in " role="alert" data-aria-autofocus="true" tabindex="0">
-          <button type="button" class="close" data-dismiss="alert">×</button>
-          There are no badges available. Badges can be created by the teacher.
-      </div></span>
-    <?php
-    }
-    else {
-    
-      $badges = $this->lib_badges->getCurrentUserBadges();
-      echo '<h2>Your Badges</h2>';
-      echo '<div class="igatbadgescontainer">';
-			$i = 0;
-      foreach($badges as &$badge) {
-        if($badge->dateissued != null) { // user owns badge ?>
-          <a href="<?php echo $this->lib_badges->getBadgePageUrl($badge); ?>" class="igatbadgelink">
-            <div class="igatbadge igatbadgeowned">
-              <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" />
-              <div class="igatbadgeinfo">
-                <h3><?php echo $badge->name; ?></h3>
-                <p><?php echo $badge->description; ?></p>
-                <p>Earned on <?php echo userdate($badge->dateissued, '%d %b %Y'); ?></p>
-                <p> 
-                  <b><?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id); ?>
-                  of your class earned this badge</b>
-                </p>
-              </div>
-            </div>
-          </a>
-  <?php		$i++;
-				}
-      }
-			if($i == 0) {
-				echo '<p>You have not earned any badges yet.</p>';
-			}
-      echo '</div>';
-      
-      echo '<h2>Available Badges</h2>';
-      echo '<div class="igatbadgescontainer">';
-			$i = 0;
-      foreach($badges as &$badge) {
-        if($badge->dateissued == null) { // user has not yet achieved badge ?>
-          <div class="igatbadge igatbadgeavailable">
+    $badges = $this->lib_badges->getCurrentUserBadges();
+    echo '<h2>Your Badges</h2>';
+    echo '<div class="igatbadgescontainer">';
+    $i = 0;
+    foreach($badges as &$badge) {
+      if($badge->dateissued != null) { // user owns badge ?>
+        <a href="<?php echo $this->lib_badges->getBadgePageUrl($badge); ?>" class="igatbadgelink">
+          <div class="igatbadge igatbadgeowned">
             <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" />
             <div class="igatbadgeinfo">
               <h3><?php echo $badge->name; ?></h3>
               <p><?php echo $badge->description; ?></p>
+              <p>Earned on <?php echo userdate($badge->dateissued, '%d %b %Y'); ?></p>
               <p> 
-                <b><?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id, $courseId); ?>
+                <b><?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id); ?>
                 of your class earned this badge</b>
               </p>
-              <?php $this->render_criteria($badge); ?>
             </div>
-          </div>		
-  <?php		$i++;
-				}
-      }	
-			if($i == 0) {
-				echo '<p>Currently there are no badges available.</p>';
-			}
-      echo '</div>';
+          </div>
+        </a>
+<?php		$i++;
+      }
     }
+    if($i == 0) {
+      echo '<p>You have not earned any badges yet.</p>';
+    }
+    echo '</div>';
+    
+    echo '<h2>Available Badges</h2>';
+    echo '<div class="igatbadgescontainer">';
+    $i = 0;
+    foreach($badges as &$badge) {
+      if($badge->dateissued == null) { // user has not yet achieved badge ?>
+        <div class="igatbadge igatbadgeavailable">
+          <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" />
+          <div class="igatbadgeinfo">
+            <h3><?php echo $badge->name; ?></h3>
+            <p><?php echo $badge->description; ?></p>
+            <p> 
+              <b><?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id, $courseId); ?>
+              of your class earned this badge</b>
+            </p>
+            <?php $this->render_criteria($badge); ?>
+          </div>
+        </div>		
+<?php		$i++;
+      }
+    }	
+    if($i == 0) {
+      echo '<p>Currently there are no badges available.</p>';
+    }
+    echo '</div>';
 	}
 	
 	/**

@@ -39,28 +39,26 @@ class block_igat extends block_base {
      * @return stdClass The block contents.
      */
     public function get_content() {
-        global $COURSE, $USER;
-        
-        $lib_progress = new igat_progress($COURSE->id);
-        $lib_badges = new igat_badges($COURSE->id);
-        $lib_ranks = new igat_ranks($COURSE->id);
-				$lib_capabilities = new igat_capabilities();
-        $lib_notification = new igat_notification();
+      global $COURSE, $USER;
+      
+      $lib_progress = new igat_progress($COURSE->id);
+      $lib_badges = new igat_badges($COURSE->id);
+      $lib_ranks = new igat_ranks($COURSE->id);
+      $lib_capabilities = new igat_capabilities();
+      $lib_notification = new igat_notification();
 
-        if ($this->content !== null) {
-            return $this->content;
-        }
+      if ($this->content !== null) {
+          return $this->content;
+      }
 
-        if (empty($this->instance)) {
-            $this->content = '';
-            return $this->content;
-        }
+      if (empty($this->instance)) {
+          $this->content = '';
+          return $this->content;
+      }
 
-        $this->content = new stdClass();
-        $this->content->items = array('');
-        $this->content->icons = array('');
-        
-				
+      $this->content = new stdClass();
+      $this->content->items = array('');
+      $this->content->icons = array('');
         
 			if($lib_capabilities->isManagerOrTeacher($COURSE->id, $USER->id)) {
 				$dashboardUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'progress'));
@@ -88,6 +86,8 @@ class block_igat extends block_base {
         $progressUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'progress'));
         $badgesUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'badges'));
         $ranksUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'ranks'));
+      
+      $numAvailableBadges = $lib_badges->getNumAvailableBadges();
         
         $this->content->text = ' 
           <a href="' . $progressUrl . '">
@@ -100,18 +100,22 @@ class block_igat extends block_base {
 								<button type="button" class="btn btn-primary">Show progress</button>
 							</div>
             </div>
-          </a>
-          <a href="' . $badgesUrl . '">
-            <div class="igatcard igatblue">
-              <div class="igatleftblock">
-                <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/achievement.png"/> Badges<br />
+          </a>'; 
+          if($numAvailableBadges > 0) {
+            $this->content->text .= '
+            <a href="' . $badgesUrl . '">
+              <div class="igatcard igatblue">
+                <div class="igatleftblock">
+                  <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/achievement.png"/> Badges<br />
+                </div>
+                <div class="igatlistinfo">
+                  ' . $lib_badges->getRandomOpenBadgeCriterion($USER->id) . '<br />
+                  <button type="button" class="btn btn-primary">Show badges</button>
+                </div>
               </div>
-              <div class="igatlistinfo">
-								' . $lib_badges->getRandomOpenBadgeCriterion($USER->id) . '<br />
-								<button type="button" class="btn btn-primary">Show badges</button>
-							</div>
-            </div>
-          </a>
+            </a>';
+          }
+          $this->content->text .= '
           <a href="' . $ranksUrl . '">
             <div class="igatcard igatyellow">
               <div class="igatleftblock">
