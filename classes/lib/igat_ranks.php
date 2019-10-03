@@ -19,22 +19,43 @@ class igat_ranks
   
 	function getLeaderboard($userId) {
 		$lib_usersettings = new igat_usersettings($this->courseId);
-		$usersettings = $lib_usersettings->getUsersettings($userId);
+    $usersettings = $lib_usersettings->getUsersettings($userId);
+    $leaderboard = $this->loadLeaderboard();
+    
+    // find current user
+    $currentUserIndex = -1;
+    for($i=0; $i<count($leaderboard); $i++) {
+      if($leaderboard[$i]->userid == $userId) {
+        $currentUserIndex = $i;
+        break;
+      }
+    }
+    
+    // find users with equal points to current user and move current user to top
+    if(currentUserIndex != -1) {
+      $firstUserEqualPointsIndex = -1;
+      $currentUserPoints = $leaderboard[$currentUserIndex]->xp;
+      for($i=$currentUserIndex; $i>=0; $i--) {
+        if($leaderboard[$i]->xp == $currentUserPoints) {
+          $firstUserEqualPointsIndex = $i;
+        }
+      }
+      //swap ranks
+      $temp = $leaderboard[$firstUserEqualPointsIndex]->rank;
+      $leaderboard[$firstUserEqualPointsIndex]->rank = $leaderboard[$currentUserIndex]->rank;
+      $leaderboard[$currentUserIndex]->rank = $temp;
+      
+      //swap array
+      $temp = $leaderboard[$firstUserEqualPointsIndex];
+      $leaderboard[$firstUserEqualPointsIndex] = $leaderboard[$currentUserIndex];
+      $leaderboard[$currentUserIndex] = $temp;
+      $currentUserIndex = $firstUserEqualPointsIndex;
+    }
 		
 		if($usersettings->leaderboarddisplay == 'all') {
-			return $this->loadLeaderboard();
+			return $leaderboard;
 		}
 		else if($usersettings->leaderboarddisplay == 'limited') {
-			$leaderboard = $this->loadLeaderboard();
-			
-			// find current user
-			$currentUserIndex = -1;
-			for($i=0; $i<count($leaderboard); $i++) {
-				if($leaderboard[$i]->userid == $userId) {
-					$currentUserIndex = $i;
-					break;
-				}
-			}
 			if($currentUserIndex == -1) {
 				return array(); // User does not have any points in this course
 			}
