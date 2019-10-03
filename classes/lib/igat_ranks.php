@@ -147,6 +147,7 @@ class igat_ranks
   function getRanksStatusMessage($userId) {
     global $DB, $CFG;
 		$lib_usersettings = new igat_usersettings($this->courseId);
+    $curUsersettings = $lib_usersettings->getUsersettings($userId);
     $userPoints = $DB->get_record('block_xp', array('userid' => $userId, 'courseid' => $this->courseId))->xp;
     if($userPoints === null) {
       return "";
@@ -158,7 +159,10 @@ class igat_ranks
     if($userAbove != null) {
       $pointDiff = $userAbove->xp - $userPoints;
       $usersettings = $lib_usersettings->getUsersettings($userAbove->userid);
-      if($usersettings->anonymousleaderboard) {
+      if($curUsersettings->anonymousleaderboard) { // the current user has set leaderboard settings to anonymous
+        return $pointDiff . " points left to catch up to <b>someone else</b>";
+      }
+      else if($usersettings->anonymousleaderboard) { // the user above has set leaderboard settings to anonymous
         return $pointDiff . " points left to catch up to <b>anonymous user</b>";
       }
       else {
