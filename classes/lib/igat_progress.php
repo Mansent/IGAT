@@ -102,45 +102,64 @@ class igat_progress
 		//get rules for points from db
 		$ruledata = $DB->get_records('block_xp_filters', array('courseid' => $this->courseId));
 		foreach($ruledata as &$rule) {
+      $ruleconditions = array();
 			$points = $rule->points;
 			$ruledataJson = json_decode($rule->ruledata, true);
 			
-			if($ruledataJson['method'] == 'any') { //rules of type 'all' or 'none' are not supported
-				foreach($ruledataJson['rules'] as &$condition) {
-					if($condition['_class'] == 'block_xp_rule_cm') { // only consider activity conditions
-						$conditionContextId = $condition['value'];
-						
-						//get module info
-						$activityInfo = $DB->get_record_sql('SELECT ' . $CFG->prefix . 'modules.name, ' . $CFG->prefix . 'course_modules.instance FROM ' . $CFG->prefix . 'context 
-								INNER JOIN ' . $CFG->prefix . 'course_modules ON ' . $CFG->prefix . 'context.instanceid = ' . $CFG->prefix . 'course_modules.id 
-								INNER JOIN ' . $CFG->prefix . 'modules ON ' . $CFG->prefix . 'course_modules.module = ' . $CFG->prefix . 'modules.id 
-							WHERE ' . $CFG->prefix . 'context.id = ' . $conditionContextId . ';');
-						
-						$activityType = $activityInfo->name;
-						$activityId = $activityInfo->instance;
-						
-						//test if assigment or quiz is completed
-						if($activityType == "assign") {
-							$assignmentName = $DB->get_record('assign', array('id' => $activityId))->name;
-							$gradesCount = $DB->count_records_sql("SELECT COUNT(*) FROM " . $CFG->prefix . "assign_grades 
-								WHERE assignment = " . $activityId . " AND userid = " . $userId);
-								
-							if($gradesCount == 0) { //the assignment has not been completed yet
-								array_push($result, 'Complete assignment <i>' . $assignmentName . '</i> to earn <b>' . $points . ' points</b>');
-							}
-						}
-						else if($activityType == 'quiz') {
-							$quizName = $DB->get_record('quiz', array('id' => $activityId))->name;
-							$gradesCount = $DB->count_records_sql("SELECT COUNT(*) FROM " . $CFG->prefix . "quiz_grades 
-								WHERE quiz = " . $activityId . " AND userid = " . $userId);
-								
-							if($gradesCount == 0) { //the quiz has not been completed yet
-								array_push($result, 'Complete quiz <i>' . $quizName . '</i> to earn <b>' . $points . ' points</b>');
-							}
-						}
-					}
-				}
-			}
+      foreach($ruledataJson['rules'] as &$condition) {
+        if($condition['_class'] == 'block_xp_rule_cm') { // only consider activity conditions
+          $conditionContextId = $condition['value'];
+          
+          //get module info
+          $activityInfo = $DB->get_record_sql('SELECT ' . $CFG->prefix . 'modules.name, ' . $CFG->prefix . 'course_modules.instance FROM ' . $CFG->prefix . 'context 
+              INNER JOIN ' . $CFG->prefix . 'course_modules ON ' . $CFG->prefix . 'context.instanceid = ' . $CFG->prefix . 'course_modules.id 
+              INNER JOIN ' . $CFG->prefix . 'modules ON ' . $CFG->prefix . 'course_modules.module = ' . $CFG->prefix . 'modules.id 
+            WHERE ' . $CFG->prefix . 'context.id = ' . $conditionContextId . ';');
+          
+          $activityType = $activityInfo->name;
+          $activityId = $activityInfo->instance;
+          
+          //test if assigment or quiz is completed
+          if($activityType == "assign") {
+            $assignmentName = $DB->get_record('assign', array('id' => $activityId))->name;
+            $gradesCount = $DB->count_records_sql("SELECT COUNT(*) FROM " . $CFG->prefix . "assign_grades 
+              WHERE assignment = " . $activityId . " AND userid = " . $userId);
+              
+            if($gradesCount == 0) { //the assignment has not been completed yet
+              array_push($ruleconditions, 'assignment <i>' . $assignmentName . '</i>');
+            }
+          }
+          else if($activityType == 'quiz') {
+            $quizName = $DB->get_record('quiz', array('id' => $activityId))->name;
+            $gradesCount = $DB->count_records_sql("SELECT COUNT(*) FROM " . $CFG->prefix . "quiz_grades 
+              WHERE quiz = " . $activityId . " AND userid = " . $userId);
+              
+            if($gradesCount == 0) { //the quiz has not been completed yet
+              array_push($ruleconditions, 'quiz <i>' . $quizName . '</i>');
+            }
+          }
+        }
+      }
+      
+      //Combine to rule string
+      $resString = ''; 
+      foreach ($ruleconditions as &$rulecondition) {
+        if($resString != '') {
+          if($ruledataJson['method'] == 'any') {
+            $resString = $resString . ' or ';
+          }
+          else if($ruledataJson['method'] == 'all') {
+            $resString = $resString . ' and ';
+          }
+          else if($ruledataJson['method'] == 'none') {
+            $resString = $resString . ' and not ';
+          }
+        }
+        $resString = $resString . ' complete ' . $rulecondition;
+      }
+      $resString = $resString . ' to earn <b>' . $points . ' points </b>';
+      $resString = ucfirst(trim($resString));
+      array_push($result, $resString);
 		}
 		return $result;
 	}
