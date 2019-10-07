@@ -64,14 +64,14 @@ class igat_statistics
     $num_lower = $DB->count_records_sql("SELECT COUNT(*) FROM `" . $CFG->prefix . "block_xp` WHERE `lvl` < $userLevel AND courseid = $this->courseId");
     $num_higher = $DB->count_records_sql("SELECT COUNT(*) FROM `" . $CFG->prefix . "block_xp` WHERE `lvl` > $userLevel AND courseid = $this->courseId");
     $num_equal = $DB->count_records_sql("SELECT COUNT(*) FROM `" . $CFG->prefix . "block_xp` WHERE `lvl` = $userLevel AND courseid = $this->courseId");
-    
+        
     if($num_total == 0) { // avoid division by zero
       return null;
     }
     
-    $result->lower = round($num_lower / $num_total);
-    $result->higher = round($num_higher / $num_total);
-    $result->equal = round($num_equal / $num_total);
+    $result->lower = round($num_lower / $num_total, 2);
+    $result->higher = round($num_higher / $num_total, 2);
+    $result->equal = round($num_equal / $num_total, 2);
     return $result;
   }
 	
