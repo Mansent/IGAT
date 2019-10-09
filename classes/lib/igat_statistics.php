@@ -96,17 +96,30 @@ class igat_statistics
    * @param int $inputMax the maximum input learning style score
    * @param int $comprehensionMin the minimum comprehension learning style score
    * @param int $comprehensionMax the maximum comprehension learning style score
+   * @param int $minDate the earliest date to include in the statistic
+   * @param int $maxDate the latest date to include in the statistic
    */
 	public function getDashboardPageViews($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
-    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11, $minDate = "", $maxDate = "") { 
 		global $DB, $CFG;
     
-    // Get min and max date
+    // Get min and max date for labels
     $sql = "SELECT FROM_UNIXTIME(MIN(time)/1000) AS mindate, FROM_UNIXTIME(MAX(time)/1000) AS maxdate FROM `" . $CFG->prefix . "block_igat_dashboard_log`";
     $record = $DB->get_record_sql($sql);
-    $minDate = strtotime($record->mindate);
-    $maxDate = strtotime($record->maxdate); 
-        
+    $recordsMinDate = strtotime($record->mindate);
+    $recordsMaxDate = strtotime($record->maxdate); 
+    
+    // Add date filter sql
+    $dateSQL = "";
+    if(!empty($minDate)) {
+      $unixDate = strtotime($minDate) * 1000;
+      $dateSQL = " AND time >= " . $unixDate . " ";
+    }
+    if(!empty($maxDate)) {
+      $unixDate = (strtotime($maxDate) * 1000) + 86400000; // one day has 86400 milliseconds
+      $dateSQL .= " AND time <= " . $unixDate . " ";
+    }
+    
 		$result;
     $sql = "SELECT FROM_UNIXTIME(time/1000) AS date, COUNT(*) AS views FROM " . $CFG->prefix . "block_igat_dashboard_log 
               INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
@@ -117,8 +130,9 @@ class igat_statistics
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
                 AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax
+                $dateSQL
               GROUP BY DAY(date) ORDER BY date";
-
+              
 		//progress tab
 		$tabSql = str_replace('+++tab+++', 'progress', $sql);
 		$records = $DB->get_records_sql($tabSql);	
@@ -141,8 +155,8 @@ class igat_statistics
 		
     //generate labels for all days between min and max date
 		$result->labels = array();
-    $start = new DateTime(date('Y-m-d', $minDate));
-    $end = new DateTime(date('Y-m-d', $maxDate));
+    $start = new DateTime(date('Y-m-d', $recordsMinDate));
+    $end = new DateTime(date('Y-m-d', $recordsMaxDate));
     $end->setTime(0, 0, 1); // avoid excluding maxDate from loop
     $period = new DatePeriod($start, new DateInterval('P1D'), $end);
     foreach ($period as $date) {
@@ -166,11 +180,24 @@ class igat_statistics
    * @param int $inputMax the maximum input learning style score
    * @param int $comprehensionMin the minimum comprehension learning style score
    * @param int $comprehensionMax the maximum comprehension learning style score
+   * @param int $minDate the earliest date to include in the statistic
+   * @param int $maxDate the latest date to include in the statistic
    */
 	public function getAverageDashboardViewDurations($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
-    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11, $minDate = "", $maxDate = "") { 
 		global $DB, $CFG;        
 		$result;
+    
+    // Add date filter sql
+    $dateSQL = "";
+    if(!empty($minDate)) {
+      $unixDate = strtotime($minDate) * 1000;
+      $dateSQL = " AND time >= " . $unixDate . " ";
+    }
+    if(!empty($maxDate)) {
+      $unixDate = (strtotime($maxDate) * 1000) + 86400000; // one day has 86400 milliseconds
+      $dateSQL .= " AND time <= " . $unixDate . " ";
+    }
     
     $sql = "SELECT AVG(duration) AS average FROM " . $CFG->prefix . "block_igat_dashboard_log 
               INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
@@ -180,7 +207,8 @@ class igat_statistics
                 AND processing >= $processingMin AND processing <= $processingMax
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
-                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax";
+                AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax
+                $dateSQL";
 
 		//progress tab
 		$tabSql = str_replace('+++tab+++', 'progress', $sql);
@@ -298,11 +326,24 @@ class igat_statistics
    * @param int $inputMax the maximum input learning style score
    * @param int $comprehensionMin the minimum comprehension learning style score
    * @param int $comprehensionMax the maximum comprehension learning style score
+   * @param int $minDate the earliest date to include in the statistic
+   * @param int $maxDate the latest date to include in the statistic
    */
 	public function getSubsequentPagesStatistics($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
-    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) { 
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11, $minDate = "", $maxDate = "") { 
 		global $DB, $CFG;        
 		$result;
+    
+    // Add date filter sql
+    $dateSQL = "";
+    if(!empty($minDate)) {
+      $unixDate = strtotime($minDate) * 1000;
+      $dateSQL = " AND time >= " . $unixDate . " ";
+    }
+    if(!empty($maxDate)) {
+      $unixDate = (strtotime($maxDate) * 1000) + 86400000; // one day has 86400 milliseconds
+      $dateSQL .= " AND time <= " . $unixDate . " ";
+    }
     
     $sql = "SELECT " . $CFG->prefix . "block_igat_dashboard_log.id, tab, next_page, COUNT(*) AS sum FROM `" . $CFG->prefix . "block_igat_dashboard_log` 
               INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
@@ -313,6 +354,7 @@ class igat_statistics
                 AND perception >= $perceptionMin AND perception <= $perceptionMax
                 AND input >= $inputMin AND input <= $inputMax
                 AND comprehension >= $comprehensionMin AND comprehension <= $comprehensionMax
+                $dateSQL
 							GROUP BY tab, next_page";
 
 		//hidden display

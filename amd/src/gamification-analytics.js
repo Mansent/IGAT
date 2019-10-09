@@ -14,6 +14,18 @@ define(['jquery'], function($) {
           document.getElementById(id + "max").textContent = sliderValue[1];
           updateGraphData(chartId, courseId);
         });
+      }, 
+      initDatePicker: function(chartId, courseId) {          
+        var datePickerMin = document.getElementById("minDate" + chartId);
+        var datePickerMax = document.getElementById("maxDate" + chartId);
+        datePickerMin.value = "";
+        datePickerMax.value = "";
+        datePickerMin.addEventListener("change", function(obj) {
+          updateGraphData(chartId, courseId);
+        });
+        datePickerMax.addEventListener("change", function(obj) {
+          updateGraphData(chartId, courseId);
+        });
       }
     };
 });
@@ -21,6 +33,7 @@ define(['jquery'], function($) {
 
 var lastProcessingMin, lastProcessingMax, lastPerceptionMin, lastPerceptionMax, lastInputMin, lastInputMax;
 var lastUnderstandingMin, lastUnderstandingMax;
+var lastDateMin, lastDateMax;
 
 /*
  * Gets recent filtered data for a chart from the server and redraws the chart
@@ -35,10 +48,20 @@ function updateGraphData(id, courseId) {
   var inputMax = document.getElementById('input' + id + 'max').innerText;
   var understandingMax = document.getElementById('understanding' + id + 'max').innerText;
   
+  var datePickerMin = document.getElementById("minDate" + id);
+  var datePickerMax = document.getElementById("maxDate" + id);
+  var minDate = "";
+  var maxDate = "";
+  if(datePickerMin != undefined && datePickerMax != undefined) {
+    minDate = datePickerMin.value;
+    maxDate = datePickerMax.value;
+  }
+  
   if(processingMin != lastProcessingMin || processingMax != lastProcessingMax // Only make a request if some slider value changed
     || perceptionMin != lastPerceptionMin || perceptionMax != lastPerceptionMax
     || inputMin != lastInputMin || inputMax != lastInputMax
-    || understandingMin != lastUnderstandingMin || understandingMax != lastUnderstandingMax) 
+    || understandingMin != lastUnderstandingMin || understandingMax != lastUnderstandingMax
+    || minDate != lastDateMin || maxDate != lastDateMax) 
     {
       //Do server request
       var filterData = {
@@ -51,8 +74,11 @@ function updateGraphData(id, courseId) {
         'inputMin': inputMin,
         'inputMax': inputMax,
         'understandingMin': understandingMin,
-        'understandingMax': understandingMax
+        'understandingMax': understandingMax,
+        'minDate': minDate,
+        'maxDate': maxDate
       };
+      console.log(filterData);
       
       $.ajax({
           type: "POST",
@@ -91,5 +117,7 @@ function updateGraphData(id, courseId) {
       lastInputMax = inputMax;
       lastUnderstandingMin = understandingMin;
       lastUnderstandingMax = understandingMax;
+      lastDateMin = minDate;
+      lastDateMax = maxDate;
     }
 }

@@ -27,6 +27,9 @@ if(!empty($_POST['courseid']) && !empty($_POST['loadtime']) && !empty($_POST['ur
 	}
 }
 
+$minDate = $_POST['minDate'];
+$maxDate = $_POST['maxDate'];
+
 // Gamification Analytics Request
 if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['processingMax']) && isset($_POST['perceptionMin']) 
     && isset($_POST['perceptionMax']) && isset($_POST['inputMin']) && isset($_POST['inputMax']) && isset($_POST['understandingMin']) 
@@ -38,14 +41,16 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
         $views = $lib_statistics->getDashboardPageViews($_POST['processingMin'], $_POST['processingMax'],
                                                         $_POST['perceptionMin'], $_POST['perceptionMax'],
                                                         $_POST['inputMin'], $_POST['inputMax'],
-                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+                                                        $_POST['understandingMin'], $_POST['understandingMax'],
+                                                        $minDate, $maxDate);
         $ac_renderer->printJsonDashboardLineChartDatasets($views->progress, $views->badges, $views->ranks, $views->settings);
       }
       else if($graphId == 2) { //Dashboard page view durations 
         $durations = $lib_statistics->getAverageDashboardViewDurations($_POST['processingMin'], $_POST['processingMax'],
                                                         $_POST['perceptionMin'], $_POST['perceptionMax'],
                                                         $_POST['inputMin'], $_POST['inputMax'],
-                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+                                                        $_POST['understandingMin'], $_POST['understandingMax'], 
+                                                        $minDate, $maxDate);
         $data = array($durations->progress, $durations->badges, $durations->ranks, $durations->settings);
         $ac_renderer->printJsonBarChartDataset("Viewing duration", $data, true);
       }
@@ -53,7 +58,8 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
 				$transitions = $lib_statistics->getSubsequentPagesStatistics($_POST['processingMin'], $_POST['processingMax'],
                                                         $_POST['perceptionMin'], $_POST['perceptionMax'],
                                                         $_POST['inputMin'], $_POST['inputMax'],
-                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+                                                        $_POST['understandingMin'], $_POST['understandingMax'], 
+                                                        $minDate, $maxDate);
 				$ac_renderer->renderSubsequentPagesJson($transitions);
 			}
       else if($graphId == 4) { //Chosen leaerboard display setting

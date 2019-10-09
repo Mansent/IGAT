@@ -32,12 +32,12 @@ class gamification_dashboard_analytics_renderer
 		echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>'; // include chart.js
 		
 		echo '<h3>Gamification page views</h3>';
-		$ac_renderer->renderLsFilter(1); 
+		$ac_renderer->renderLsDateFilter(1); 
 		$views = $lib_statistics->getDashboardPageViews();
 		$ac_renderer->renderDashboardLineChart(1, $views->labels, "Number of Views", $views->progress, $views->badges, $views->ranks, $views->settings);
 
 		echo '<h3>Average page viewing duration</h3>';
-		$ac_renderer->renderLsFilter(2);
+		$ac_renderer->renderLsDateFilter(2);
 		$labels = array('Progress tab', 'Badges tab', 'Leaderboard tab', 'Settings tab');
 		$durations = $lib_statistics->getAverageDashboardViewDurations();
     $data = array($durations->progress, $durations->badges, $durations->ranks, $durations->settings);
@@ -45,7 +45,7 @@ class gamification_dashboard_analytics_renderer
 		
 		echo '<h3>Gamification dashboard subsequent pages</h3>';
 		$transitions = $lib_statistics->getSubsequentPagesStatistics();
-		$ac_renderer->renderLsFilter(3);
+		$ac_renderer->renderLsDateFilter(3);
 		$ac_renderer->renderSubsequentPagesGraph($transitions);
 		
 		echo '<h3>Leaderboard visibility settings</h3>';

@@ -271,6 +271,24 @@
   width: 17px;
 }
 
+/* - Date Picker - */
+
+.dateFilter {
+  display: flex;
+  padding: 5px;
+  margin-top: 13px;
+}
+
+.dateFilter label {
+  margin-bottom: 0;
+  margin-right: 5px;
+  line-height: 26px;
+}
+
+.dateFilter input {
+  margin-right: 10px;
+}
+
 /* - Charts and Graphs- */
 
 .analyticsChart {

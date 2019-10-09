@@ -68,6 +68,35 @@ class analytics_components_renderer
 	</div>
 <?php
 	}
+  
+	/**
+	 * Renders a filter for all learing style dimensions and for a date
+	 * @param int id the unique id of the chart
+	 */
+  public function renderLsDateFilter($id) {
+		global $PAGE; ?>
+		<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFilter<?php echo $id; ?>" aria-expanded="false" aria-controls="collapseExample">
+			Filter Learning Style
+		</button>
+		<div class="collapse" id="collapseFilter<?php echo $id; ?>">
+			<div class="card card-body filtercard">
+<?php
+				$this->renderSlider('processing' . $id, $id, 'active', 'reflective');
+				$this->renderSlider('perception' . $id, $id, 'sensing', 'intuitive');
+				$this->renderSlider('input' . $id, $id, 'visual', 'verbal');
+				$this->renderSlider('understanding' . $id, $id, 'sequential', 'global'); ?>
+        
+        <div class="dateFilter">
+        <label>Filter from</label>
+        <input id="minDate<?php echo $id; ?>" type="date" value="" />
+        <label>Filter to</label>
+        <input id="maxDate<?php echo $id; ?>" type="date" value="" />
+        </div>
+			</div>
+	</div>
+    <?php
+    $PAGE->requires->js_call_amd('block_igat/gamification-analytics', 'initDatePicker', array($id, $this->courseId));
+  }
 	
 	/**
 	 * Renders a line chart containing data for each gamification dashboard tab
