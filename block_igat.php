@@ -134,12 +134,31 @@ class block_igat extends block_base {
       if($notification !== false) {
         $this->content->text .= ' <div id="notificationContainer">'; 
         if($notification->object == 'level') {
+          $currentLevelImage = $lib_progress->getCurrentUserLevelImage();
+          $levelsInfo = $lib_progress->getFullLevelsInfo();//user points and level
+          $userInfo = $lib_progress->getCurrentUserInfo();
+          $userLevel = $userInfo->lvl;
+          $levelName = $levelsInfo['name'][$userLevel];
+          $levelDesc = $levelsInfo['desc'][$userLevel];
           $this->content->text .= '
-          <b>You reached a new level!</b>
-          <div>
-            <img width="100" height="100" src="/blocks/igat/img/level.png"/>
-            <span class="leveloverlay">' . $notification->object_id . '</span>
-          </div>';
+          <b>You reached a new level!</b>';
+          if ($lib_progress->hasLevelUpPlus()) {
+            $this->content->text .= '
+            <div id="levelupnotifydiv">
+              <img class="levelimg" width="100" height="100" src="' . $currentLevelImage . '"/>
+              <div class="leveldesc">
+                <span class="progressinfo">' . $levelName . '</span>
+                <span class="progressinfo">' . $levelDesc . '</span>
+              </div>
+            </div>';
+          } 
+          else { // render the current level above the level star 
+            $this->content->text .= '
+            <div>
+              <img class="levelimg" width="100" height="100" src="' . $currentLevelImage . '"/>
+              <span class="leveloverlay">' . $notification->object_id . '</span>
+            </div>';
+          } 
         }
         else if ($notification->object == 'badge') {
           $badge = $lib_badges->getBadge($notification->object_id);

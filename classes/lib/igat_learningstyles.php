@@ -29,8 +29,8 @@ class igat_learningstyles {
    */
   public function lsPluginInstalled() {
     global $DB, $CFG;
-    if(isset($pluginInstalled)) {
-      return $pluginInstalled;
+    if(isset($this->pluginInstalled)) {
+      return $this->pluginInstalled;
     }
     
     $records = $DB->get_records_sql("SHOW TABLES LIKE '" . $CFG->prefix . "alstea'"); // check if table for alstea exists
