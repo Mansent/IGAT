@@ -53,6 +53,7 @@ class analytics_config_renderer
     <li><a href="/blocks/xp/index.php/rules/<?php echo $this->courseId; ?>">Configure rules to earn points</a></li>
     <li><a href="/blocks/xp/index.php/levels/<?php echo $this->courseId; ?>">Configure levels</a></li>
     <li><a href="/blocks/xp/index.php/config/<?php echo $this->courseId; ?>">Level Up! plugin settings</a></li>
+    <li><a href="/blocks/stash/items.php?courseid=<?php echo $this->courseId; ?>">Stash items and trade configuration</a></li>
   </ul>
   
   <h3>Delete all logs and data</h3>

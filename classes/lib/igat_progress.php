@@ -163,6 +163,7 @@ class igat_progress
 	
 	/**
 	 * Checks for which assignments and quizzes the user can earn points and generates short info messages 
+   * If there are more than 10 messages, only a random subset of these will be returned
    * @param int $userId the id of the user
    * @return the assignments and quizzes that the user can complete to earn points
    */
@@ -211,27 +212,43 @@ class igat_progress
         }
       }
       
-      //Combine to rule string
-      $resString = ''; 
-      foreach ($ruleconditions as &$rulecondition) {
-        if($resString != '') {
-          if($ruledataJson['method'] == 'any') {
-            $resString = $resString . ' or ';
-          }
-          else if($ruledataJson['method'] == 'all') {
+      if($ruledataJson['method'] == 'all' || $ruledataJson['method'] == 'none') {
+        //Combine to rule string
+        $resString = ''; 
+        foreach ($ruleconditions as &$rulecondition) {
+          if($resString != '') {
             $resString = $resString . ' and ';
           }
+          if($ruledataJson['method'] == 'all') {
+            $resString = $resString . ' complete ' . $rulecondition;
+          }
           else if($ruledataJson['method'] == 'none') {
-            $resString = $resString . ' and not ';
+            $resString = $resString . ' not complete ' . $rulecondition;
           }
         }
-        $resString = $resString . ' complete ' . $rulecondition;
+        $resString = $resString . ' to earn <b>' . $points . ' points </b>';
+        $resString = ucfirst(trim($resString));
+        array_push($result, $resString);
       }
-      $resString = $resString . ' to earn <b>' . $points . ' points </b>';
-      $resString = ucfirst(trim($resString));
-      array_push($result, $resString);
+      else if($ruledataJson['method'] == 'any') {
+        foreach ($ruleconditions as &$rulecondition) {
+          array_push($result, 'Complete ' . $rulecondition . ' to earn <b>' . $points . ' points </b>');
+        }
+      }
 		}
-		return $result;
+    
+    if(count($result) <= 10) {
+      return $result;
+    }
+    else {
+      //Pick 10 random rules to display to the user
+      $keys = array_rand($result, 10);
+      $randomResult = array();
+      foreach ($keys as $key) {
+          $randomResult[] = $result[$key];
+      }
+      return $randomResult;
+    }
 	}
   
   /**
