@@ -403,21 +403,36 @@ class igat_statistics
 	public function getGamificationFeedbackRate($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
     $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
 		global $DB, $CFG;
+    
     /* 1. Get days each student active in course
      * 2. Join count of gamification events to this
      * 3. Join learning styles filter to the result
      * 4. Take average event counts as feedback rate */
+    if(!$this->lib_progress->hasLevelUpPlus()) { // the log table layout is different for level up and level up plus
+      $levelup_log_join = "LEFT JOIN " . $CFG->prefix . "block_xp_log 
+                            ON " . $CFG->prefix . "block_xp_log.userid = l.userid 
+                              AND " . $CFG->prefix . "block_xp_log.courseid = l.courseid 
+                              AND DATE(FROM_UNIXTIME(" . $CFG->prefix . "block_xp_log.time)) = l.d ";
+    }
+    else {
+      $levelup_log_join = "LEFT JOIN (
+                            SELECT userid, instanceid AS courseid, time 
+                            FROM " . $CFG->prefix . "local_xp_log 
+                            INNER JOIN mdl_context 
+                            ON " . $CFG->prefix . "local_xp_log.contextid = " . $CFG->prefix . "context.id  
+                           ) AS logtable
+                           ON logtable.userid = l.userid 
+                            AND logtable.courseid = l.courseid 
+                            AND DATE(FROM_UNIXTIME(logtable.time)) = l.d ";
+    }
     $sql = "SELECT id, AVG(Eventcount.sum) AS feedbackRate FROM (
               SELECT c.id, c.d, c.sum FROM (
-                SELECT l.id, l.userid, l.courseid, l.d, COUNT(xp) AS sum  FROM (
+                SELECT l.id, l.userid, l.courseid, l.d, COUNT(time) AS sum  FROM (
                   SELECT id, courseid, userid, DATE(FROM_UNIXTIME(timecreated)) AS d FROM `" . $CFG->prefix . "logstore_standard_log` 
                   WHERE action = 'viewed' AND target = 'course' AND courseid = " . $this->courseId . " 
                   GROUP BY userid, d
                 ) AS l 
-                LEFT JOIN " . $CFG->prefix . "block_xp_log 
-                ON " . $CFG->prefix . "block_xp_log.userid = l.userid 
-                  AND " . $CFG->prefix . "block_xp_log.courseid = l.courseid 
-                  AND DATE(FROM_UNIXTIME(" . $CFG->prefix . "block_xp_log.time)) = l.d 
+                $levelup_log_join
                 GROUP BY l.userid, l.d
               ) AS c 
               INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON c.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 

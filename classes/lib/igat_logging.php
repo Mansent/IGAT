@@ -20,7 +20,7 @@ class igat_logging
 		
 		// parse tab
 		$tab = substr($url, strrpos($url, '=') + 1);
-		if(!in_array($tab, ['progress', 'badges', 'ranks', 'settings'], true)) {
+		if(!in_array($tab, ['progress', 'badges', 'ranks', 'items', 'settings'], true)) {
 			return; // this should never happen
 		}
 		
@@ -33,7 +33,7 @@ class igat_logging
 			$nextPageParams = parse_url($destination, PHP_URL_QUERY);
 			$newTab =  substr($destination, strrpos($destination, '=') + 1);
 			
-			if(in_array($newTab, ['progress', 'badges', 'ranks', 'settings'], true)) {
+			if(in_array($newTab, ['progress', 'badges', 'ranks', 'items', 'settings'], true)) {
 				$nextPage = $newTab;
 			}
 			else { // this should not happen
