@@ -627,11 +627,15 @@ class igat_statistics
                      " . $CFG->prefix . "block_igat_levelup_log.userid, 
                      newlevel, 
                      " . $CFG->prefix . "block_igat_levelup_log.time as leveluptime, 
-                     " . $CFG->prefix . "block_xp_log.time as firsteventtime 
-              FROM `" . $CFG->prefix . "block_igat_levelup_log` 
-              INNER JOIN `" . $CFG->prefix . "block_xp_log`
-                ON " . $CFG->prefix . "block_igat_levelup_log.courseid = " . $CFG->prefix . "block_xp_log.courseid 
-                AND " . $CFG->prefix . "block_igat_levelup_log.userid = " . $CFG->prefix . "block_xp_log.userid 
+                     moodlelog.timecreated as firsteventtime 
+              FROM `" . $CFG->prefix . "block_igat_levelup_log`
+              INNER JOIN (
+                  SELECT * FROM `" . $CFG->prefix . "logstore_standard_log` 
+                  	WHERE action = 'viewed' AND target = 'course' AND courseid = " . $this->courseId . " 
+                  	GROUP BY userid
+              ) AS moodlelog
+                  ON " . $CFG->prefix . "block_igat_levelup_log.courseid = moodlelog.courseid 
+                  AND " . $CFG->prefix . "block_igat_levelup_log.userid = moodlelog.userid 
               INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
                 " . $CFG->prefix . "block_igat_levelup_log.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
                 AND " . $CFG->prefix . "block_igat_levelup_log.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 
@@ -683,11 +687,16 @@ class igat_statistics
                      name, 
                      " . $CFG->prefix . "badge_issued.userid, 
                      dateissued, 
-                     " . $CFG->prefix . "block_xp_log.time as firsteventtime 
+                     moodlelog.timecreated as firsteventtime 
               FROM `" . $CFG->prefix . "badge` 
               INNER JOIN `" . $CFG->prefix . "badge_issued` ON " . $CFG->prefix . "badge.id = " . $CFG->prefix . "badge_issued.badgeid 
-              INNER JOIN `" . $CFG->prefix . "block_xp_log` ON " . $CFG->prefix . "badge.courseid = " . $CFG->prefix . "block_xp_log.courseid 
-                      AND " . $CFG->prefix . "badge_issued.userid = " . $CFG->prefix . "block_xp_log.userid  
+              INNER JOIN (
+                  SELECT * FROM `" . $CFG->prefix . "logstore_standard_log` 
+                  	WHERE action = 'viewed' AND target = 'course' AND courseid = " . $this->courseId . " 
+                  	GROUP BY userid
+              ) AS moodlelog
+                ON " . $CFG->prefix . "badge.courseid = moodlelog.courseid 
+                  AND " . $CFG->prefix . "badge_issued.userid = moodlelog.userid  
               INNER JOIN " . $CFG->prefix . "block_igat_learningstyles ON 
                 " . $CFG->prefix . "badge.courseid = " . $CFG->prefix . "block_igat_learningstyles.courseid 
                 AND " . $CFG->prefix . "badge_issued.userid = " . $CFG->prefix . "block_igat_learningstyles.userid 

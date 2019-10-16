@@ -86,6 +86,7 @@ class block_igat extends block_base {
         $progressUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'progress'));
         $badgesUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'badges'));
         $ranksUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'ranks'));
+        $itemsUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'items'));
       
       $numAvailableBadges = $lib_badges->getNumAvailableBadges();
         
@@ -124,6 +125,16 @@ class block_igat extends block_base {
               <div class="igatlistinfo">
 								' . $lib_ranks->getRanksStatusMessage($USER->id) . '<br />
 								<button type="button" class="btn btn-primary">Show leaderboard</button>
+							</div>
+            </div>
+          </a>
+          <a href="' . $itemsUrl . '">
+            <div class="igatcard igatyellow">
+              <div class="igatleftblock">
+                <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/items.png"/> Items
+              </div>
+              <div class="igatlistinfo">
+								<button type="button" class="btn btn-primary">Show items</button>
 							</div>
             </div>
           </a>';
