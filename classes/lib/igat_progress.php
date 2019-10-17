@@ -226,9 +226,11 @@ class igat_progress
             $resString = $resString . ' not complete ' . $rulecondition;
           }
         }
-        $resString = $resString . ' to earn <b>' . $points . ' points </b>';
-        $resString = ucfirst(trim($resString));
-        array_push($result, $resString);
+				if($resString != '') {
+					$resString = $resString . ' to earn <b>' . $points . ' points </b>';
+					$resString = ucfirst(trim($resString));
+					array_push($result, $resString);
+				}
       }
       else if($ruledataJson['method'] == 'any') {
         foreach ($ruleconditions as &$rulecondition) {

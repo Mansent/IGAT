@@ -48,6 +48,7 @@ class progress_renderer
     $userLevel = $userInfo->lvl;
     $maxLevel = $this->lib_progress->getNumLevels();
     $pointsToNextLevel = $this->lib_progress->getPointsToNextLevel($USER->id);
+		$levelProgress = $this->lib_progress->getCurrentLevelProgress($USER->id) * 100;
     
     $currentLevelImage = $this->lib_progress->getCurrentUserLevelImage();
     $levelsInfo = $this->lib_progress->getFullLevelsInfo();
