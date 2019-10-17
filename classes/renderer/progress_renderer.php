@@ -44,11 +44,15 @@ class progress_renderer
     $userInfo = $this->lib_progress->getCurrentUserInfo();
     $userPoints = $userInfo->xp;
     
-    //user level progress
+    //user level and progress
     $userLevel = $userInfo->lvl;
     $maxLevel = $this->lib_progress->getNumLevels();
     $pointsToNextLevel = $this->lib_progress->getPointsToNextLevel($USER->id);
-    $levelProgress = $this->lib_progress->getCurrentLevelProgress($USER->id) * 100;
+    
+    $currentLevelImage = $this->lib_progress->getCurrentUserLevelImage();
+    $levelsInfo = $this->lib_progress->getFullLevelsInfo();
+    $levelName = $levelsInfo['name'][$userLevel];
+    $levelDesc = $levelsInfo['desc'][$userLevel];
     
     //user level progress statistics
     $levelProgressStatistics = $this->lib_statistics->getUserLevelStatistics($USER->id);
@@ -97,8 +101,16 @@ class progress_renderer
 	<div class="progressflex">
 		<div class="progressblock" id="levelprogressblock">
 			<h6>Level</h6>
-			<img width="100" height="100" src="/blocks/igat/img/level.png"/>
-			<span class="leveloverlay"><?php echo $userLevel; ?></span>
+			<img class="levelimg" width="100" height="100" src="<?php echo $currentLevelImage; ?>"/>
+      <?php if ($this->lib_progress->hasLevelUpPlus()) {?>
+        <div class="leveldesc">
+          <span class="progressinfo"><b><?php echo $levelName; ?></b></span>
+          <span class="progressinfo"><?php echo $levelDesc; ?></span>
+        </div>
+      <?php } 
+      else { // render the current level above the level star ?>
+        <span class="leveloverlay"><?php echo $userLevel; ?></span>
+      <?php } ?>
 		</div>
 		<div class="progressblock">
 			<h6>Points</h6>

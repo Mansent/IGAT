@@ -8,6 +8,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once("classes/renderer/badges_renderer.php");
 require_once("classes/renderer/progress_renderer.php");
 require_once("classes/renderer/ranks_renderer.php");
+require_once("classes/renderer/items_renderer.php");
 require_once("classes/renderer/usersettings_renderer.php");
 require_once("classes/lib/igat_usersettings.php");
 require_once("classes/lib/igat_capabilities.php");
@@ -29,6 +30,7 @@ $badgesclass = "";
 $progressclass = "";
 $ranksclass = "";
 $settingsclass = "";
+$itemsclass = "";
 if($_GET['tab'] == 'badges') {
   $badgesclass = "active";
 }
@@ -37,6 +39,9 @@ else if ($_GET['tab'] == 'progress') {
 }
 else if ($_GET['tab'] == 'ranks') {
   $ranksclass = "active";
+}
+else if ($_GET['tab'] == 'items') {
+  $itemsclass = "active";
 }
 else if ($_GET['tab'] == 'settings') {
   $settingsclass = "active";
@@ -64,6 +69,9 @@ if( ($usersettings->leaderboarddisplay != 'hide'	&& !isset($_POST['leaderboarddi
     </li>
 <?php } ?>
     <li class="nav-item">
+        <a class="nav-link <?php echo $itemsclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=items">Items</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link <?php echo $settingsclass; ?>" href="/blocks/igat/dashboard.php?courseid=<?php echo $courseid; ?>&tab=settings">Settings</a>
     </li>
 </ul>
@@ -81,6 +89,10 @@ if( ($usersettings->leaderboarddisplay != 'hide'	&& !isset($_POST['leaderboarddi
 				$ranks_renderer = new ranks_renderer($courseid);
 				$ranks_renderer->render_tab();
 			}
+      else if ($_GET['tab'] == 'items') {
+				$items_renderer = new items_renderer($courseid);
+				$items_renderer->render_tab();
+      }
 			else if ($_GET['tab'] == 'settings') {
 				$usersettings_renderer = new usersettings_renderer($courseid);
 				$usersettings_renderer->render_tab();

@@ -104,9 +104,16 @@
 	overflow: auto;
 }
 
+.levelimg {
+  float: left;
+}
+
 #levelprogressblock {
-	max-width: 124px;
 	overflow: hidden;
+}
+
+#levelprogressblock h6 {
+  margin-bottom: 8px;
 }
 
 .leveloverlay {
@@ -118,6 +125,15 @@
 	font-size: 50px;
 	text-align: center;
 	display: block;
+}
+
+.leveldesc {
+  margin-left: 110px !important;  
+}
+
+#levelupnotifydiv
+{
+  margin-left: 82px !important;
 }
 
 .progressblock h6 {

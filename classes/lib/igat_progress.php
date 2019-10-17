@@ -10,6 +10,8 @@ class igat_progress
   private $userInfo;
   private $userInfoId;
   private $levelsInfo;
+  private $imageFiles;
+  private $plusInstalled;
     
   /**
    * Creates a new igat progress object.
@@ -50,17 +52,85 @@ class igat_progress
     if($this->levelsInfo == null) {
       $config = $DB->get_record('block_xp_config', array('courseid' => $this->courseId)); 
       $configJson = json_decode($config->levelsdata, true);
-      $this->levelsInfo = $configJson['xp'];
+      $this->levelsInfo = $configJson;
     }
+    return $this->levelsInfo['xp'];
+  }
+  
+  /**
+   * Loads information about the levels from the database
+   * @return stdClass a levels info object containing all points required for the levels, level names and descriptions
+   */
+  public function getFullLevelsInfo() {
+    global $DB;
     
+    if($this->levelsInfo == null) {
+      $config = $DB->get_record('block_xp_config', array('courseid' => $this->courseId)); 
+      $configJson = json_decode($config->levelsdata, true);
+      $this->levelsInfo = $configJson;
+    }
     return $this->levelsInfo;
   }
   
   /**
-   * @return int the level of the current user 
+   * Loads the images of the lecels from the database
+   * @returns array an array containing the links to the level images for each level
    */
-  public function getCurrentUserLevel() {
-    return $this->getCurrentUserInfo->xp;
+  public function getLevelsImages() {
+    global $DB, $PAGE;
+    if($this->imageFiles == null) {
+      $imageFiles = [];
+      
+      //start with default image for each level
+      $levelsInfo = $this->getLevelsInfo();
+      foreach($levelsInfo as $level => $info) {
+        $imageFiles[$level] = '/blocks/igat/img/level.png';
+      }
+      
+      if(!$this->hasLevelUpPlus()) {
+      echo 'affe';
+        $this->imageFiles = $imageFiles;
+        return $this->imageFiles; // custom badges only available in level up plus
+      }
+      
+      //load preset badges 
+      $levelupplus_config = $DB->get_record('local_xp_config', array('courseid' => $this->courseId)); 
+      $badgetheme = $levelupplus_config->badgetheme;
+      for($i = 1; $i <= 10; $i++) {
+        $imageFiles[$i] = '/local/xp/pix/theme/' . $badgetheme . '/' . $i . '.png';
+      }
+      
+      // load custom badges configuration
+      $levelup_config = $DB->get_record('block_xp_config', array('courseid' => $this->courseId)); 
+      if($levelup_config->enablecustomlevelbadges) {
+        //load custom image files
+        $fs = get_file_storage();
+        $allfiles = $fs->get_area_files($PAGE->context->id, 'block_xp', 'badges');
+
+        foreach ($allfiles as $file) {
+            if (strpos($file->get_mimetype(), 'image/') !== 0) {
+                continue;
+            }
+            $matches = [];
+            if (!preg_match('~^(\d+)\.[a-z]+$~i', $file->get_filename(), $matches)) {
+                continue;
+            }
+            $i = (int) $matches[1];
+            $url = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename(), false);
+            $imageFiles[$i] = $url;
+        }
+        $this->imageFiles = $imageFiles;
+      }
+    }
+    return $this->imageFiles;
+  }
+  
+  /**
+   * @return the url of the level image of the current users level
+   */
+  public function getCurrentUserLevelImage() {
+    $userLevel = $this->getCurrentUserInfo()->lvl;
+    return $this->getLevelsImages()[$userLevel];
   }
   
   /**
@@ -93,6 +163,7 @@ class igat_progress
 	
 	/**
 	 * Checks for which assignments and quizzes the user can earn points and generates short info messages 
+   * If there are more than 10 messages, only a random subset of these will be returned
    * @param int $userId the id of the user
    * @return the assignments and quizzes that the user can complete to earn points
    */
@@ -141,27 +212,43 @@ class igat_progress
         }
       }
       
-      //Combine to rule string
-      $resString = ''; 
-      foreach ($ruleconditions as &$rulecondition) {
-        if($resString != '') {
-          if($ruledataJson['method'] == 'any') {
-            $resString = $resString . ' or ';
-          }
-          else if($ruledataJson['method'] == 'all') {
+      if($ruledataJson['method'] == 'all' || $ruledataJson['method'] == 'none') {
+        //Combine to rule string
+        $resString = ''; 
+        foreach ($ruleconditions as &$rulecondition) {
+          if($resString != '') {
             $resString = $resString . ' and ';
           }
+          if($ruledataJson['method'] == 'all') {
+            $resString = $resString . ' complete ' . $rulecondition;
+          }
           else if($ruledataJson['method'] == 'none') {
-            $resString = $resString . ' and not ';
+            $resString = $resString . ' not complete ' . $rulecondition;
           }
         }
-        $resString = $resString . ' complete ' . $rulecondition;
+        $resString = $resString . ' to earn <b>' . $points . ' points </b>';
+        $resString = ucfirst(trim($resString));
+        array_push($result, $resString);
       }
-      $resString = $resString . ' to earn <b>' . $points . ' points </b>';
-      $resString = ucfirst(trim($resString));
-      array_push($result, $resString);
+      else if($ruledataJson['method'] == 'any') {
+        foreach ($ruleconditions as &$rulecondition) {
+          array_push($result, 'Complete ' . $rulecondition . ' to earn <b>' . $points . ' points </b>');
+        }
+      }
 		}
-		return $result;
+    
+    if(count($result) <= 10) {
+      return $result;
+    }
+    else {
+      //Pick 10 random rules to display to the user
+      $keys = array_rand($result, 10);
+      $randomResult = array();
+      foreach ($keys as $key) {
+          $randomResult[] = $result[$key];
+      }
+      return $randomResult;
+    }
 	}
   
   /**
@@ -191,6 +278,18 @@ class igat_progress
     $level = $userInfo->lvl;
     $numLevels = $this->getNumLevels();
     return $level == $numLevels;
+  }
+  
+  /**
+   *  @return boolean if the Level up! Plus is installed
+   */
+  public function hasLevelUpPlus() {
+    global $CFG, $DB;
+    if(!isset($this->plusInstalled)) {
+      $records = $DB->get_records_sql("SHOW TABLES LIKE '" . $CFG->prefix . "local_xp_config'"); // check if table for level up plus exists in db
+      $this->plusInstalled = (count($records) > 0);
+    }
+    return $this->plusInstalled;
   }
 }
 ?>
