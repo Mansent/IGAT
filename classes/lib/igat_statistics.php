@@ -399,10 +399,24 @@ class igat_statistics
    * @param int $inputMax the maximum input learning style score
    * @param int $comprehensionMin the minimum comprehension learning style score
    * @param int $comprehensionMax the maximum comprehension learning style score
+   * @param int $minDate the earliest date to include in the statistic
+   * @param int $maxDate the latest date to include in the statistic
    */	
 	public function getGamificationFeedbackRate($processingMin = -11, $processingMax = 11, $perceptionMin = -11, $perceptionMax = 11, 
-    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11) {
+    $inputMin = -11, $inputMax = 11, $comprehensionMin = -11, $comprehensionMax = 11, $minDate = "", $maxDate = "") {
 		global $DB, $CFG;
+		
+		// Add date filter sql
+    $dateSQL = "";
+    if(!empty($minDate)) {
+      $unixDate = strtotime($minDate);
+      $dateSQL = " AND timecreated >= " . $unixDate . " ";
+    }
+    if(!empty($maxDate)) {
+      $unixDate = strtotime($maxDate) + 86400; // one day has 86400 milliseconds
+      $dateSQL .= " AND timecreated <= " . $unixDate . " ";
+    }
+		
     /* 1. Get days each student active in course
      * 2. Join count of gamification events to this
      * 3. Join learning styles filter to the result
@@ -411,7 +425,7 @@ class igat_statistics
               SELECT c.id, c.d, c.sum FROM (
                 SELECT l.id, l.userid, l.courseid, l.d, COUNT(xp) AS sum  FROM (
                   SELECT id, courseid, userid, DATE(FROM_UNIXTIME(timecreated)) AS d FROM `" . $CFG->prefix . "logstore_standard_log` 
-                  WHERE action = 'viewed' AND target = 'course' AND courseid = " . $this->courseId . " 
+                  WHERE action = 'viewed' AND target = 'course' AND courseid = " . $this->courseId . " $dateSQL
                   GROUP BY userid, d
                 ) AS l 
                 LEFT JOIN " . $CFG->prefix . "block_xp_log 

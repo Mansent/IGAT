@@ -82,7 +82,8 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
 				$feedbackRate = $lib_statistics->getGamificationFeedbackRate($_POST['processingMin'], $_POST['processingMax'],
                                                         $_POST['perceptionMin'], $_POST['perceptionMax'],
                                                         $_POST['inputMin'], $_POST['inputMax'],
-                                                        $_POST['understandingMin'], $_POST['understandingMax']);
+                                                        $_POST['understandingMin'], $_POST['understandingMax'],
+																												$minDate, $maxDate);
 				echo $feedbackRate;
 			}
 			else if($graphId == 7) { //Points Distribution

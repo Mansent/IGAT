@@ -31,7 +31,7 @@ class game_elements_analytics_renderer
 		echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>'; // include chart.js
 		
 		echo '<h3>Gamification feedback rate</h3>';
-		$ac_renderer->renderLsFilter(6); 
+		$ac_renderer->renderLsDateFilter(6); 
 		$feedbackRate = $lib_statistics->getGamificationFeedbackRate();
 		echo '<p>The students receive on average <b id="feedbackRate">' . $feedbackRate . '</b> gamification reinforcements per day they are active in the course.</p>';
 		

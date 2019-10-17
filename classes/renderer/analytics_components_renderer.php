@@ -76,7 +76,7 @@ class analytics_components_renderer
   public function renderLsDateFilter($id) {
 		global $PAGE; ?>
 		<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFilter<?php echo $id; ?>" aria-expanded="false" aria-controls="collapseExample">
-			Filter Learning Style
+			Filter
 		</button>
 		<div class="collapse" id="collapseFilter<?php echo $id; ?>">
 			<div class="card card-body filtercard">
