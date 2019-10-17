@@ -12,6 +12,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once('classes/lib/igat_progress.php');
 require_once('classes/lib/igat_badges.php');
 require_once('classes/lib/igat_ranks.php');
+require_once('classes/lib/igat_items.php');
 require_once('classes/lib/igat_capabilities.php');
 require_once('classes/lib/igat_notification.php');
 require_once('classes/lib/igat_usersettings.php');
@@ -44,6 +45,7 @@ class block_igat extends block_base {
       $lib_progress = new igat_progress($COURSE->id);
       $lib_badges = new igat_badges($COURSE->id);
       $lib_ranks = new igat_ranks($COURSE->id);
+			$lib_items = new igat_items($COURSE->id);
       $lib_capabilities = new igat_capabilities();
       $lib_notification = new igat_notification();
 
@@ -88,34 +90,42 @@ class block_igat extends block_base {
         $ranksUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'ranks'));
         $itemsUrl = new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $COURSE->id, 'tab' => 'items'));
       
-      $numAvailableBadges = $lib_badges->getNumAvailableBadges();
-        
-        $this->content->text = ' 
+				$numAvailableBadges = $lib_badges->getNumAvailableBadges();
+				
+				$progessImageUrl = '/blocks/igat/img/graduation.png"/';
+				$levelImage = $lib_progress->getCurrentUserLevelImage();
+				if($levelImage != '') {
+					$progessImageUrl = $levelImage;
+				}
+				
+        $this->content->text = '';
+				if($lib_progress->levelUpInstalled()) { 
+					$this->content->text .= '
           <a href="' . $progressUrl . '">
             <div class="igatcard igatgreen">
               <div class="igatleftblock">
-                <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/graduation.png"/> Progress
+                <img class="igateyecatcher" width="50" height="50" src="' . $progessImageUrl . '"/> Progress
               </div>
               <div class="igatlistinfo">
-								<b>' . $lib_progress->getPointsToNextLevel($USER->id) . ' points</b> until next level!<br />
-								<button type="button" class="btn btn-primary">Show progress</button>
+								<b>' . $lib_progress->getPointsToNextLevel($USER->id) . ' points</b> until next level!
 							</div>
             </div>
           </a>'; 
-          if($numAvailableBadges > 0) {
-            $this->content->text .= '
-            <a href="' . $badgesUrl . '">
-              <div class="igatcard igatblue">
-                <div class="igatleftblock">
-                  <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/achievement.png"/> Badges<br />
-                </div>
-                <div class="igatlistinfo">
-                  ' . $lib_badges->getRandomOpenBadgeCriterion($USER->id) . '<br />
-                  <button type="button" class="btn btn-primary">Show badges</button>
-                </div>
-              </div>
-            </a>';
-          }
+				}
+				if($numAvailableBadges > 0) {
+					$this->content->text .= '
+					<a href="' . $badgesUrl . '">
+						<div class="igatcard igatblue">
+							<div class="igatleftblock">
+								<img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/achievement.png"/> Badges<br />
+							</div>
+							<div class="igatlistinfo">
+								' . $lib_badges->getRandomOpenBadgeCriterion($USER->id) . '
+							</div>
+						</div>
+					</a>';
+				}
+				if($lib_progress->levelUpInstalled()) { 
           $this->content->text .= '
           <a href="' . $ranksUrl . '">
             <div class="igatcard igatyellow">
@@ -123,28 +133,31 @@ class block_igat extends block_base {
                 <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/podium.png"/> Leaderboard
               </div>
               <div class="igatlistinfo">
-								' . $lib_ranks->getRanksStatusMessage($USER->id) . '<br />
-								<button type="button" class="btn btn-primary">Show leaderboard</button>
+								' . $lib_ranks->getRanksStatusMessage($USER->id) . '
 							</div>
             </div>
-          </a>
+          </a>';
+				}
+				if($lib_items->stashInstalled()) { 
+          $this->content->text .= '
           <a href="' . $itemsUrl . '">
             <div class="igatcard igatyellow">
               <div class="igatleftblock">
                 <img class="igateyecatcher" width="50" height="50" src="/blocks/igat/img/items.png"/> Items
               </div>
               <div class="igatlistinfo">
-								<button type="button" class="btn btn-primary">Show items</button>
+								Show your items
 							</div>
             </div>
           </a>';
+				}
 			}
       
       // Check notifications
       $notification = $lib_notification->getNotification($COURSE->id, $USER->id);
       if($notification !== false) {
-        $this->content->text .= ' <div id="notificationContainer">'; 
         if($notification->object == 'level') {
+					$this->content->text .= ' <div id="notificationContainer" class ="notificationContainerLevel">'; 
           $currentLevelImage = $lib_progress->getCurrentUserLevelImage();
           $levelsInfo = $lib_progress->getFullLevelsInfo();//user points and level
           $userInfo = $lib_progress->getCurrentUserInfo();
@@ -158,7 +171,7 @@ class block_igat extends block_base {
             <div id="levelupnotifydiv">
               <img class="levelimg" width="100" height="100" src="' . $currentLevelImage . '"/>
               <div class="leveldesc">
-                <span class="progressinfo">' . $levelName . '</span>
+                <h5 class="progressinfo"><b>' . $levelName . '</b></h5>
                 <span class="progressinfo">' . $levelDesc . '</span>
               </div>
             </div>';
@@ -172,6 +185,7 @@ class block_igat extends block_base {
           } 
         }
         else if ($notification->object == 'badge') {
+					$this->content->text .= ' <div id="notificationContainer" class ="notificationContainerBadge">';
           $badge = $lib_badges->getBadge($notification->object_id);
           $this->content->text .= '
           <b>You earned the badge ' . $badge->name . '!</b>
@@ -180,7 +194,9 @@ class block_igat extends block_base {
           </div>';
         }
         $this->content->text .= ' 
-            <button type="button" class="btn btn-primary">OK</button>
+            <div class="popupbuttonDiv">
+							<button type="button" class="btn btn-primary">OK</button>
+						</div>
           </div>
           <script>
             document.getElementById("notificationContainer").onclick = function(){

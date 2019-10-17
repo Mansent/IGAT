@@ -11,6 +11,15 @@ use block_stash\manager;
 class igat_items
 {
   private $stashPluginInstalled;
+	private $courseId;
+	    
+  /**
+   * Creates a new igat items object.
+   * @param int $courseId the id of the current moodle course
+   */
+  function __construct($courseId) {
+    $this->courseId = $courseId;
+  }
   
   /**
    *  @return boolean if the stash plugin is installed
@@ -19,7 +28,20 @@ class igat_items
     global $CFG, $DB;
     if(!isset($this->stashPluginInstalled)) {
       $records = $DB->get_records_sql("SHOW TABLES LIKE '" . $CFG->prefix . "block_stash'"); // check if table for stah exists in db
-      $this->stashPluginInstalled = (count($records) > 0);
+			$dbOk = (count($records) > 0);
+    
+			if(!$dbOk) {
+				$this->stashPluginInstalled = false;
+				return $this->stashPluginInstalled;
+			}
+			// check if plugin is added to current course
+			$sql = "SELECT blockname, instanceid FROM `" . $CFG->prefix . "block_instances` 
+							INNER JOIN `" . $CFG->prefix . "context` 
+								ON " . $CFG->prefix . "block_instances.parentcontextid = " . $CFG->prefix . "context.id 
+							WHERE " . $CFG->prefix . "block_instances.blockname = 'stash' AND instanceid = " . $this->courseId;
+			$records = $DB->get_records_sql($sql);
+			$courseOk = (count($records) > 0);
+			$this->stashPluginInstalled = $courseOk;
     }
     return $this->stashPluginInstalled;
   }

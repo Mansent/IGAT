@@ -31,8 +31,10 @@ class igat_statistics
 		$sql = "SELECT (
 					SELECT COUNT(*) FROM `" . $CFG->prefix . "badge_issued` WHERE badgeid = '$badgeId'
 				) / (
-					SELECT COUNT(*) FROM `" . $CFG->prefix . "enrol` WHERE `courseid` = '" . $this->courseId . "' AND `roleid` = '$studentRoleId' 
-				) AS achievementrate";
+					SELECT COUNT(*) FROM `" . $CFG->prefix . "user_enrolments` INNER JOIN `" . $CFG->prefix . "enrol` 
+						ON " . $CFG->prefix . "user_enrolments.enrolid = " . $CFG->prefix . "enrol.id 
+						WHERE `courseid` = '" . $this->courseId . "' AND `roleid` = '$studentRoleId' 
+				) AS achievementrate"; 
 		$db_record = $DB->get_record_sql($sql);
 		$achievementRate = doubleval($db_record->achievementrate);
 		
@@ -40,7 +42,7 @@ class igat_statistics
 			$achievementRate *= 100; // return percentage
 		}
 		
-		return $achievementRate . "%";
+		return round($achievementRate) . "%";
 	}
   
   /**

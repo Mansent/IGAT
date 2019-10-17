@@ -186,11 +186,11 @@ class igat_progress
               INNER JOIN ' . $CFG->prefix . 'course_modules ON ' . $CFG->prefix . 'context.instanceid = ' . $CFG->prefix . 'course_modules.id 
               INNER JOIN ' . $CFG->prefix . 'modules ON ' . $CFG->prefix . 'course_modules.module = ' . $CFG->prefix . 'modules.id 
             WHERE ' . $CFG->prefix . 'context.id = ' . $conditionContextId . ';');
-          
+						
           $activityType = $activityInfo->name;
           $activityId = $activityInfo->instance;
           
-          //test if assigment or quiz is completed
+          //test if assigment or quiz or h5p is completed
           if($activityType == "assign") {
             $assignmentName = $DB->get_record('assign', array('id' => $activityId))->name;
             $gradesCount = $DB->count_records_sql("SELECT COUNT(*) FROM " . $CFG->prefix . "assign_grades 
@@ -209,6 +209,10 @@ class igat_progress
               array_push($ruleconditions, 'quiz <i>' . $quizName . '</i>');
             }
           }
+					else if($activityType == 'hvp') {
+						$videoName = $DB->get_record('hvp', array('id' => $activityId))->name;
+              array_push($ruleconditions, 'vidreo <i>' . $videoName . '</i>');
+					}
         }
       }
       
@@ -283,7 +287,23 @@ class igat_progress
   }
   
   /**
-   *  @return boolean if the Level up! Plus is installed
+   *  @return boolean if the Level up! plugin is installed
+   */
+	public function levelUpInstalled() {
+    global $CFG, $DB;
+		
+		//check if level up block was added to current course
+			$sql = "SELECT blockname, instanceid FROM `" . $CFG->prefix . "block_instances` 
+							INNER JOIN `" . $CFG->prefix . "context` 
+								ON " . $CFG->prefix . "block_instances.parentcontextid = " . $CFG->prefix . "context.id 
+							WHERE " . $CFG->prefix . "block_instances.blockname = 'xp' AND instanceid = " . $this->courseId;
+			$records = $DB->get_records_sql($sql);
+			$courseOk = (count($records) > 0);		
+			return $courseOk;
+	}
+  
+  /**
+   *  @return boolean if the Level up! Plus plugin is installed
    */
   public function hasLevelUpPlus() {
     global $CFG, $DB;

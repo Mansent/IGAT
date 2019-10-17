@@ -39,7 +39,7 @@ class igat_learningstyles {
     if($dbOk) {
       $records = $DB->get_records_sql("SELECT * FROM `" . $CFG->prefix . "course_modules` 
           INNER JOIN `" . $CFG->prefix . "modules` ON " . $CFG->prefix . "course_modules.module = " . $CFG->prefix . "modules.id 
-        WHERE name = 'alstea'");
+        WHERE name = 'alstea' AND course = " . $this->courseId);
       $courseOk = (count($records) > 0);
       $this->pluginInstalled = $courseOk;
       return $courseOk;

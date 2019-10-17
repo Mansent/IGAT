@@ -57,7 +57,34 @@
   background-color: #00c2ff;
 }
 
-#notificationContainer {
+.notificationContainerLevel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: white;
+  width: 400px;
+  height: 260px;
+  border: 1px solid rgba(0,0,0,.125);
+  margin-left: -200px;
+  margin-top: -130px;
+  text-align: center;
+  z-index: 1;
+  padding: 10px;
+}
+
+.notificationContainerLevel div
+{
+	width: auto !important;
+	margin-left: auto !important;
+}
+
+.notificationContainerLevel .popupbuttonDiv
+{
+	height: 40px !important;
+	margin-top: 60px;
+}
+
+.notificationContainerBadge {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -95,17 +122,13 @@
 }
 
 .progressblock {
-  height: 150px;
+  min-height: 150px;
   margin-right: 20px;
 	margin-bottom: 20px;
   border: 1px solid rgba(0,0,0,.125);
   padding: 10px;
 	flex-grow: 1;
 	overflow: auto;
-}
-
-.levelimg {
-  float: left;
 }
 
 #levelprogressblock {
@@ -125,15 +148,6 @@
 	font-size: 50px;
 	text-align: center;
 	display: block;
-}
-
-.leveldesc {
-  margin-left: 110px !important;  
-}
-
-#levelupnotifydiv
-{
-  margin-left: 82px !important;
 }
 
 .progressblock h6 {

@@ -95,11 +95,21 @@ class igat_ranks
    * @return an array containing all leaderboard information
    */
   function loadLeaderboard() {
-    global $DB;
+    global $DB, $CFG;
     
     $lib_badges = new igat_badges($this->courseId);
 		$lib_usersettings = new igat_usersettings($this->courseId);
-    $records = $DB->get_records('block_xp', array('courseid' => $this->courseId), '`xp` DESC'); 
+		
+		// Join xp table with enrolments to ensure only enrolled users are in the leaderboard
+		$sql = "SELECT * FROM " . $CFG->prefix . "block_xp 
+						INNER JOIN ( 
+							SELECT " . $CFG->prefix . "user_enrolments.userid, " . $CFG->prefix . "enrol.courseid FROM  " . $CFG->prefix . "user_enrolments 
+							INNER JOIN " . $CFG->prefix . "enrol 
+							ON " . $CFG->prefix . "user_enrolments.enrolid  = " . $CFG->prefix . "enrol.id 
+						) AS enrolments
+						ON " . $CFG->prefix . "block_xp.userid = enrolments.userid AND " . $CFG->prefix . "block_xp.courseid = enrolments.courseid 
+						WHERE " . $CFG->prefix . "block_xp.courseid = " . $this->courseId . " ORDER BY `xp` DESC";
+    $records = $DB->get_records_sql($sql); 
 
 		$leaderboard = array();
 		$i=0;

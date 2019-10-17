@@ -35,7 +35,7 @@ class badges_renderer {
           <div class="igatbadge igatbadgeowned">
             <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" />
             <div class="igatbadgeinfo">
-              <h3><?php echo $badge->name; ?></h3>
+              <h3><b><?php echo $badge->name; ?></b></h3>
               <p><?php echo $badge->description; ?></p>
               <p>Earned on <?php echo userdate($badge->dateissued, '%d %b %Y'); ?></p>
               <p> 
@@ -61,7 +61,7 @@ class badges_renderer {
         <div class="igatbadge igatbadgeavailable">
           <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" />
           <div class="igatbadgeinfo">
-            <h3><?php echo $badge->name; ?></h3>
+            <h3><b><?php echo $badge->name; ?></b></h3>
             <p><?php echo $badge->description; ?></p>
             <p> 
               <b><?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id, $courseId); ?>

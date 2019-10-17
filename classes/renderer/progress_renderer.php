@@ -107,7 +107,15 @@ class progress_renderer
         <div class="leveldesc">
           <span class="progressinfo"><b><?php echo $levelName; ?></b></span>
           <span class="progressinfo"><?php echo $levelDesc; ?></span>
+					<p class="progressinfo">
+						<a data-toggle="collapse" href="#collapseLevels" role="button" aria-expanded="true" aria-controls="collapseExample" id="yui_3_17_2_1_1571318208590_21" class="">
+							Show all available levels
+						</a>
+					</p>
         </div>
+				<div class="collapse" id="collapseLevels" style="">
+							<?php $this->renderAllLevels(); ?>
+				</div>
       <?php } 
       else { // render the current level above the level star ?>
         <span class="leveloverlay"><?php echo $userLevel; ?></span>
@@ -168,16 +176,44 @@ class progress_renderer
 	
 	
 <?php
-	  if($this->lib_learningstyles->lsPluginInstalled()) {
-			$learningStyleSummary = $this->lib_learningstyles->getUserSummary($USER->id);
-			if($learningStyleSummary === false) {
-				echo '<h2>Learning Styles</h2>';
-				echo '<p>You have not completed the learning style questionnaire yet. Make the questionnaire to get in-deph information and recommendations for your learning style.</p>';
-			}
-		}
-		else {
-			echo '<p>The learning styles plugin is not installed.</p>';
-		}
   }
-}
+	
+	/**
+	 * Renders an overview of all available levels
+	 */
+	private function renderAllLevels() { ?>
+			<table class="leaderboard">
+				<tr>
+					<th>Level</th>
+					<th>Image</th>
+					<th>Name</th>
+					<th>Desctiption</th>
+					<th>Points required</th>
+				</tr>
+<?php		$levelsInfo = $this->lib_progress->getFullLevelsInfo();
+				$levelsImages = $this->lib_progress->getLevelsImages();
+				for($i=1; $i <= count($levelsInfo['xp']); $i++) {
+					//load level info
+					$name = '';
+					$description = '';
+					$pointsReq = $levelsInfo['xp'][$i];
+					$image = $levelsImages[$i];
+					if(isset($levelsInfo['name'][$i])) {
+						$name = $levelsInfo['name'][$i];
+					}
+					if(isset($levelsInfo['desc'][$i])) {
+						$description = $levelsInfo['desc'][$i];
+					}
+					echo '<tr>';
+					echo '<td>' . $i . '</td>';
+					echo '<td><img src="' . $image . '" width="50" height="50" /></td>';
+					echo '<td>' . $name . '</td>';
+					echo '<td>' . $description . '</td>';
+					echo '<td>' . $pointsReq . '</td>';
+					echo '</tr>';
+				}
+?>
+			</table>
+<?php	}
+} 
 ?>
