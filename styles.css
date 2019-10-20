@@ -135,7 +135,8 @@
 	flex-grow: 1;
 	overflow: auto;
 }
-.collapse {
+
+#collapseLevels {
     margin-top: 150px;
 }
 .progressblock.firstblock {

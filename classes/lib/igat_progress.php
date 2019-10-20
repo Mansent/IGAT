@@ -182,13 +182,16 @@ class igat_progress
           $conditionContextId = $condition['value'];
           
           //get module info
-          $activityInfo = $DB->get_record_sql('SELECT ' . $CFG->prefix . 'modules.name, ' . $CFG->prefix . 'course_modules.instance FROM ' . $CFG->prefix . 'context 
+          $sql = 'SELECT ' . $CFG->prefix . 'modules.name, ' . $CFG->prefix . 'course_modules.instance, ' . $CFG->prefix . 'course_modules.id as moduleid
+            FROM ' . $CFG->prefix . 'context 
               INNER JOIN ' . $CFG->prefix . 'course_modules ON ' . $CFG->prefix . 'context.instanceid = ' . $CFG->prefix . 'course_modules.id 
               INNER JOIN ' . $CFG->prefix . 'modules ON ' . $CFG->prefix . 'course_modules.module = ' . $CFG->prefix . 'modules.id 
-            WHERE ' . $CFG->prefix . 'context.id = ' . $conditionContextId . ';');
+            WHERE ' . $CFG->prefix . 'context.id = ' . $conditionContextId . ';';
+          $activityInfo = $DB->get_record_sql($sql); 
 						
           $activityType = $activityInfo->name;
           $activityId = $activityInfo->instance;
+          $moduleId = $activityInfo->moduleid;
           
           //test if assigment or quiz or h5p is completed
           if($activityType == "assign") {
@@ -211,7 +214,11 @@ class igat_progress
           }
 					else if($activityType == 'hvp') {
 						$videoName = $DB->get_record('hvp', array('id' => $activityId))->name;
+            
+            $completionState = $DB->get_record('course_modules_completion', array('coursemoduleid' => $moduleId, 'userid' => $userId));
+            if($completionState == 0) {
               array_push($ruleconditions, 'vidreo <i>' . $videoName . '</i>');
+            }
 					}
         }
       }
