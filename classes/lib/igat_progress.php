@@ -231,14 +231,14 @@ class igat_progress
           }
         }
 				if($resString != '') {
-					$resString = $resString . ' to earn <b>' . $points . ' points </b>';
+					$resString = $resString . ' to earn <b>' . $points . ' XPs. </b>';
 					$resString = ucfirst(trim($resString));
 					array_push($result, $resString);
 				}
       }
       else if($ruledataJson['method'] == 'any') {
         foreach ($ruleconditions as &$rulecondition) {
-          array_push($result, 'Complete ' . $rulecondition . ' to earn <b>' . $points . ' points </b>');
+          array_push($result, 'Complete ' . $rulecondition . ' to earn <b>' . $points . ' XPs </b>');
         }
       }
 		}

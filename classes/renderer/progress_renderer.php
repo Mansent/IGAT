@@ -98,16 +98,16 @@ class progress_renderer
 	
 	<hr />
 	
-	<h2>Your Points</h2>
+	<h2>Your Points and Levels</h2>
 	<div class="progressflex">
-		<div class="progressblock" id="levelprogressblock">
-			<h6>Level</h6>
-			<img class="levelimg" width="100" height="100" src="<?php echo $currentLevelImage; ?>"/>
+		<div class="progressblock firstblock" id="levelprogressblock">
+			<div class="left"><h5><b><?php echo $levelName; ?></b></h5>
+			<img class="levelimg" width="100" height="100" src="<?php echo $currentLevelImage; ?>"/></div>
       <?php if ($this->lib_progress->hasLevelUpPlus()) {?>
         <div class="leveldesc">
-          <span class="progressinfo"><b><?php echo $levelName; ?></b></span>
+        
           <span class="progressinfo"><?php echo $levelDesc; ?></span>
-					<p class="progressinfo">
+					<p class="progressinfo1">
 						<a data-toggle="collapse" href="#collapseLevels" role="button" aria-expanded="true" aria-controls="collapseExample" id="yui_3_17_2_1_1571318208590_21" class="">
 							Show all available levels
 						</a>
@@ -137,7 +137,7 @@ class progress_renderer
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->equal * 100; ?>%</b> of your peers are in your level</span>
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->higher * 100; ?>%</b> of your peers are in a higher level</span>
 			<span class="progressinfo"><b><?php echo $levelProgressStatistics->lower * 100; ?>%</b> of your peers are in a lower level</span>
-			<a href="<?php echo new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $this->courseId, 'tab' => 'ranks')); ?>">View Leaderboard</a>	
+			<a class="leaderlink" href="<?php echo new moodle_url('/blocks/igat/dashboard.php', array('courseid' => $this->courseId, 'tab' => 'ranks')); ?>">View Leaderboard</a>	
 		</div>
 		<div class="progressblock">
 			<h6>Earn Points</h6>

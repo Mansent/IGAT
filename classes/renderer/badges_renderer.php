@@ -26,7 +26,7 @@ class badges_renderer {
    */
 	public function render_tab() {
     $badges = $this->lib_badges->getCurrentUserBadges();
-    echo '<h2>Your Badges</h2>';
+    echo '<h2 class="title">Your Badges</h2>';
     echo '<div class="igatbadgescontainer">';
     $i = 0;
     foreach($badges as &$badge) {
@@ -37,7 +37,7 @@ class badges_renderer {
             <div class="igatbadgeinfo">
               <h3><b><?php echo $badge->name; ?></b></h3>
               <p><?php echo $badge->description; ?></p>
-              <p>Earned on <?php echo userdate($badge->dateissued, '%d %b %Y'); ?></p>
+              <p style="font-size:12px">Earned on <?php echo userdate($badge->dateissued, '%d %b %Y'); ?></p>
               <p> 
                 <b><?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id); ?>
                 of your class earned this badge</b>
@@ -53,7 +53,7 @@ class badges_renderer {
     }
     echo '</div>';
     
-    echo '<h2>Available Badges</h2>';
+    echo '<h2 class="title">Available Badges</h2>';
     echo '<div class="igatbadgescontainer">';
     $i = 0;
     foreach($badges as &$badge) {
@@ -87,7 +87,7 @@ class badges_renderer {
 		$core_renderer = $this->lib_badges->getCoreRenderer(); ?>		
 		<p class="collapseContainer">
 		  <a data-toggle="collapse" href="#collapseCriteria<?php echo $badge->id; ?>" role="button" aria-expanded="false" aria-controls="collapseExample">
-			Earn this badge
+			How to earn this badge?
 		  </a>
 		</p>
 		<div class="collapse" id="collapseCriteria<?php echo $badge->id; ?>">

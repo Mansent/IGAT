@@ -27,4 +27,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['igat:addinstance'] = 'Add instance';
 $string['pluginname'] = 'IGAT';
-$string['blocktitle'] = 'Gamification';
+$string['blocktitle'] = ' ';

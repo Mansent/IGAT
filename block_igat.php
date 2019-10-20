@@ -107,7 +107,7 @@ class block_igat extends block_base {
                 <img class="igateyecatcher" width="50" height="50" src="' . $progessImageUrl . '"/> Progress
               </div>
               <div class="igatlistinfo">
-								<b>' . $lib_progress->getPointsToNextLevel($USER->id) . ' points</b> until next level!
+								<b>' . $lib_progress->getPointsToNextLevel($USER->id) . ' XPs</b> until next level!
 							</div>
             </div>
           </a>'; 

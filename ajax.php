@@ -92,7 +92,7 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
                                                         $_POST['inputMin'], $_POST['inputMax'],
                                                         $_POST['understandingMin'], $_POST['understandingMax']);
 				$data = array_values($histogram);
-        $ac_renderer->printJsonBarChartDataset("Points Distribution", $data, false);
+        $ac_renderer->printJsonBarChartDataset("Points/XP's Distribution", $data, false);
 			}
 			else if($graphId == 8) { //Levels distribution
 				$distribution = $lib_statistics->getLevelsDistribution($_POST['processingMin'], $_POST['processingMax'],

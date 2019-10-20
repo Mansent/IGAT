@@ -33,8 +33,8 @@ class ranks_renderer
   public function render_tab() {
     global $USER;		
     $leaderboard = $this->lib_ranks->getLeaderboard($USER->id); ?>
-    
-    <p>The ranks are calculated based on experience points.</p>
+    <h3> See where you stand! Compare your results with other peers from the course and see how to catch them up! </h3>
+    <p style="font-size:12px">Note* The ranks are calculated based on experience points.</p>
     
     <table class="leaderboard">
       <tr>

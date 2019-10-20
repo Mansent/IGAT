@@ -170,14 +170,14 @@ class igat_ranks
       $pointDiff = $userAbove->xp - $userPoints;
       $usersettings = $lib_usersettings->getUsersettings($userAbove->userid);
       if($curUsersettings->anonymousleaderboard) { // the current user has set leaderboard settings to anonymous
-        return $pointDiff . " points left to catch up to <b>someone else</b>";
+        return $pointDiff . " XP's left to catch up to <b>your peer</b>";
       }
       else if($usersettings->anonymousleaderboard) { // the user above has set leaderboard settings to anonymous
-        return $pointDiff . " points left to catch up to <b>anonymous user</b>";
+        return $pointDiff . " XP's left to catch up to <b>anonymous user</b>";
       }
       else {
         $user_record = $DB->get_record('user', array('id' => $userAbove->userid));
-        return $pointDiff . " points left to catch up <b>" . $user_record->firstname . " " . $user_record->lastname . "</b>";
+        return $pointDiff . " XP's left to catch up <b>" . $user_record->firstname . " " . $user_record->lastname . "</b>";
       }
     }
     else {
