@@ -46,6 +46,7 @@ class ranks_renderer
       </tr>
 <?php 
 			$usersettings = $this->lib_usersettings->getUsersettings($USER->id);
+			$i = 1;
       foreach($leaderboard as &$leader) {
         $class = "";
         if($leader->userid == $USER->id) {
@@ -76,6 +77,7 @@ class ranks_renderer
           }
         echo '</td>';
         echo '</tr>';
+				$i++;
       }
     ?> 
     </table>

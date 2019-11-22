@@ -32,7 +32,7 @@ class igat_ranks
     }
     
     // find users with equal points to current user and move current user to top
-    if(currentUserIndex != -1) {
+    if($currentUserIndex > -1) {
       $firstUserEqualPointsIndex = -1;
       $currentUserPoints = $leaderboard[$currentUserIndex]->xp;
       for($i=$currentUserIndex; $i>=0; $i--) {
