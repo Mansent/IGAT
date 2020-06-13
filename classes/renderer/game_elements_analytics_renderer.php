@@ -33,7 +33,7 @@ class game_elements_analytics_renderer
 		echo '<h3>Gamification feedback rate</h3>';
 		$ac_renderer->renderLsDateFilter(6); 
 		$feedbackRate = $lib_statistics->getGamificationFeedbackRate();
-		echo '<p>The students receive on average <b id="feedbackRate">' . $feedbackRate . '</b> gamification reinforcements per day they are active in the course.</p>';
+		echo '<p>The students receive on average <b id="feedbackRate">' . $feedbackRate . '</b> gamification reinforcements per day they are active in the course. A gamification reinforcement is any state change in the gamification that is related to a student, e.g. gaining points or earning a badge.</p>';
 		
 		echo '<h3>Points distribution</h3>';
 		$ac_renderer->renderLsFilter(7); 
