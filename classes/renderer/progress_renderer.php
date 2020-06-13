@@ -5,6 +5,7 @@ require_once('classes/lib/igat_progress.php');
 require_once('classes/lib/igat_badges.php');
 require_once('classes/lib/igat_statistics.php');
 require_once('classes/lib/igat_learningstyles.php');
+require_once('classes/lib/igat_capabilities.php');
 
 /**
  * Responsible for managing and rendering the levels tab in the gamification view 
@@ -17,6 +18,7 @@ class progress_renderer
 	private $lib_badges;
 	private $lib_statistics;
 	private $lib_learningstyles;
+  private $lib_capabilities;
   
   /* 
    * Creates a new progress renderer 
@@ -28,6 +30,7 @@ class progress_renderer
 		$this->lib_badges = new igat_badges($courseId);
 		$this->lib_statistics = new igat_statistics($courseId);
     $this->lib_learningstyles = new igat_learningstyles($courseId);
+    $this->lib_capabilities = new igat_capabilities();
 	}  
   
   /**
@@ -35,6 +38,14 @@ class progress_renderer
    */
   public function render_tab() {
     global $USER;
+    
+    // This tab does not contain any information for teachers
+    if($this->lib_capabilities->isManagerOrTeacher($this->courseId, $USER->id)) { ?>
+        <h1>Student Progress</h1>
+        <p>Students will see an overview of their current score, their level and available learning activities for earning points on this page.</p>
+        <?php 
+    }
+    else { // Current user is student -> render the progress tab
     
     //number of badges
     $numUserBadges = $this->lib_badges->getNumUserBadges();
@@ -175,7 +186,7 @@ class progress_renderer
 	<hr />
 	
 	
-<?php
+    <?php }
   }
 	
 	/**

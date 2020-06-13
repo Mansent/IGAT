@@ -11,6 +11,8 @@ require_once($CFG->libdir . '/enrollib.php');
 class badges_renderer {
 	private $lib_badges;
 	private $lib_statistics;
+  private $lib_capabilities;
+  private $courseId;
   
   /* 
    * Creates a new badges renderer 
@@ -19,40 +21,48 @@ class badges_renderer {
 	public function __construct($courseId) {
 		$this->lib_badges = new igat_badges($courseId);
 		$this->lib_statistics = new igat_statistics($courseId);
+    $this->lib_capabilities = new igat_capabilities();
+    $this->courseId = $courseId;
 	}
   
   /**
    * Renders the badges tab
    */
 	public function render_tab() {
+    global $USER;
     $badges = $this->lib_badges->getCurrentUserBadges();
-    echo '<h2 class="title">Your Badges</h2>';
-    echo '<div class="igatbadgescontainer">';
-    $i = 0;
-    foreach($badges as &$badge) {
-      if($badge->dateissued != null) { // user owns badge ?>
-        <a href="<?php echo $this->lib_badges->getBadgePageUrl($badge); ?>" class="igatbadgelink">
-          <div class="igatbadge igatbadgeowned">
-            <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" />
-            <div class="igatbadgeinfo">
-              <h3><b><?php echo $badge->name; ?></b></h3>
-              <p><?php echo $badge->description; ?></p>
-              <p style="font-size:12px">Earned on <?php echo userdate($badge->dateissued, '%d %b %Y'); ?></p>
-              <p> 
-                <b><?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id); ?>
-                of your class earned this badge</b>
-              </p>
+    if($this->lib_capabilities->isManagerOrTeacher($this->courseId, $USER->id)) { ?>
+      <h2 class="title">Student Badges</h2>
+      <p style="padding-left: 20px;">The students will see a list of their obtained badges here.</p>
+    <?php }
+    else {
+      echo '<h2 class="title">Your Badges</h2>';
+      echo '<div class="igatbadgescontainer">';
+      $i = 0;
+      foreach($badges as &$badge) {
+        if($badge->dateissued != null) { // user owns badge ?>
+          <a href="<?php echo $this->lib_badges->getBadgePageUrl($badge); ?>" class="igatbadgelink">
+            <div class="igatbadge igatbadgeowned">
+              <img src="<?php echo $this->lib_badges->getBadgeImageUrl($badge); ?>" class="activatebadge" />
+              <div class="igatbadgeinfo">
+                <h3><b><?php echo $badge->name; ?></b></h3>
+                <p><?php echo $badge->description; ?></p>
+                <p style="font-size:12px">Earned on <?php echo userdate($badge->dateissued, '%d %b %Y'); ?></p>
+                <p> 
+                  <b><?php echo $this->lib_statistics->getBadgeAchievementRate($badge->id); ?>
+                  of your class earned this badge</b>
+                </p>
+              </div>
             </div>
-          </div>
-        </a>
-<?php		$i++;
+          </a>
+  <?php		$i++;
+        }
       }
+      if($i == 0) {
+        echo '<p>You have not earned any badges yet.</p>';
+      }
+      echo '</div>';
     }
-    if($i == 0) {
-      echo '<p>You have not earned any badges yet.</p>';
-    }
-    echo '</div>';
-    
     echo '<h2 class="title">Available Badges</h2>';
     echo '<div class="igatbadgescontainer">';
     $i = 0;

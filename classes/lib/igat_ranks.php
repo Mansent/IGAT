@@ -1,6 +1,8 @@
 <?php
 defined('MOODLE_INTERNAL') || die();
 
+require_once('igat_capabilities.php');
+
 /**
  * Library for loading the player ranks for the leaderboard.
  */
@@ -8,6 +10,7 @@ class igat_ranks
 {
   private $courseId;
 	private $limitDistance = 5;
+  private $lib_capabilities;
   
   /**
    * Creates a new igat statistics object.
@@ -15,6 +18,7 @@ class igat_ranks
    */
   function __construct($courseId) {
     $this->courseId = $courseId;
+    $this->lib_capabilities = new igat_capabilities();
   }
   
 	function getLeaderboard($userId) {
@@ -52,7 +56,8 @@ class igat_ranks
       $currentUserIndex = $firstUserEqualPointsIndex;
     }
 		
-		if($usersettings->leaderboarddisplay == 'all') {
+    $isTeacher = $this->lib_capabilities->isManagerOrTeacher($this->courseId, $userId);
+		if($usersettings->leaderboarddisplay == 'all' || $isTeacher) {
 			return $leaderboard;
 		}
 		else if($usersettings->leaderboarddisplay == 'limited') {
