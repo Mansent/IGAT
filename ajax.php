@@ -43,7 +43,7 @@ if(isset($_POST['graphid']) && isset($_POST['processingMin']) && isset($_POST['p
                                                         $_POST['inputMin'], $_POST['inputMax'],
                                                         $_POST['understandingMin'], $_POST['understandingMax'],
                                                         $minDate, $maxDate);
-        $ac_renderer->printJsonDashboardLineChartDatasets($views->progress, $views->badges, $views->ranks, $views->settings);
+        $ac_renderer->printJsonDashboardLineChartDatasets($views->progress, $views->badges, $views->ranks, $views->settings, $views->labels);
       }
       else if($graphId == 2) { //Dashboard page view durations 
         $durations = $lib_statistics->getAverageDashboardViewDurations($_POST['processingMin'], $_POST['processingMax'],

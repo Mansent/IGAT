@@ -111,6 +111,13 @@ class igat_statistics
     $recordsMinDate = strtotime($record->mindate);
     $recordsMaxDate = strtotime($record->maxdate); 
     
+    if($minDate != "") {
+      $recordsMinDate = strtotime($minDate);
+    }
+    if($maxDate != "") {
+      $recordsMaxDate = strtotime($maxDate);
+    }
+    
     // Add date filter sql
     $dateSQL = "";
     if(!empty($minDate)) {
@@ -733,7 +740,7 @@ class igat_statistics
   /**
    * Helper function that builds an array of the data filling in the missing dates from a period
    * $period DatePeriod the period to fill in missing dates
-   * $data the data to user
+   * $data the data to use
    * @returns array of the data with zero for the missing dates in the period
    */   
   private function generateContinousDataArray($period, $data) {
@@ -755,14 +762,14 @@ class igat_statistics
    * $records the records from an sql query
    * @return the processed data array
    */
-	private function analyzeDashboardRecords($records) {
-		$data = array();
-		foreach($records as &$record) {
+  private function analyzeDashboardRecords($records) {
+    $data = array();
+    foreach($records as &$record) {
       $date = strtotime($record->date);
       $dateFormatted = date( 'd.m.', $date) ;
       $data[$dateFormatted] = $record->views;
-		}
-		return $data;
-	}
+    }
+    return $data;
+  }
 }
 ?>

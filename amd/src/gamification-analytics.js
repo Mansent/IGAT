@@ -98,7 +98,13 @@ function updateGraphData(id, courseId) {
             }
             else { // line chart or bar chart
               var newDatasets = JSON.parse(json);
-              config[id].data.datasets = newDatasets;
+              if(typeof newDatasets["labels"] !== 'undefined') { // We got a response with labels and data
+                config[id].data.labels = newDatasets["labels"];
+                config[id].data.datasets = newDatasets["data"];
+              }
+              else { // Response only contains data
+                config[id].data.datasets = newDatasets;
+              }
               chart[id].update();
             }
           },

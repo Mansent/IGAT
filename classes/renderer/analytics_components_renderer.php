@@ -205,51 +205,55 @@ class analytics_components_renderer
 	 * @param array $ranksData the data values for the ranks tab 
 	 * @param array $settingsData the data values for the settings tab 
    */
-  public function printJsonDashboardLineChartDatasets($progressData, $badgesData, $ranksData, $settingsData) { ?>
-    [{
-        "label": "Progress tab",
-        "data": [<?php echo implode(", ", $progressData); ?>], 
-        "fill": false,
-        "backgroundColor": [
-            "rgba(0, 123, 255, 0.4)"
-        ],
-        "borderColor": [
-            "rgba(0, 123, 255, 1)"
-        ]
-    },
-    {
-        "label": "Badges tab", 
-        "data": [<?php echo implode(", ", $badgesData); ?>],
-        "fill": false,
-        "backgroundColor": [
-            "rgba(255, 193, 7, 0.4)"
-        ],
-        "borderColor": [
-            "rgba(255, 193, 7, 1)"
-        ]
-    },
-    {
-        "label": "Ranks tab",
-        "data": [<?php echo implode(", ", $ranksData); ?>], 
-        "fill": false,
-        "backgroundColor": [
-            "rgba(220, 53, 69, 0.4)"
-        ],
-        "borderColor": [
-            "rgba(220, 53, 69, 1)"
-        ]
-    },
-    {
-        "label": "Settings tab", 
-        "data": [<?php echo implode(", ", $settingsData); ?>], 
-        "fill": false,
-        "backgroundColor": [ 
-            "rgba(40, 167, 69, 0.4)"
-        ],
-        "borderColor": [
-            "rgba(40, 167, 69, 1)"
-        ]
-    }]
+  public function printJsonDashboardLineChartDatasets($progressData, $badgesData, $ranksData, $settingsData, $labels) { ?>
+    { 
+      "data":
+        [{
+            "label": "Progress tab",
+            "data": [<?php echo implode(", ", $progressData); ?>], 
+            "fill": false,
+            "backgroundColor": [
+                "rgba(0, 123, 255, 0.4)"
+            ],
+            "borderColor": [
+                "rgba(0, 123, 255, 1)"
+            ]
+        },
+        {
+            "label": "Badges tab", 
+            "data": [<?php echo implode(", ", $badgesData); ?>],
+            "fill": false,
+            "backgroundColor": [
+                "rgba(255, 193, 7, 0.4)"
+            ],
+            "borderColor": [
+                "rgba(255, 193, 7, 1)"
+            ]
+        },
+        {
+            "label": "Ranks tab",
+            "data": [<?php echo implode(", ", $ranksData); ?>], 
+            "fill": false,
+            "backgroundColor": [
+                "rgba(220, 53, 69, 0.4)"
+            ],
+            "borderColor": [
+                "rgba(220, 53, 69, 1)"
+            ]
+        },
+        {
+            "label": "Settings tab", 
+            "data": [<?php echo implode(", ", $settingsData); ?>], 
+            "fill": false,
+            "backgroundColor": [ 
+                "rgba(40, 167, 69, 0.4)"
+            ],
+            "borderColor": [
+                "rgba(40, 167, 69, 1)"
+            ]
+        }],
+      "labels": ["<?php echo implode('", "', $labels); ?>"]
+    }
 <?php
   }
 	
