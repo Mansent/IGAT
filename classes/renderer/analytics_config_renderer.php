@@ -25,6 +25,7 @@ class analytics_config_renderer
   public function render_tab() { 
     // evaluate delete form
     $res = 'nodelete';
+    /* Remove deleting fuction to avoid abuse in public demo
     if(!empty($_POST['deleteBefore'])) {
       $date = $_POST['deleteBefore'];
       $res = $this->lib_logging->deleteLogsBefore($date, $this->courseId);
@@ -32,7 +33,7 @@ class analytics_config_renderer
     if(!empty($_POST['deleteAfter'])) {
       $date = $_POST['deleteAfter'];
       $res = $this->lib_logging->deleteLogsAfter($date, $this->courseId);
-    }
+    }*/
     if($res !== 'nodelete') { ?>
     <span class="notifications" id="user-notifications"><div class="alert alert-info alert-block fade in " role="alert" data-aria-autofocus="true" tabindex="0">
         <button type="button" class="close" data-dismiss="alert">×</button>
@@ -55,7 +56,8 @@ class analytics_config_renderer
     <li><a href="/blocks/xp/index.php/config/<?php echo $this->courseId; ?>">Level Up! plugin settings</a></li>
     <li><a href="/blocks/stash/items.php?courseid=<?php echo $this->courseId; ?>">Stash items and trade configuration</a></li>
   </ul>
-  
+
+<?php /* Remove deleting fuction to avoid abuse in public demo 
   <h3>Delete all logs and data</h3>
   <form method="post">
     <p>
@@ -71,7 +73,7 @@ class analytics_config_renderer
       <input type="submit" name="submitAfter" value="Delete data"/>
     </p>
   </form>
-<?php	
+<?php	*/
   }
 }
  ?>
