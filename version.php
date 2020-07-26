@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_igat';
-$plugin->release = '0.1.0';
-$plugin->version = 2020061300;
+$plugin->release = '0.2.0';
+$plugin->version = 2020072600;
 $plugin->requires = 2017051500;
-$plugin->maturity = MATURITY_ALPHA;
+$plugin->maturity = MATURITY_BETA;

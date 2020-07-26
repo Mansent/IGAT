@@ -72,8 +72,10 @@ class analytics_components_renderer
 	/**
 	 * Renders a filter for all learing style dimensions and for a date
 	 * @param int id the unique id of the chart
+	 * @param int minDate the pre selected minimum filter date
+	 * @param int maxDate the pre selected maximum filter date
 	 */
-  public function renderLsDateFilter($id) {
+  public function renderLsDateFilter($id, $minDate = "", $maxDate = "") {
 		global $PAGE; ?>
 		<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFilter<?php echo $id; ?>" aria-expanded="false" aria-controls="collapseExample">
 			Filter
@@ -88,9 +90,9 @@ class analytics_components_renderer
         
         <div class="dateFilter">
         <label>Filter from</label>
-        <input id="minDate<?php echo $id; ?>" type="date" value="" />
+        <input type="date" id="minDate<?php echo $id; ?>" value="<?php echo $minDate; ?>" />
         <label>Filter to</label>
-        <input id="maxDate<?php echo $id; ?>" type="date" value="" />
+        <input type="date" id="maxDate<?php echo $id; ?>" value="<?php echo $maxDate; ?>" />
         </div>
 			</div>
 	</div>

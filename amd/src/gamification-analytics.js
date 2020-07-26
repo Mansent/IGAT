@@ -18,8 +18,6 @@ define(['jquery'], function($) {
       initDatePicker: function(chartId, courseId) {          
         var datePickerMin = document.getElementById("minDate" + chartId);
         var datePickerMax = document.getElementById("maxDate" + chartId);
-        datePickerMin.value = "";
-        datePickerMax.value = "";
         datePickerMin.addEventListener("change", function(obj) {
           updateGraphData(chartId, courseId);
         });
@@ -50,8 +48,6 @@ function updateGraphData(id, courseId) {
   
   var datePickerMin = document.getElementById("minDate" + id);
   var datePickerMax = document.getElementById("maxDate" + id);
-  var minDate = "";
-  var maxDate = "";
   if(datePickerMin != undefined && datePickerMax != undefined) {
     minDate = datePickerMin.value;
     maxDate = datePickerMax.value;

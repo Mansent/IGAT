@@ -18,7 +18,7 @@ if(!$lib_capabilities->isManagerOrTeacher($courseid, $USER->id)) {
   die();
 }
 
-// Check for curretn tab
+// Check for current tab
 $tab = $_GET['tab'];
 if($tab != 'gameelements' && $tab != 'dashboard' && $tab != 'configuration') {
   $tab = 'dashboard';

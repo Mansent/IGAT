@@ -9,7 +9,7 @@ class igat_usersettings
 	private $courseId;
 	
   /**
-   * Creates a new igat progress object.
+   * Creates a new igat usersettings object.
    * @param int $courseId the id of the current moodle course
    */
   function __construct($courseId) {
